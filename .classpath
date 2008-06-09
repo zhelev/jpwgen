@@ -8,8 +8,7 @@
 	</classpathentry>
 	<classpathentry excluding="**" kind="src" output="src/main/resources" path="src/main/resources"/>
 	<classpathentry excluding="**" kind="src" output="src/test/resources" path="src/test/resources"/>
-	<classpathentry kind="src" path="site"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-1.5.0-sun-1.5.0_update15"/>
 	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
 	<classpathentry kind="output" path="target-eclipse/classes"/>
 </classpath>

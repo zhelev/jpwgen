@@ -7,20 +7,7 @@
 	<version>1.0.0</version>
 	<description>
 		The 'jpwgen' program is a Java-based password generator whose
-		functionality resembles the popular 'pwgen' program. The *nix
-		based version of 'pwgen' is available at
-		http://sourceforge.net/projects/pwgen/. The basic idea is in
-		generating passwords that although relatively easy to remember
-		are secure enough for everyday usage. 'jpwgen' uses 100% Java
-		and is thus platform independent. It extends the 'pwgen'
-		functionality by the utilizing regular expressions for checking
-		different types of conditions such as whether a password starts
-		with a symbol or not. 'jpwgen' also supports blacklist and
-		different types of secure random generators. It is also
-		extremely useful as an embedded library that can be employed in
-		the process of password generation against certain password
-		policies. Please refer to the Javadoc for more information.
-		<!-- TODO: include link to sf, include HTML tags, link to javadoc -->
+		functionality resembles the popular 'pwgen' program.
 	</description>
 
 	<properties>
@@ -51,7 +38,7 @@
 								<classpathPrefix />
 							-->
 						</manifest>
-
+  
 						<!-- 
 							<manifestEntries>
 							<mode>development</mode>
@@ -71,6 +58,7 @@
 					-->
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -99,6 +87,7 @@
 				<version>1.0-beta-2</version>
 			</extension>
 		</extensions>
+
 	</build>
 
 	<url>http://jpwgen.berlios.de</url>
@@ -224,6 +213,13 @@
 		</pluginRepository>
 		</pluginRepositories>
 	-->
+
+	<distributionManagement>
+		<site>
+			<id>berlios.de</id>
+			<url>shell.berlios.de:/home/groups/jpwgen/htdocs/</url>
+		</site>
+	</distributionManagement>
 
 	<scm>
 		<developerConnection>

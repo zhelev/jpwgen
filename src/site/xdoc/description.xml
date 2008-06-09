@@ -1,0 +1,28 @@
+<document>
+	<properties>
+		<author email="user@company.com>
+			The Wakaleo Team< /author>
+			<title>The Hotel Database Vision Statement< /title>
+	</properties>
+	<body>
+
+		<p>
+			The 'jpwgen' program is a Java-based password generator
+			whose functionality resembles the popular 'pwgen' program.
+			The *nix based version of 'pwgen' is available at
+			http://sourceforge.net/projects/pwgen/. The basic idea is in
+			generating passwords that although relatively easy to
+			remember are secure enough for everyday usage. 'jpwgen' uses
+			100% Java and is thus platform independent. It extends the
+			'pwgen' functionality by the utilizing regular expressions
+			for checking different types of conditions such as whether a
+			password starts with a symbol or not. 'jpwgen' also supports
+			blacklist and different types of secure random generators.
+			It is also extremely useful as an embedded library that can
+			be employed in the process of password generation against
+			certain password policies. Please refer to the Javadoc for
+			more information.
+		</p>
+
+	</body>
+</document>
