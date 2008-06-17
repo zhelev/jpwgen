@@ -32,13 +32,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * This class is used for filtering passwords from a blacklist. If the proposed
- * password is contained within the blacklist, <em>null</em> is returned
- * to indicate the password is not suitable. Otherwise the password itself is
+ * password is contained within the blacklist, <em>null</em> is returned to
+ * indicate the password is not suitable. Otherwise the password itself is
  * returned.
  * 
  * @author unrz205
@@ -46,29 +46,17 @@ import org.apache.log4j.Logger;
 public class DefaultBlacklistFilter implements IPasswordFilter
 {
 	// Keeps a reference to a logger
-	private Logger logger;
+	private static final Log logger = LogFactory
+			.getLog(DefaultBlacklistFilter.class);
 
 	// A list that stores the forbidden words
 	private List<String> blacklist = new ArrayList<String>();
 
 	/**
-	 * Constructor of the class. Sets a logger reference if needed.
-	 * 
-	 * @param logger
-	 */
-	public DefaultBlacklistFilter(Logger logger)
-	{
-		this.logger = logger;
-	}
-
-	/**
-	 * Default constructor. Instantiates a logger and sets the log level to
-	 * INFO.
+	 * Default constructor.
 	 */
 	public DefaultBlacklistFilter()
 	{
-		this.logger = Logger.getLogger(getClass());
-		logger.setLevel(Level.INFO);
 	}
 
 	/*
@@ -111,7 +99,7 @@ public class DefaultBlacklistFilter implements IPasswordFilter
 				suiatble.add(element);
 		}
 		return suiatble;
-		
+
 	}
 
 	/*
@@ -151,7 +139,7 @@ public class DefaultBlacklistFilter implements IPasswordFilter
 	 */
 	public void setID(String id)
 	{
-		logger.info(Messages.getString("DefaultBlacklistFilter.ID_CHANGE")); //$NON-NLS-1$
+		logger.debug(Messages.getString("DefaultBlacklistFilter.ID_CHANGE")); //$NON-NLS-1$
 	}
 
 	/*

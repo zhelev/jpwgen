@@ -1,0 +1,115 @@
+<document>
+	<properties>
+		<author email="krasimir.zhelev@rrze.uni-erlangen.de">
+			IDMone Team
+		</author>
+		<title>FAQ</title>
+	</properties>
+	<body>
+		<section name="Where can I find 'jpwgen'?">
+			<p>
+				Instructions for obtaining
+				<em>jpwgen</em>
+				and its dependencies are available at the
+				<a href="./download.html">download</a>
+				page.
+			</p>
+		</section>
+
+		<section name="How can I start 'jpwgen'?">
+			<p>
+				There two possibilities for using the program:
+				<ul>
+					<li>
+						<strong>From the command line</strong>
+					</li>
+					In order to use the program from the command line
+					You have to download the jar file and its
+					dependencies. The program and its dependencies have
+					to be located in the same directory. Then You should
+					navigate to the directory containing the files and
+					type something like:
+					<br />
+					<br />
+					<code>
+						java -jar jpwgen.jar -N 60 -s 10 -C -Y -S
+						SHA1PRNG SUN
+					</code>
+					<br />
+					<br />
+					For more information about the CLI options start the
+					program with the
+					<em>--help</em>
+					option or refer to the page comparing the
+					<em>jpwgen</em>
+					and
+					<em>pwgen</em>
+					<a href="./comparison.html">options</a>
+					<br />
+					<br />
+					<li>
+						<strong>
+							Embedded in a different application
+						</strong>
+					</li>
+					To use the program as a library You should place it
+					in the classpath of Your application together with
+					its the dependencies. Then from within Your code You
+					can do something like:
+					<br />
+					<br />
+					<code>
+						<br />
+						String flags = "-N 50 -M 100 -y -s 16 -m -o -q
+						";
+						<br />
+						flags = BlankRemover.itrim(flags);
+						<br />
+						String[] ar = flags.split(" ");
+						<br />
+						PwGenerator generator = new PwGenerator();
+						<br />
+						generator.getDefaultBlacklistFilter().addToBlacklist("badpassword");
+						<br />
+						List &lt;String&gt; passwords =
+						generator.process(ar);
+						<br />
+						int count = 0;
+						<br />
+						System.out.printf("\n");
+						<br />
+						for (Iterator iter = passwords.iterator();
+						iter.hasNext();)
+						<br />
+						{
+						<br />
+						String element = (String) iter.next();
+						<br />
+						System.out.printf("%3d Password: * %s\n",
+						++count, element);
+						<br />
+						}
+
+					</code>
+					<br />
+					<br />
+					Using 'jpwgen' as an embedded library was improved
+					by
+					<a href="http://www.stephen.starkey.name/">
+						Stephen Starkey
+					</a>
+					. Thanks, we do appreciate Your involvement.
+				</ul>
+			</p>
+		</section>
+
+		<section name="What about SecureRandom?">
+			If You want to get more information about the SecureRandom
+			and which providers and algorithms are available at your
+			system check out the project source code. The
+			<em>RandomFactoryTest.java</em>
+			can be pretty useful.
+		</section>
+
+	</body>
+</document>

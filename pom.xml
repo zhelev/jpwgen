@@ -4,7 +4,7 @@
 	<groupId>de.rrze</groupId>
 	<artifactId>jpwgen</artifactId>
 	<name>jpwgen</name>
-	<version>1.0.1</version>
+	<version>1.0.3</version>
 	<description>
 		The 'jpwgen' program is a Java-based password generator whose
 		functionality resembles the popular 'pwgen' program.
@@ -38,7 +38,7 @@
 								<classpathPrefix />
 							-->
 						</manifest>
-  
+
 						<!-- 
 							<manifestEntries>
 							<mode>development</mode>
@@ -85,6 +85,11 @@
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-webdav</artifactId>
 				<version>1.0-beta-2</version>
+			</extension>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh-external</artifactId>
+				<version>1.0-alpha-5</version>
 			</extension>
 		</extensions>
 
@@ -144,6 +149,16 @@
 			</organizationUrl>
 			<roles>
 				<role>Manager</role>
+			</roles>
+		</contributor>
+		<contributor>
+			<name>Stephen Starkey</name>
+			<email>stephen::at::starkey.name</email>
+			<organizationUrl>
+				http://www.stephen.starkey.name
+			</organizationUrl>
+			<roles>
+				<role>Developer</role>
 			</roles>
 		</contributor>
 	</contributors>
@@ -216,8 +231,8 @@
 
 	<distributionManagement>
 		<site>
-			<id>berlios.de</id>
-			<url>shell.berlios.de:/home/groups/jpwgen/htdocs/</url>
+			<id>shell.berlios.de</id>
+			<url>scpexe://shell.berlios.de:/home/groups/jpwgen/htdocs/</url>
 		</site>
 	</distributionManagement>
 
@@ -235,9 +250,9 @@
 			<version>1.1</version>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.surefire</groupId>

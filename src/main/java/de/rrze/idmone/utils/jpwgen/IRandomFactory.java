@@ -28,13 +28,13 @@
  */
 package de.rrze.idmone.utils.jpwgen;
 
+import org.apache.commons.logging.Log;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.util.Random;
 import java.util.Set;
-
-import org.apache.log4j.Logger;
 
 /**
  * Interface defining an advanced type of factory for random number generation.
@@ -159,19 +159,4 @@ public interface IRandomFactory
 	 * @return the algorithm implementations
 	 */
 	public Set<String> getServiceProviderFor(String type);
-
-	/**
-	 * Returns the class logger
-	 * 
-	 * @return the class logger
-	 */
-	public Logger getLogger();
-
-	/**
-	 * Sets the class logger
-	 * 
-	 * @param logger
-	 *            the logger
-	 */
-	public void setLogger(Logger logger);
 }

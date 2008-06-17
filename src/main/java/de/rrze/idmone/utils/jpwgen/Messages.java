@@ -21,9 +21,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  * 
- * This software uses code and ideas from:
- * 	http://sourceforge.net/projects/pwgen/
- * 	Copyright (C) 2001,2002 by Theodore Ts'o
  * 
  */
 package de.rrze.idmone.utils.jpwgen;

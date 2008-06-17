@@ -21,9 +21,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  * 
- * This software uses code and ideas from:
- * 	http://sourceforge.net/projects/pwgen/
- * 	Copyright (C) 2001,2002 by Theodore Ts'o
  * 
  */
 package de.rrze.idmone.utils.jpwgen;
@@ -38,7 +35,8 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * A singleton that provides various
@@ -49,7 +47,7 @@ public class RandomFactory implements IRandomFactory
 	private static RandomFactory instance;
 
 	// The class logger
-	private static Logger logger;
+	private static final Log logger = LogFactory.getLog(RandomFactory.class);
 
 	/**
 	 * Accessor to the instance
@@ -69,92 +67,6 @@ public class RandomFactory implements IRandomFactory
 	 */
 	private RandomFactory()
 	{
-		logger = Logger.getLogger(RandomFactory.class);
-	}
-
-	/**
-	 * Entry point method, used for debugging mainly
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args)
-	{
-		try
-		{
-			RandomFactory factory = new RandomFactory();
-
-			logger.debug(Messages.getString("RandomFactory.TEST_LAG")); //$NON-NLS-1$
-			Set<String> algs = factory.getAlgorithms();
-			for (Iterator<String> iter = algs.iterator(); iter.hasNext();)
-			{
-				String element = (String) iter.next();
-				logger.debug(Messages.getString("RandomFactory.ALG") + element); //$NON-NLS-1$
-			}
-
-			logger.debug(Messages.getString("RandomFactory.TEST_PROV")); //$NON-NLS-1$
-			Provider[] prov = factory.getProviders();
-			for (int i = 0; i < prov.length; i++)
-			{
-				logger
-						.debug(Messages.getString("RandomFactory.PROV") + prov[i].getName()); //$NON-NLS-1$
-				Set<Provider.Service> services = prov[i].getServices();
-				logger.debug(Messages.getString("RandomFactory.SERV")); //$NON-NLS-1$
-				logger.debug(services);
-			}
-
-			logger.debug(Messages.getString("RandomFactory.TEST_SERV")); //$NON-NLS-1$
-			Set<String> services = factory
-					.getServiceProviderFor(TYPE_SECURE_RANDOM);
-			logger
-					.debug(Messages.getString("RandomFactory.POSSIBLE") + TYPE_SECURE_RANDOM + Messages.getString("RandomFactory.7") //$NON-NLS-1$ //$NON-NLS-2$
-							+ services);
-
-			logger.debug(Messages.getString("RandomFactory.TEST")); //$NON-NLS-1$
-			Set<String> serviceProviders = factory.getServiceProviders();
-			logger
-					.debug(Messages.getString("RandomFactory.GET_SRV_PRV") + serviceProviders); //$NON-NLS-1$
-
-			logger.debug(Messages.getString("RandomFactory.TEST_GET_RANDOM")); //$NON-NLS-1$
-			Random random = factory.getRandom();
-			logger
-					.debug(Messages.getString("RandomFactory.GET_RANDOM") + random.nextDouble()); //$NON-NLS-1$
-
-			logger.debug(Messages.getString("RandomFactory.TEST_SEED")); //$NON-NLS-1$
-			random = factory.getRandom(1231l);
-			logger
-					.debug(Messages
-							.getString("RandomFactory.TEST_GET_RANDOM_SEED") + random.nextDouble()); //$NON-NLS-1$
-
-			logger.debug(Messages
-					.getString("RandomFactory.TEST_GET_SECURE_RANDOM")); //$NON-NLS-1$
-			random = factory.getSecureRandom();
-			logger
-					.debug(Messages
-							.getString("RandomFactory.GET_SECURE_RANDOM") + random.nextDouble()); //$NON-NLS-1$
-
-			logger.debug(Messages
-					.getString("RandomFactory.TEST_GET_SECURE_RANDOM_ALG")); //$NON-NLS-1$
-			random = factory.getSecureRandom(ALG_DEFAULT);
-			logger
-					.debug(Messages
-							.getString("RandomFactory.GET_SECURE_RANDOM_ALG") + random.nextDouble()); //$NON-NLS-1$
-
-			logger
-					.debug(Messages
-							.getString("RandomFactory.TEST_GET_SECURE_RANDOM_ALG_PROV")); //$NON-NLS-1$
-			factory.getSecureRandom(ALG_DEFAULT, PROVIDER_DEFAULT);
-			logger.debug(Messages
-					.getString("RandomFactory.GET_SECURE_RANDOM_ALG_PROV") //$NON-NLS-1$
-					+ random.nextDouble());
-
-		} catch (NoSuchAlgorithmException e)
-		{
-			e.printStackTrace();
-		} catch (NoSuchProviderException e)
-		{
-			e.printStackTrace();
-		}
-
 	}
 
 	/**
@@ -351,26 +263,6 @@ public class RandomFactory implements IRandomFactory
 			throws NoSuchAlgorithmException, NoSuchProviderException
 	{
 		return initSecureRandom(algorithm, provider);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.rrze.idmone.utils.pwgen.IRandomFactory#getLogger()
-	 */
-	public Logger getLogger()
-	{
-		return logger;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.rrze.idmone.utils.pwgen.IRandomFactory#setLogger(org.apache.log4j.Logger)
-	 */
-	public void setLogger(Logger logger1)
-	{
-		logger = logger1;
 	}
 
 }

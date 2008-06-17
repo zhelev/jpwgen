@@ -1,0 +1,362 @@
+Index: src/main/java/de/rrze/idmone/utils/jpwgen/IRandomFactory.java
+===================================================================
+--- src/main/java/de/rrze/idmone/utils/jpwgen/IRandomFactory.java	(revision 6)
++++ src/main/java/de/rrze/idmone/utils/jpwgen/IRandomFactory.java	(working copy)
+@@ -28,14 +28,14 @@
+  */
+ package de.rrze.idmone.utils.jpwgen;
+ 
++import org.apache.commons.logging.Log;
++
+ import java.security.NoSuchAlgorithmException;
+ import java.security.NoSuchProviderException;
+ import java.security.Provider;
+ import java.util.Random;
+ import java.util.Set;
+ 
+-import org.apache.log4j.Logger;
+-
+ /**
+  * Interface defining an advanced type of factory for random number generation.
+  * It utilizes secure random numbers, different algorithms and security
+@@ -159,19 +159,4 @@
+ 	 * @return the algorithm implementations
+ 	 */
+ 	public Set<String> getServiceProviderFor(String type);
+-
+-	/**
+-	 * Returns the class logger
+-	 * 
+-	 * @return the class logger
+-	 */
+-	public Logger getLogger();
+-
+-	/**
+-	 * Sets the class logger
+-	 * 
+-	 * @param logger
+-	 *            the logger
+-	 */
+-	public void setLogger(Logger logger);
+ }
+Index: src/main/java/de/rrze/idmone/utils/jpwgen/DefaultBlacklistFilter.java
+===================================================================
+--- src/main/java/de/rrze/idmone/utils/jpwgen/DefaultBlacklistFilter.java	(revision 6)
++++ src/main/java/de/rrze/idmone/utils/jpwgen/DefaultBlacklistFilter.java	(working copy)
+@@ -28,12 +28,13 @@
+  */
+ package de.rrze.idmone.utils.jpwgen;
+ 
++import org.apache.commons.logging.Log;
++import org.apache.commons.logging.LogFactory;
++
+ import java.util.ArrayList;
+ import java.util.Iterator;
+ import java.util.List;
+ 
+-import org.apache.log4j.Level;
+-import org.apache.log4j.Logger;
+ 
+ /**
+  * This class is used for filtering passwords from a blacklist. If the proposed
+@@ -46,29 +47,18 @@
+ public class DefaultBlacklistFilter implements IPasswordFilter
+ {
+ 	// Keeps a reference to a logger
+-	private Logger logger;
++	private Log logger;
+ 
+ 	// A list that stores the forbidden words
+ 	private List<String> blacklist = new ArrayList<String>();
+ 
+ 	/**
+-	 * Constructor of the class. Sets a logger reference if needed.
+-	 * 
+-	 * @param logger
+-	 */
+-	public DefaultBlacklistFilter(Logger logger)
+-	{
+-		this.logger = logger;
+-	}
+-
+-	/**
+ 	 * Default constructor. Instantiates a logger and sets the log level to
+ 	 * INFO.
+ 	 */
+ 	public DefaultBlacklistFilter()
+ 	{
+-		this.logger = Logger.getLogger(getClass());
+-		logger.setLevel(Level.INFO);
++		this.logger = LogFactory.getLog(getClass());
+ 	}
+ 
+ 	/*
+@@ -151,7 +141,7 @@
+ 	 */
+ 	public void setID(String id)
+ 	{
+-		logger.info(Messages.getString("DefaultBlacklistFilter.ID_CHANGE")); //$NON-NLS-1$
++		logger.debug(Messages.getString("DefaultBlacklistFilter.ID_CHANGE")); //$NON-NLS-1$
+ 	}
+ 
+ 	/*
+Index: src/main/java/de/rrze/idmone/utils/jpwgen/DefaultRegExFilter.java
+===================================================================
+--- src/main/java/de/rrze/idmone/utils/jpwgen/DefaultRegExFilter.java	(revision 6)
++++ src/main/java/de/rrze/idmone/utils/jpwgen/DefaultRegExFilter.java	(working copy)
+@@ -28,15 +28,15 @@
+  */
+ package de.rrze.idmone.utils.jpwgen;
+ 
++import org.apache.commons.logging.Log;
++import org.apache.commons.logging.LogFactory;
++
+ import java.util.ArrayList;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.regex.Matcher;
+ import java.util.regex.Pattern;
+ 
+-import org.apache.log4j.Level;
+-import org.apache.log4j.Logger;
+-
+ /**
+  * A password filter that uses to regular expressions to filter commonly
+  * forbidden patterns in passwords. The class supports also a blacklist
+@@ -108,26 +108,14 @@
+ 	// .compile(REGEX_AT_LEAST_2_CAPITALS);
+ 
+ 	// A logger instance
+-	private Logger logger;
++	private Log logger;
+ 
+ 	/**
+-	 * Constructor of the class. Takes a logger as a parameter. Prevents
+-	 * instantiating its own one.
+-	 * 
+-	 * @param logger
+-	 */
+-	public DefaultRegExFilter(Logger logger)
+-	{
+-		this.logger = logger;
+-	}
+-
+-	/**
+ 	 * Default construct.Instantiates a logger and sets its log level to INFO.
+ 	 */
+ 	public DefaultRegExFilter()
+ 	{
+-		this.logger = Logger.getLogger(getClass());
+-		logger.setLevel(Level.INFO);
++		this.logger = LogFactory.getLog(getClass());
+ 	}
+ 
+ 	/*
+Index: src/main/java/de/rrze/idmone/utils/jpwgen/RandomFactory.java
+===================================================================
+--- src/main/java/de/rrze/idmone/utils/jpwgen/RandomFactory.java	(revision 6)
++++ src/main/java/de/rrze/idmone/utils/jpwgen/RandomFactory.java	(working copy)
+@@ -28,6 +28,9 @@
+  */
+ package de.rrze.idmone.utils.jpwgen;
+ 
++import org.apache.commons.logging.Log;
++import org.apache.commons.logging.LogFactory;
++
+ import java.security.NoSuchAlgorithmException;
+ import java.security.NoSuchProviderException;
+ import java.security.Provider;
+@@ -38,8 +41,6 @@
+ import java.util.Random;
+ import java.util.Set;
+ 
+-import org.apache.log4j.Logger;
+-
+ /**
+  * A singleton that provides various
+  */
+@@ -49,7 +50,7 @@
+ 	private static RandomFactory instance;
+ 
+ 	// The class logger
+-	private static Logger logger;
++	private static Log logger;
+ 
+ 	/**
+ 	 * Accessor to the instance
+@@ -69,7 +70,7 @@
+ 	 */
+ 	private RandomFactory()
+ 	{
+-		logger = Logger.getLogger(RandomFactory.class);
++		logger = LogFactory.getLog(RandomFactory.class);
+ 	}
+ 
+ 	/**
+@@ -353,24 +354,4 @@
+ 		return initSecureRandom(algorithm, provider);
+ 	}
+ 
+-	/*
+-	 * (non-Javadoc)
+-	 * 
+-	 * @see de.rrze.idmone.utils.pwgen.IRandomFactory#getLogger()
+-	 */
+-	public Logger getLogger()
+-	{
+-		return logger;
+-	}
+-
+-	/*
+-	 * (non-Javadoc)
+-	 * 
+-	 * @see de.rrze.idmone.utils.pwgen.IRandomFactory#setLogger(org.apache.log4j.Logger)
+-	 */
+-	public void setLogger(Logger logger1)
+-	{
+-		logger = logger1;
+-	}
+-
+ }
+Index: src/main/java/de/rrze/idmone/utils/jpwgen/PwGenerator.java
+===================================================================
+--- src/main/java/de/rrze/idmone/utils/jpwgen/PwGenerator.java	(revision 6)
++++ src/main/java/de/rrze/idmone/utils/jpwgen/PwGenerator.java	(working copy)
+@@ -46,8 +46,8 @@
+ import org.apache.commons.cli.OptionBuilder;
+ import org.apache.commons.cli.Options;
+ import org.apache.commons.cli.ParseException;
+-import org.apache.log4j.Level;
+-import org.apache.log4j.Logger;
++import org.apache.commons.logging.Log;
++import org.apache.commons.logging.LogFactory;
+ 
+ /**
+  * The program is started from this class. It performs the actual password
+@@ -447,7 +447,7 @@
+ 		IPwGenRegEx
+ {
+ 	// The class logger
+-	private static final Logger logger = Logger.getLogger(PwGenerator.class);
++	private static final Log logger = LogFactory.getLog(PwGenerator.class);
+ 
+ 	// A static list of predefined vowels and consonants dipthongs. Suitable for
+ 	// English speaking people.
+@@ -515,16 +515,6 @@
+ 	private IRandomFactory randomFactory;
+ 
+ 	/**
+-	 * Sets the log level of the PwGenerator
+-	 * 
+-	 * @param level
+-	 */
+-	public void setLogLevel(Level level)
+-	{
+-		logger.setLevel(level);
+-	}
+-
+-	/**
+ 	 * Adds a password filter to the registry
+ 	 * 
+ 	 * @param filter
+@@ -572,7 +562,7 @@
+ 	{
+ 		if (error)
+ 			logger.error(message);
+-		logger.info(message);
++		logger.debug(message);
+ 	}
+ 
+ 	/**
+@@ -593,14 +583,13 @@
+ 
+ 			filters = new HashMap<String, IPasswordFilter>();
+ 
+-			defaultRegexFilter = new DefaultRegExFilter(logger);
++			defaultRegexFilter = new DefaultRegExFilter();
+ 			filters.put(defaultRegexFilter.getID(), defaultRegexFilter);
+ 
+-			defaultBlacklistFilter = new DefaultBlacklistFilter(logger);
++			defaultBlacklistFilter = new DefaultBlacklistFilter();
+ 			filters.put(defaultBlacklistFilter.getID(), defaultBlacklistFilter);
+ 
+ 			randomFactory = RandomFactory.getInstance();
+-			randomFactory.setLogger(logger);
+ 
+ 			random = randomFactory.getSecureRandom();
+ 		} catch (NoSuchAlgorithmException e)
+@@ -680,8 +669,13 @@
+ 	public static void main(String[] args)
+ 	{
+ 		PwGenerator generator = new PwGenerator();
+-		generator.process(args);
+-	}
++    final List<String> passwords = generator.process(args);
++    if (generator.doColumns) {
++			generator.printColumns(passwords, generator.termWidth);
++    } else {
++			generator.print(passwords);
++    }
++  }
+ 
+ 	/**
+ 	 * This method parses the command line options, initializes the needed
+@@ -975,11 +969,6 @@
+ 			printUsage();
+ 		}
+ 
+-		if (doColumns)
+-			printColumns(passwords, termWidth);
+-		else
+-			print(passwords);
+-
+ 		return passwords;
+ 	}
+ 
+Index: src/main/resources/log4j.properties
+===================================================================
+--- src/main/resources/log4j.properties	(revision 6)
++++ src/main/resources/log4j.properties	(working copy)
+@@ -1,8 +0,0 @@
+-# Set root logger level to DEBUG and its only appender to CONSOLE.
+-log4j.rootLogger=INFO,CONSOLE_APP
+-log4j.appender.CONSOLE_APP=org.apache.log4j.ConsoleAppender
+-log4j.appender.CONSOLE_APP.layout=org.apache.log4j.PatternLayout
+-#log4j.appender.CONSOLE_APP.layout.ConversionPattern= %d{dd-MM-yyyy HH:mm:ss:SSS} %-4r %-5p %c %x -%m%n
+-log4j.appender.CONSOLE_APP.layout.ConversionPattern= %m%n
+-log4j.logger.de.rrze.idmone.utils=INFO
+-log4j.logger.de.rrze.idmone.utils.jpwgen.PwGenerator=INFO
+\ No newline at end of file
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 6)
++++ pom.xml	(working copy)
+@@ -4,7 +4,7 @@
+ 	<groupId>de.rrze</groupId>
+ 	<artifactId>jpwgen</artifactId>
+ 	<name>jpwgen</name>
+-	<version>1.0.1</version>
++	<version>1.0.2</version>
+ 	<description>
+ 		The 'jpwgen' program is a Java-based password generator whose
+ 		functionality resembles the popular 'pwgen' program.
+@@ -235,9 +235,9 @@
+ 			<version>1.1</version>
+ 		</dependency>
+ 		<dependency>
+-			<groupId>log4j</groupId>
+-			<artifactId>log4j</artifactId>
+-			<version>1.2.14</version>
++			<groupId>commons-logging</groupId>
++			<artifactId>commons-logging</artifactId>
++			<version>1.1</version>
+ 		</dependency>
+ 		<dependency>
+ 			<groupId>org.apache.maven.surefire</groupId>
+@@ -301,4 +301,4 @@
+ 		</plugins>
+ 	</reporting>
+ 
+-</project>
+\ No newline at end of file
++</project>

@@ -46,14 +46,14 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * The program is started from this class. It performs the actual password
  * generation. The idea of this class is to generate passwords that are
  * relatively easily to remember but at the same time complex enough. It
- * utilizes a predefined set of vowels and consonants that brought together by
+ * utilizes a predefined set of vowels and consonants that are brought together by
  * an iterative algorithm. The concept of dipthong is also used which can be
  * used as an additional flag for a consonant or a vowel. Typical examples of
  * dipthongs are <em>ei</em> for vowels and <em>th</em> for consonants.
@@ -64,7 +64,7 @@ import org.apache.log4j.Logger;
  * By default two filters are registered in the PwGenerator. The first one is an
  * empty black list filter. It can be used to filter out forbidden predefined
  * passwords. The second one is based on regular expressions and uses frequently
- * utilized rules for filtering passwords such as number of contained symbols,
+ * utilized rules for filtering passwords such as the number of contained symbols,
  * digits and so on. See the help for a detailed description.
  * 
  * 
@@ -429,7 +429,7 @@ import org.apache.log4j.Logger;
  * String[] ar = flags.split(" "); <br>
  * 
  * PwGenerator generator = new PwGenerator();<br>
- * generator.setLogLevel(Level.DEBUG);<br>
+ * 
  * generator.getDefaultBlacklistFilter().addToBlacklist("badpassword"); List<String>
  * passwords = generator.process(ar); <br>
  * int count = 0;<br>
@@ -447,7 +447,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 		IPwGenRegEx
 {
 	// The class logger
-	private static final Logger logger = Logger.getLogger(PwGenerator.class);
+	private static final Log logger = LogFactory.getLog(PwGenerator.class);
 
 	// A static list of predefined vowels and consonants dipthongs. Suitable for
 	// English speaking people.
@@ -515,16 +515,6 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	private IRandomFactory randomFactory;
 
 	/**
-	 * Sets the log level of the PwGenerator
-	 * 
-	 * @param level
-	 */
-	public void setLogLevel(Level level)
-	{
-		logger.setLevel(level);
-	}
-
-	/**
 	 * Adds a password filter to the registry
 	 * 
 	 * @param filter
@@ -572,7 +562,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	{
 		if (error)
 			logger.error(message);
-		logger.info(message);
+		logger.debug(message);
 	}
 
 	/**
@@ -593,14 +583,13 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 
 			filters = new HashMap<String, IPasswordFilter>();
 
-			defaultRegexFilter = new DefaultRegExFilter(logger);
+			defaultRegexFilter = new DefaultRegExFilter();
 			filters.put(defaultRegexFilter.getID(), defaultRegexFilter);
 
-			defaultBlacklistFilter = new DefaultBlacklistFilter(logger);
+			defaultBlacklistFilter = new DefaultBlacklistFilter();
 			filters.put(defaultBlacklistFilter.getID(), defaultBlacklistFilter);
 
 			randomFactory = RandomFactory.getInstance();
-			randomFactory.setLogger(logger);
 
 			random = randomFactory.getSecureRandom();
 		} catch (NoSuchAlgorithmException e)
@@ -680,8 +669,13 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	public static void main(String[] args)
 	{
 		PwGenerator generator = new PwGenerator();
-		generator.process(args);
-	}
+    final List<String> passwords = generator.process(args);
+    if (generator.doColumns) {
+			generator.printColumns(passwords, generator.termWidth);
+    } else {
+			generator.print(passwords);
+    }
+  }
 
 	/**
 	 * This method parses the command line options, initializes the needed
@@ -974,11 +968,6 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 					Messages.getString("PwGenerator.NUM_FORM_ERROR") + e.getLocalizedMessage(), true); //$NON-NLS-1$
 			printUsage();
 		}
-
-		if (doColumns)
-			printColumns(passwords, termWidth);
-		else
-			print(passwords);
 
 		return passwords;
 	}

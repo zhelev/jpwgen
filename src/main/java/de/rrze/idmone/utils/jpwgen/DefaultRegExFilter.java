@@ -21,9 +21,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  * 
- * This software uses code and ideas from:
- * 	http://sourceforge.net/projects/pwgen/
- * 	Copyright (C) 2001,2002 by Theodore Ts'o
  * 
  */
 package de.rrze.idmone.utils.jpwgen;
@@ -34,8 +31,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * A password filter that uses to regular expressions to filter commonly
@@ -108,26 +105,14 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	// .compile(REGEX_AT_LEAST_2_CAPITALS);
 
 	// A logger instance
-	private Logger logger;
+	private static final Log logger = LogFactory
+			.getLog(DefaultRegExFilter.class);
 
 	/**
-	 * Constructor of the class. Takes a logger as a parameter. Prevents
-	 * instantiating its own one.
-	 * 
-	 * @param logger
-	 */
-	public DefaultRegExFilter(Logger logger)
-	{
-		this.logger = logger;
-	}
-
-	/**
-	 * Default construct.Instantiates a logger and sets its log level to INFO.
+	 * Default construct.
 	 */
 	public DefaultRegExFilter()
 	{
-		this.logger = Logger.getLogger(getClass());
-		logger.setLevel(Level.INFO);
 	}
 
 	/*

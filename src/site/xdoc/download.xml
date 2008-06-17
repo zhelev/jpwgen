@@ -1,0 +1,39 @@
+<document>
+	<properties>
+		<author email="krasimir.zhelev@rrze.uni-erlangen.de">
+			IDMone Team
+		</author>
+		<title>Download</title>
+	</properties>
+	<body>
+		<section name="Download">
+			The
+			<em>jpwgen</em>
+			jar file is available for download
+			<a
+				href="http://developer.berlios.de/project/showfiles.php?group_id=9733">
+				here
+			</a>
+		</section>
+
+		<section name="Dependencies">
+			In order to get the program running You will also need the
+			following libraries in your class path:
+			<ul>
+				<li>
+					<a
+						href="http://repo1.maven.org/maven2/commons-cli/commons-cli/1.1/commons-cli-1.1.jar">
+						commons-cli-1.1.jar
+					</a>
+				</li>
+				<li>
+					<a
+						href="http://repo1.maven.org/maven2/commons-logging/commons-logging/1.1/commons-logging-1.1.jar">
+						commons-logging-1.1.jar
+					</a>
+				</li>
+			</ul>
+		</section>
+	</body>
+
+</document>

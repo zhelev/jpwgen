@@ -14,24 +14,22 @@
 
 	<publishDate format="dd.MM.yyyy" />
 
-<!--  
 	<bannerLeft>
 		<name>Hotel Database</name>
-		<src>http://www.rrze.uni-erlangen.de/img/logo.gif</src>
+		<src>images/jpwgen.png</src>
 		<href>http://www.rrze.uni-erlangen.de/</href>
 	</bannerLeft>
 
--->
 
 	<bannerRight>
 		<src>http://developer.berlios.de/bslogo.php?group_id=9733</src>
 		<href>http://developer.berlios.de</href>
 	</bannerRight>
- 
-		<poweredBy>
+
+	<poweredBy>
 		<logo name="RRZE" href="http://www.rrze.uni-erlangen.de/"
-		img="http://www.rrze.uni-erlangen.de/img/logo.gif" />
-		</poweredBy>
+			img="http://www.rrze.uni-erlangen.de/img/logo.gif" />
+	</poweredBy>
 
 
 	<!-- 
@@ -51,10 +49,11 @@
 			<item name="BerliOS" href="http://www.berlios.de/" />
 		</links>
 
-		<menu name="jpwgen project">
-			<item name="Description" href="/description.html" />
-			<item name="Feature comparison" href="/comparison.html" />
-			<item name="test" href="/test.html" />
+		<menu name="jpwgen">
+			<item name="Introduction" href="/introduction.html" />
+			<item name="Download" href="/download.html" />
+			<item name="FAQ" href="/faq.html" />
+			<item name="CLI options" href="/comparison.html" />
 		</menu>
 
 		${reports}

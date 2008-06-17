@@ -1,0 +1,89 @@
+<document>
+	<properties>
+		<author email="krasimir.zhelev@rrze.uni-erlangen.de">
+			IDMone Team
+		</author>
+		<title>Introduction</title>
+	</properties>
+	<body>
+	
+		<section name="Introduction">
+			<p>
+				The
+				<em>jpwgen</em>
+				is a Java-based password generator that can be used as a
+				command line program or as a library. The implemented
+				functionality resembles the one provided by the popular
+				<em>pwgen</em>
+				program. The
+				<em>*nix</em>
+				version of
+				<em>pwgen</em>
+				is available at
+				<a href="http://sourceforge.net/projects/pwgen/">
+					pwgen
+				</a>
+				. The basic idea is in generating passwords that
+				although relatively easy to remember are complex enough
+				for real-life usage.
+			</p>
+			<p>
+				<em>jpwgen</em>
+				uses 100% Java and is thus platform independent. It
+				extends the
+				<em>pwgen</em>
+				functionality by the utilizing regular expressions for
+				checking different types of conditions such as whether a
+				password starts with a symbol or not, with a digit or
+				not and so on.
+				<em>jpwgen</em>
+				supports blacklists and different types of secure random
+				generators. As an embedded library it can be employed in
+				the process of password generation against certain
+				password policies or for password suggestion services.
+			</p>
+		</section>
+
+		<section name="Description">
+			<p>
+				<em>jpwgen</em>
+				utilizes a predefined set of vowels and consonants that
+				are brought together by an iterative algorithm. The
+				concept of
+				<em>dipthong</em>
+				is also used which can represent a consonant or a vowel.
+				Typical examples of dipthongs are
+				<em>ei</em>
+				for vowels and -
+				<em>th</em>
+				for consonants.
+			</p>
+			
+			<p>
+
+				Various algorithms for random generation can be used for
+				feeding the process of password generation. This ensures
+				unique password creation.
+			</p>
+			
+			<p>
+				By default two filters are registered when
+				<em>jpwgen</em>
+				is started. The first one is an empty black-list filter.
+				It can be used to filter out forbidden predefined
+				passwords(such as
+				<em>qwerty</em>
+				). The second one is based on regular expressions and
+				uses frequently utilized rules for filtering passwords
+				such as the number of contained symbols, digits and so
+				on. See the help for a detailed description or refer to
+				the
+				<a href="./apidocs/index.html">
+					Javadoc
+				</a>
+				.
+			</p>
+		</section>
+
+	</body>
+</document>
