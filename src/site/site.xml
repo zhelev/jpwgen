@@ -1,61 +1,76 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-
 <project>
-
-	<!-- 
-		<bannerLeft>
-		<name>Hotel Database</name>
-		<src>
-		http://maven.apache.org/images/apache-maven-project.png
-		</src>
-		<href>http://maven.apache.org/</href>
-		</bannerLeft>
+	<!--
+		<bannerLeft> <name>Hotel Database</name> <src>
+		http://maven.apache.org/images/apache-maven-project.png </src>
+		<href>http://maven.apache.org/</href> </bannerLeft>
 	-->
-
 	<publishDate format="dd.MM.yyyy" />
-
 	<bannerLeft>
 		<name>Hotel Database</name>
 		<src>images/jpwgen.png</src>
-		<href>http://www.rrze.uni-erlangen.de/</href>
+		<href>http://www.rrze.uni-erlangen.de/
+		</href>
 	</bannerLeft>
-
-
 	<bannerRight>
-		<src>http://developer.berlios.de/bslogo.php?group_id=9733</src>
+		<src>http://developer.berlios.de/bslogo.php?group_id=9733
+		</src>
 		<href>http://developer.berlios.de</href>
 	</bannerRight>
-
 	<poweredBy>
 		<logo name="RRZE" href="http://www.rrze.uni-erlangen.de/"
 			img="http://www.rrze.uni-erlangen.de/img/logo.gif" />
 	</poweredBy>
-
-
-	<!-- 
-		<skin>
-		<groupId>org.apache.maven.skins</groupId>
-		<artifactId>maven-classic-skin</artifactId>
-		<version>1.0</version>
+	<!--
+		<skin> <groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-classic-skin</artifactId> <version>1.0</version>
 		</skin>
 	-->
-
+	
+	<skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-default-skin</artifactId>
+		<version>1.0</version>
+	</skin>
+	
 	<body>
-
+		<head>
+		<!-- Piwik -->
+			<a href="http://piwik.org" title="Web analytics"
+				onclick="window.open(this.href);return(false);">
+				<script type="text/javascript"> var pkBaseURL = (("https:" ==
+					document.location.protocol) ?
+					"https://pp-dev.rrze.uni-erlangen.de/piwik/" :
+					"http://pp-dev.rrze.uni-erlangen.de/piwik/");
+					document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+		<script type="text/javascript">
+		<!--
+		piwik_action_name = '';
+		piwik_idsite = 7;
+		piwik_url = pkBaseURL + "piwik.php";
+		piwik_log(piwik_action_name, piwik_idsite, piwik_url);
+		//-->
+		</script><object>
+		<noscript><p>Web analytics <img src="http://pp-dev.rrze.uni-erlangen.de/piwik/piwik.php" style="border:0" alt="piwik"/></p>
+		</noscript></object></a>
+		<!-- /Piwik --> 
+		</head>
+	
+	
+	
 		<links>
 			<item name="RRZE" href="http://www.rrze.uni-erlangen.de/" />
 			<item name="IDMone"
 				href="http://www.rrze.uni-erlangen.de/forschung/laufende-projekte/idm.shtml" />
 			<item name="BerliOS" href="http://www.berlios.de/" />
 		</links>
-
 		<menu name="jpwgen">
 			<item name="Introduction" href="/introduction.html" />
 			<item name="Download" href="/download.html" />
 			<item name="FAQ" href="/faq.html" />
 			<item name="CLI options" href="/comparison.html" />
 		</menu>
-
 		${reports}
 
 	</body>
