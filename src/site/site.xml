@@ -35,7 +35,10 @@
 	
 	<body>
 		<head>
-		
+			<script type="text/javascript">
+			<!-- PIWIK id has to be defined for the analytics -->
+				piwik_idsite = 7;
+			</script>
 		</head>
 	
 		<links>
