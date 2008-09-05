@@ -247,6 +247,9 @@
 	</distributionManagement>
 
 	<scm>
+		<connection>
+			scm:svn:https://svn.berlios.de/svnroot/repos/jpwgen/trunk
+		</connection>
 		<developerConnection>
 			scm:svn:https://svn.berlios.de/svnroot/repos/jpwgen/trunk
 		</developerConnection>
