@@ -113,12 +113,24 @@ public interface IPwGenConstants
 	public static final int PW_AMBIGUOUS = 0x08;
 
 	/**
+	 * Flag that enables the inclusion of the reduced set of symbols characters
+	 * in the generated passwords.
+	 */
+	public static final int PW_SYMBOLS_REDUCED = 0x10;
+
+	/**
 	 * Special characters that can be included in a password.
 	 */
 	public static final String PW_SPECIAL_SYMBOLS = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
 	/**
-	 * Represents ambiguous characters that can look alike and can confuse users.
+	 * A reduced set of special characters that can be included in a password.
+	 */
+	public static final String PW_SPECIAL_SYMBOLS_REDUCED = "*!#$%&+,-./:;\\_<=>?@|";
+
+	/**
+	 * Represents ambiguous characters that can look alike and can confuse
+	 * users.
 	 */
 	public static final String PW_AMBIGUOUS_SYMBOLS = "B8G6I1l0OQDS5Z2";
 }

@@ -151,6 +151,24 @@ public interface IPwGenCommandLineOptions
 			.getString("IPwGenCommandLineOptions.CL_SYMBOLS_DESC");
 
 	/**
+	 * Include at least one special symbol in the password
+	 */
+	public static final String CL_SYMBOLS_REDUCED = "z";
+	
+	
+	/**
+	 * Include at least one special symbol in the password
+	 */
+	public static final String CL_SYMBOLS_REDUCED_LONG = "reduced-symbols";
+	
+	/**
+	 * The description of the -y and the --symbols command line options
+	 */
+	public static final String CL_SYMBOLS_REDUCED_DESC = Messages
+			.getString("IPwGenCommandLineOptions.CL_SYMBOLS_REDUCED_DESC");
+	
+	
+	/**
 	 * Include no special symbols in the password
 	 */
 	public static final String CL_NO_SYMBOLS = "Y";

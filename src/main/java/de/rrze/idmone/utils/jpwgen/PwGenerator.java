@@ -112,6 +112,15 @@ import org.apache.commons.logging.LogFactory;
 		</tr>
 
 		<tr>
+			<td>-z</td>
+			<td>--reduced-symbols</td>
+			<td>Include at least one special symbol from the reduced set in the password</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
 			<td>-1</td>
 			<td>-</td>
 			<td>Print the generated passwords one per line.</td>
@@ -623,17 +632,22 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 			passwordFlags &= ~PW_UPPERS;
 			logger.warn(Messages.getString("PwGenerator.WARN_PL_UPERCASE_OFF")); //$NON-NLS-1$
 		}
-		if (passwordLength <= 2)
-		{
-			passwordFlags &= ~PW_SYMBOLS;
-			logger.warn(Messages.getString("PwGenerator.WARN_PL_SYMBOLS_OFF")); //$NON-NLS-1$
-		}
 		if (passwordLength <= 1)
 		{
 			passwordFlags &= ~PW_DIGITS;
 			logger.warn(Messages.getString("PwGenerator.WARN_PL_DIGITS_OFF")); //$NON-NLS-1$
 		}
-
+		if (passwordLength <= 2)
+		{
+			passwordFlags &= ~PW_SYMBOLS;
+			logger.warn(Messages.getString("PwGenerator.WARN_PL_SYMBOLS_OFF")); //$NON-NLS-1$
+		}
+		if (passwordLength <= 2)
+		{
+			passwordFlags &= ~PW_SYMBOLS_REDUCED;
+			logger.warn(Messages.getString("PwGenerator.WARN_PL_SYMBOLS_REDUCED_OFF")); //$NON-NLS-1$
+		}
+		
 		String password = null;
 		for (int i = 0; i < MAX_ATTEMPTS; i++)
 		{
@@ -873,12 +887,20 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				log(Messages.getString("PwGenerator.SYMBOLS_ON"), false); //$NON-NLS-1$
 			}
 
+			if (commandLine.hasOption(CL_SYMBOLS_REDUCED))
+			{
+				passwordFlags |= PW_SYMBOLS_REDUCED;
+				log(Messages.getString("PwGenerator.SYMBOLS_REDUCED_ON"), false); //$NON-NLS-1$
+			}
+			
 			if (commandLine.hasOption(CL_NO_SYMBOLS))
 			{
 				passwordFlags &= ~PW_SYMBOLS;
+				passwordFlags &= ~PW_SYMBOLS_REDUCED;
 				log(Messages.getString("PwGenerator.SYMBOLS_OFF"), false); //$NON-NLS-1$
 			}
 
+			
 			if (commandLine.hasOption(CL_MAX_ATTEMPTS))
 			{
 				String maxAttempts = commandLine
@@ -938,6 +960,8 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 			log(Messages.getString("PwGenerator.AMBIGOUS") + (res != 0), false); //$NON-NLS-1$
 			res = passwordFlags & PW_SYMBOLS;
 			log(Messages.getString("PwGenerator.SYMBOLS") + (res != 0), false); //$NON-NLS-1$
+			res = passwordFlags & PW_SYMBOLS_REDUCED;
+			log(Messages.getString("PwGenerator.SYMBOLS_REDUCED") + (res != 0), false); //$NON-NLS-1$
 			res = passwordFlags & PW_UPPERS;
 			log(Messages.getString("PwGenerator.UPPERS") + (res != 0), false); //$NON-NLS-1$
 			log(Messages.getString("PwGenerator.SEPARATOR"), //$NON-NLS-1$
@@ -1090,6 +1114,41 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				 */
 				buf.append(str);
 
+				
+				/* Handle PW_SYMBOLS */
+				if ((pw_flags & PW_SYMBOLS) != 0)
+				{
+					if (!first && (random.nextInt(10) < 2))
+					{
+						do
+						{
+							ch = PW_SPECIAL_SYMBOLS.charAt(random
+									.nextInt(PW_SPECIAL_SYMBOLS.length()));
+						} while (((pw_flags & PW_AMBIGUOUS) != 0)
+								&& (PW_AMBIGUOUS_SYMBOLS.indexOf(ch) != -1));
+						c++;
+						buf = buf.append(ch);
+						feature_flags &= ~PW_SYMBOLS;
+					}
+				}else if ((pw_flags & PW_SYMBOLS_REDUCED) != 0)
+				{
+					if (!first && (random.nextInt(10) < 2))
+					{
+						do
+						{
+							ch = PW_SPECIAL_SYMBOLS_REDUCED.charAt(random
+									.nextInt(PW_SPECIAL_SYMBOLS_REDUCED.length()));
+						} while (((pw_flags & PW_AMBIGUOUS) != 0)
+								&& (PW_AMBIGUOUS_SYMBOLS.indexOf(ch) != -1));
+						c++;
+						buf = buf.append(ch);
+						feature_flags &= ~PW_SYMBOLS_REDUCED;
+					}
+				}
+				
+				
+				
+				
 				/* Handle PW_UPPERS */
 				if ((pw_flags & PW_UPPERS) != 0)
 				{
@@ -1167,23 +1226,6 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				prev = flags;
 				first = false;
 
-				/* Handle PW_SYMBOLS */
-				if ((pw_flags & PW_SYMBOLS) != 0)
-				{
-					if (!first && (random.nextInt(10) < 2))
-					{
-						do
-						{
-							ch = PW_SPECIAL_SYMBOLS.charAt(random
-									.nextInt(PW_SPECIAL_SYMBOLS.length()));
-						} while (((pw_flags & PW_AMBIGUOUS) != 0)
-								&& (PW_AMBIGUOUS_SYMBOLS.indexOf(ch) != -1));
-						c++;
-						buf = buf.append(ch);
-						feature_flags &= ~PW_SYMBOLS;
-					}
-				}
-
 			}
 		} while ((feature_flags & (PW_UPPERS | PW_DIGITS | PW_SYMBOLS)) != 0);
 
@@ -1227,6 +1269,10 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				false, false);
 		options.addOption(option);
 
+		option = createOption(CL_SYMBOLS_REDUCED, CL_SYMBOLS_REDUCED_LONG, CL_SYMBOLS_REDUCED_DESC,
+				false, false);
+		options.addOption(option);
+		
 		option = createOption(CL_NO_SYMBOLS, CL_NO_SYMBOLS_LONG,
 				CL_NO_SYMBOLS_DESC, false, false);
 		options.addOption(option);
