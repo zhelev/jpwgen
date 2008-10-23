@@ -24,9 +24,9 @@
 						<strong>From the command line</strong>
 					</li>
 					In order to use the program from the command line
-					You have to download the jar file and its
+					you have to download the jar file and its
 					dependencies. The program and its dependencies have
-					to be located in the same directory. Then You should
+					to be located in the same directory. Then you should
 					navigate to the directory containing the files and
 					type something like:
 					<br />
@@ -52,9 +52,9 @@
 							Embedded in a different application
 						</strong>
 					</li>
-					To use the program as a library You should place it
-					in the classpath of Your application together with
-					its the dependencies. Then from within Your code You
+					To use the program as a library you should place it
+					in the classpath of your application together with
+					its the dependencies. Then from within your code you
 					can do something like:
 					<br />
 					<br />
@@ -98,13 +98,13 @@
 					<a href="http://www.stephen.starkey.name/">
 						Stephen Starkey
 					</a>
-					. Thanks, we do appreciate Your involvement.
+					. Thanks, we do appreciate your involvement.
 				</ul>
 			</p>
 		</section>
 
 		<section name="What about SecureRandom?">
-			If You want to get more information about the SecureRandom
+			If you want to get more information about the SecureRandom
 			and which providers and algorithms are available at your
 			system check out the project source code. The
 			<em>RandomFactoryTest.java</em>

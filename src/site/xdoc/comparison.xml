@@ -13,9 +13,11 @@
 				</caption>
 				<tbody>
 					<tr>
-						<th colspan="3" >pwgen</th>
-						<th colspan="3" >jpwgen</th>
+						<th colspan="3">pwgen</th>
+						<th colspan="3">jpwgen</th>
+						
 					</tr>
+					
 					<tr>
 						<th>short</th>
 						<th>long</th>
@@ -23,6 +25,7 @@
 						<th>short</th>
 						<th>long</th>
 						<th>description</th>
+						
 					</tr>
 
 					<tr>

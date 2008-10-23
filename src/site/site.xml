@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project>
 	<!--
 		<bannerLeft> <name>Hotel Database</name> <src>
@@ -7,8 +7,8 @@
 	-->
 	<publishDate format="dd.MM.yyyy" />
 	<bannerLeft>
-		<name>Hotel Database</name>
-		<src>images/jpwgen.png</src>
+		<name>jpwgen</name>
+		<src>images/jpwgen-logo.png</src>
 		<href>http://www.rrze.uni-erlangen.de/
 		</href>
 	</bannerLeft>
@@ -47,13 +47,19 @@
 				href="http://www.rrze.uni-erlangen.de/forschung/laufende-projekte/idm.shtml" />
 			<item name="BerliOS" href="http://www.berlios.de/" />
 		</links>
-		<menu name="jpwgen">
+		
+		<menu name="jpwgen" collapse="false">
 			<item name="Introduction" href="/introduction.html" />
 			<item name="Download" href="/download.html" />
 			<item name="FAQ" href="/faq.html" />
 			<item name="CLI options" href="/comparison.html" />
 		</menu>
+		
 		${reports}
+		
+		<menu name="Links" collapse="false">
+			<item name="Development Page" href="https://developer.berlios.de/projects/jpwgen/" />
+		</menu>
 
 	</body>
 </project>
