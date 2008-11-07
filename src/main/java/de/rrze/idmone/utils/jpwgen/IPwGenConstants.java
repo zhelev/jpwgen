@@ -116,7 +116,7 @@ public interface IPwGenConstants
 	 * Flag that enables the inclusion of the reduced set of symbols characters
 	 * in the generated passwords.
 	 */
-	public static final int PW_SYMBOLS_REDUCED = 0x10;
+	public static final int PW_SYMBOLS_REDUCED = 0x2000;
 
 	/**
 	 * Special characters that can be included in a password.

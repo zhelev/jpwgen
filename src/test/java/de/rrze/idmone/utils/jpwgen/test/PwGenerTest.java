@@ -44,7 +44,7 @@ public class PwGenerTest
 		stopWatch.start();
 
 		String flags = "-N " + numPasswords
-				+ " -M 200 -m 1 -z  -q 1 -k  -s 10   -i  -j -r";
+				+ " -M 200 -m 1 -y  -q 1 -k  -s 10   -i  -j -r";
 
 		flags = BlankRemover.itrim(flags);
 		String[] ar = flags.split(" ");
@@ -73,7 +73,49 @@ public class PwGenerTest
 	}
 
 	@Test(groups =
-	{ "secure" })
+	{ "normal" })
+	public void reducedSymbolsTest()
+	{
+
+		int numPasswords = 20;
+		int iterations = 1;
+
+		System.out.println("Reduced Symbols: Generating passwords:");
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+
+		String flags = "-N " + numPasswords
+				+ " -M 200 -m 1 -s 10 -z -r";
+
+		flags = BlankRemover.itrim(flags);
+		String[] ar = flags.split(" ");
+
+		PwGenerator generator = new PwGenerator();
+
+		List<String> passwords = null;
+		generator.getDefaultBlacklistFilter().addToBlacklist("badpassword");
+		for (int i = 0; i < iterations; i++)
+		{
+			passwords = generator.process(ar);
+			Assert.assertEquals(passwords.size(), numPasswords);
+		}
+
+		stopWatch.stop();
+		System.out.println("\nReduced Symbols Runtime:" + stopWatch.toString() + "\n");
+
+		int count = 0;
+		System.out.printf("\n");
+		for (Iterator<String> iter = passwords.iterator(); iter.hasNext();)
+		{
+			String element = (String) iter.next();
+			System.out.printf("%3d Password: %s\n", ++count, element);
+		}
+
+	}
+
+	
+//	@Test(groups =
+//	{ "secure" })
 	public void secureTest()
 	{
 
