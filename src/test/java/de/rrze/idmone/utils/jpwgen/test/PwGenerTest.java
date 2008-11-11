@@ -85,7 +85,7 @@ public class PwGenerTest
 		stopWatch.start();
 
 		String flags = "-N " + numPasswords
-				+ " -M 200 -m 1 -s 10 -z -r";
+				+ " -M 500 -m 1 -s 8 -z -r";
 
 		flags = BlankRemover.itrim(flags);
 		String[] ar = flags.split(" ");

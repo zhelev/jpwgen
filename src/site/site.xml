@@ -5,7 +5,8 @@
 		http://maven.apache.org/images/apache-maven-project.png </src>
 		<href>http://maven.apache.org/</href> </bannerLeft>
 	-->
-	<publishDate format="dd.MM.yyyy" />
+	<publishDate format="dd.MM.yyyy" position="navigation-bottom" />
+	<version position="navigation-top" />
 	<bannerLeft>
 		<name>jpwgen</name>
 		<src>images/jpwgen-logo.png</src>
@@ -26,13 +27,11 @@
 		<artifactId>maven-classic-skin</artifactId> <version>1.0</version>
 		</skin>
 	-->
-	
 	<skin>
-      <groupId>de.rrze</groupId>
-      <artifactId>rrzemavenskin</artifactId>     
-      <version>0.0.1</version>
+		<groupId>de.rrze</groupId>
+		<artifactId>rrzemavenskin</artifactId>
+		<version>0.0.1</version>
 	</skin>
-	
 	<body>
 		<head>
 			<script type="text/javascript">
@@ -40,26 +39,30 @@
 				piwik_idsite = 7;
 			</script>
 		</head>
-	
 		<links>
 			<item name="RRZE" href="http://www.rrze.uni-erlangen.de/" />
 			<item name="IDMone"
 				href="http://www.rrze.uni-erlangen.de/forschung/laufende-projekte/idm.shtml" />
 			<item name="BerliOS" href="http://www.berlios.de/" />
 		</links>
-		
 		<menu name="jpwgen" collapse="false">
 			<item name="Introduction" href="/introduction.html" />
 			<item name="Download" href="/download.html" />
 			<item name="FAQ" href="/faq.html" />
 			<item name="CLI options" href="/comparison.html" />
 		</menu>
-		
 		${reports}
-		
 		<menu name="Links" collapse="false">
 			<item name="Development Page" href="https://developer.berlios.de/projects/jpwgen/" />
 		</menu>
-
+		<menu name="Technical" collapse="false">
+			<item name="Development Page" href="https://developer.berlios.de/projects/jpwgen/" />
+			<item name="Development Page" href="https://developer.berlios.de/projects/jpwgen/" />
+			<item name="Development Page" href="https://developer.berlios.de/projects/jpwgen/" />
+		</menu>
+		<breadcrumbs>
+			<item name="Berlios Page" href="https://developer.berlios.de/projects/jpwgen/" />
+			<item name="jpwgen" />
+		</breadcrumbs>
 	</body>
 </project>
