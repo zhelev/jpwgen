@@ -5,17 +5,15 @@
 		http://maven.apache.org/images/apache-maven-project.png </src>
 		<href>http://maven.apache.org/</href> </bannerLeft>
 	-->
-	<publishDate format="dd.MM.yyyy" position="navigation-bottom" />
+	<publishDate format="dd.MM.yyyy" />
 	<version position="navigation-top" />
 	<bannerLeft>
 		<name>jpwgen</name>
 		<src>images/jpwgen-logo.png</src>
-		<href>http://www.rrze.uni-erlangen.de/
-		</href>
+		<href>http://www.rrze.uni-erlangen.de/</href>
 	</bannerLeft>
 	<bannerRight>
-		<src>http://developer.berlios.de/bslogo.php?group_id=9733
-		</src>
+		<src>http://developer.berlios.de/bslogo.php?group_id=9733</src>
 		<href>http://developer.berlios.de</href>
 	</bannerRight>
 	<poweredBy>
@@ -35,34 +33,37 @@
 	<body>
 		<head>
 			<script type="text/javascript">
-			<!-- PIWIK id has to be defined for the analytics -->
+				<!-- PIWIK id has to be defined for the analytics -->
 				piwik_idsite = 7;
 			</script>
 		</head>
+
+		<breadcrumbs>
+			<item name="Berlios Page"
+				href="https://developer.berlios.de/projects/jpwgen/" />
+			<item name="jpwgen" href="index.html" />
+		</breadcrumbs>
+
 		<links>
 			<item name="RRZE" href="http://www.rrze.uni-erlangen.de/" />
 			<item name="IDMone"
 				href="http://www.rrze.uni-erlangen.de/forschung/laufende-projekte/idm.shtml" />
 			<item name="BerliOS" href="http://www.berlios.de/" />
 		</links>
+
 		<menu name="jpwgen" collapse="false">
 			<item name="Introduction" href="/introduction.html" />
 			<item name="Download" href="/download.html" />
 			<item name="FAQ" href="/faq.html" />
 			<item name="CLI options" href="/comparison.html" />
 		</menu>
+
 		${reports}
-		<menu name="Links" collapse="false">
-			<item name="Development Page" href="https://developer.berlios.de/projects/jpwgen/" />
-		</menu>
+
 		<menu name="Technical" collapse="false">
-			<item name="Development Page" href="https://developer.berlios.de/projects/jpwgen/" />
-			<item name="Development Page" href="https://developer.berlios.de/projects/jpwgen/" />
-			<item name="Development Page" href="https://developer.berlios.de/projects/jpwgen/" />
+			<item name="Development Page"
+				href="https://developer.berlios.de/projects/jpwgen/" />
 		</menu>
-		<breadcrumbs>
-			<item name="Berlios Page" href="https://developer.berlios.de/projects/jpwgen/" />
-			<item name="jpwgen" />
-		</breadcrumbs>
+
 	</body>
 </project>

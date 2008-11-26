@@ -81,15 +81,15 @@
 				</configuration>
 			</plugin>
 
-	<!--  replaced by a skin
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <configuration>
-          <templateFile>${basedir}/src/site/maven-site.vm</templateFile>
-        </configuration>
-      </plugin>
-	-->
+			<!--  replaced by a skin
+				<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+				<templateFile>${basedir}/src/site/maven-site.vm</templateFile>
+				</configuration>
+				</plugin>
+			-->
 
 		</plugins>
 
@@ -175,7 +175,7 @@
 				<role>Developer</role>
 			</roles>
 		</contributor>
-		
+
 		<contributor>
 			<name>Florian Loeffler</name>
 			<email>florian.loeffler::at::rrze.uni-erlangen.de</email>
@@ -252,18 +252,26 @@
 		</ciManagement>
 	-->
 
-	
-		<distributionManagement>
+
+	<distributionManagement>
 		<repository>
-		<uniqueVersion>false</uniqueVersion>
-		<id>archiva.rrze</id>
-		<name>Archiva Maven Repository des RRZE</name>
-		<url>
-		dav:http://idmvm1.rrze.uni-erlangen.de:8083/archiva/repository/internal/
-		</url>
+			<uniqueVersion>false</uniqueVersion>
+			<id>archiva.rrze</id>
+			<name>Archiva Maven Repository des RRZE</name>
+			<url>
+				dav:http://idmvm1.rrze.uni-erlangen.de:8083/archiva/repository/internal/
+			</url>
 		</repository>
-		</distributionManagement>
-	
+
+		<!-- Site -->
+		<site>
+			<id>jpwgen::at::berlios.de</id>
+			<url>
+				scpexe://shell.berlios.de/home/groups/jpwgen/htdocs/
+			</url>
+		</site>
+	</distributionManagement>
+
 	<!-- 
 		<pluginRepositories>
 		<pluginRepository>
@@ -278,14 +286,14 @@
 		</pluginRepository>
 		</pluginRepositories>
 	-->
-<!--  
-	<distributionManagement>
+	<!--  
+		<distributionManagement>
 		<site>
-			<id>shell.berlios.de</id>
-			<url>scpexe://shell.berlios.de:/home/groups/jpwgen/htdocs/</url>
+		<id>shell.berlios.de</id>
+		<url>scpexe://shell.berlios.de:/home/groups/jpwgen/htdocs/</url>
 		</site>
-	</distributionManagement>
--->
+		</distributionManagement>
+	-->
 	<scm>
 		<connection>
 			scm:svn:https://svn.berlios.de/svnroot/repos/jpwgen/trunk
