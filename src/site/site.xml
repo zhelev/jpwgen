@@ -30,7 +30,7 @@
 	<skin>
 		<groupId>de.rrze</groupId>
 		<artifactId>rrzemavenskin</artifactId>
-		<version>0.0.1</version>
+		<version>0.0.2</version>
 	</skin>
 	<body>
 		<head>
