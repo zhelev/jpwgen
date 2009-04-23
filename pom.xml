@@ -4,7 +4,7 @@
 	<groupId>de.rrze</groupId>
 	<artifactId>jpwgen</artifactId>
 	<name>jpwgen</name>
-	<version>1.0.4</version>
+	<version>1.0.5</version>
 	<description>
 		The 'jpwgen' program is a Java-based password generator whose
 		functionality resembles the popular 'pwgen' program.

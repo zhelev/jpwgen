@@ -611,6 +611,46 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 			random = randomFactory.getRandom();
 		}
 	}
+	
+	/**
+	 * Constructor of the PwGenerator
+	 */
+	public PwGenerator(boolean unparanoid)
+	{
+		try
+		{
+			passwordFlags |= PW_UPPERS;
+			logger.debug(Messages.getString("PwGenerator.TRACE_UPPERCASE_ON")); //$NON-NLS-1$
+			passwordFlags |= PW_DIGITS;
+			logger.debug(Messages.getString("PwGenerator.TRACE_DIGITS_ON")); //$NON-NLS-1$
+			// passwordFlags |= PW_SYMBOLS;
+			// passwordFlags |= PW_AMBIGUOUS;
+
+			options = createOptions();
+
+			filters = new HashMap<String, IPasswordFilter>();
+
+			defaultRegexFilter = new DefaultRegExFilter();
+			filters.put(defaultRegexFilter.getID(), defaultRegexFilter);
+
+			defaultBlacklistFilter = new DefaultBlacklistFilter();
+			filters.put(defaultBlacklistFilter.getID(), defaultBlacklistFilter);
+
+			randomFactory = RandomFactory.getInstance();
+			if (unparanoid)
+				random = randomFactory.getRandom();
+			else
+				random = randomFactory.getSecureRandom();
+		} catch (NoSuchAlgorithmException e)
+		{
+			e.printStackTrace();
+			random = randomFactory.getRandom();
+		} catch (NoSuchProviderException e)
+		{
+			e.printStackTrace();
+			random = randomFactory.getRandom();
+		}
+	}
 
 	/**
 	 * This method logs some general info about the given settings and tries to
