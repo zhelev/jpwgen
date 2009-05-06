@@ -252,17 +252,17 @@
 		</ciManagement>
 	-->
 
-
-	<distributionManagement>
+<distributionManagement>
 		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>archiva.rrze</id>
-			<name>Archiva Maven Repository des RRZE</name>
-			<url>
-				dav:http://idmvm1.rrze.uni-erlangen.de:8083/archiva/repository/internal/
-			</url>
+			<id>reppo.rrze</id>
+			<name>Internal Release Repository</name>
+			<url>dav:http://reppo.rrze.uni-erlangen.de:8080/archiva/repository/internal/</url>
 		</repository>
-
+		<snapshotRepository>
+			<id>reppo.rrze.snapshot</id>
+			<name>Internal Snapshot Repository</name>
+			<url>dav:http://reppo.rrze.uni-erlangen.de:8080/archiva/repository/snapshots/</url>
+		</snapshotRepository>
 		<!-- Site -->
 		<site>
 			<id>jpwgen::at::berlios.de</id>
