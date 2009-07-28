@@ -1451,10 +1451,10 @@
      inkscape:cy="434.81093"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     inkscape:window-width="1280"
-     inkscape:window-height="975"
-     inkscape:window-x="1276"
-     inkscape:window-y="-4"
+     inkscape:window-width="1270"
+     inkscape:window-height="774"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      showguides="true"
      inkscape:guide-bbox="true"
      showgrid="false">
@@ -1515,7 +1515,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title>approval</dc:title>
+        <dc:title>jpwgen</dc:title>
         <dc:date>27.06.2008</dc:date>
         <dc:creator>
           <cc:Agent>
@@ -1536,10 +1536,11 @@
            rdf:resource="http://creativecommons.org/licenses/by-sa/3.0/" />
         <dc:subject>
           <rdf:Bag>
-            <rdf:li>approval</rdf:li>
-            <rdf:li>workflow</rdf:li>
-            <rdf:li>accept</rdf:li>
-            <rdf:li>allow</rdf:li>
+            <rdf:li>jidgen</rdf:li>
+            <rdf:li>logo</rdf:li>
+            <rdf:li>web 2.0</rdf:li>
+            <rdf:li>text</rdf:li>
+            <rdf:li>text-logo</rdf:li>
           </rdf:Bag>
         </dc:subject>
         <dc:contributor>
@@ -1547,7 +1548,7 @@
             <dc:title>Hendrik Eggers</dc:title>
           </cc:Agent>
         </dc:contributor>
-        <dc:description>uses &lt;http://webcvs.freedesktop.org/tango/tango-icon-theme/scalable/mimetypes/text-x-generic.svg&gt;</dc:description>
+        <dc:description></dc:description>
       </cc:Work>
       <cc:License
          rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
