@@ -78,7 +78,7 @@ public class PwGenerTest
 	{
 
 		int numPasswords = 20;
-		int iterations = 1;
+		int iterations = 400;
 
 		System.out.println("Reduced Symbols: Generating passwords:");
 		StopWatch stopWatch = new StopWatch();
@@ -98,6 +98,7 @@ public class PwGenerTest
 		{
 			passwords = generator.process(ar);
 			Assert.assertEquals(passwords.size(), numPasswords);
+			System.out.println("iteration:" + i);
 		}
 
 		stopWatch.stop();
@@ -114,8 +115,8 @@ public class PwGenerTest
 	}
 
 	
-//	@Test(groups =
-//	{ "secure" })
+	@Test(groups =
+	{ "secure" })
 	public void secureTest()
 	{
 

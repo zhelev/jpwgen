@@ -53,8 +53,8 @@ import org.apache.commons.logging.LogFactory;
  * The program is started from this class. It performs the actual password
  * generation. The idea of this class is to generate passwords that are
  * relatively easily to remember but at the same time complex enough. It
- * utilizes a predefined set of vowels and consonants that are brought together by
- * an iterative algorithm. The concept of dipthong is also used which can be
+ * utilizes a predefined set of vowels and consonants that are brought together
+ * by an iterative algorithm. The concept of dipthong is also used which can be
  * used as an additional flag for a consonant or a vowel. Typical examples of
  * dipthongs are <em>ei</em> for vowels and <em>th</em> for consonants.
  * 
@@ -64,361 +64,355 @@ import org.apache.commons.logging.LogFactory;
  * By default two filters are registered in the PwGenerator. The first one is an
  * empty black list filter. It can be used to filter out forbidden predefined
  * passwords. The second one is based on regular expressions and uses frequently
- * utilized rules for filtering passwords such as the number of contained symbols,
- * digits and so on. See the help for a detailed description.
+ * utilized rules for filtering passwords such as the number of contained
+ * symbols, digits and so on. See the help for a detailed description.
  * 
  * 
  * <table border="1px">
-	<caption>CLI options comparison to original pwgen</caption>
-	<tbody>
-		<tr>
-			<th colspan="3">pwgen</th>
-			<th colspan="3">jpwgen</th>
-		</tr>
-		<tr>
-			<th>short</th>
-			<th>long</th>
-			<th>description</th>
-			<th>short</th>
-			<th>long</th>
-			<th>description</th>
-		</tr>
-
-		<tr>
-			<td>-0</td>
-			<td>--no-numerals</td>
-			<td>Don't include numbers in the generated passwords.</td>
-			<td>-O</td>
-			<td>--no-numerals</td>
-			<td>Don't include numbers in the generated passwords.</td>
-		</tr>
-
-		<tr>
-			<td>-n</td>
-			<td>--numerals</td>
-			<td>Include at least one number in the password</td>
-			<td>-n</td>
-			<td>--numerals</td>
-			<td>Include at least one number in the password</td>
-		</tr>
-
-		<tr>
-			<td>-y</td>
-			<td>--symbols</td>
-			<td>Include at least one special symbol in the password</td>
-			<td>-y</td>
-			<td>--symbols</td>
-			<td>Include at least one special symbol in the password</td>
-		</tr>
-
-		<tr>
-			<td>-z</td>
-			<td>--reduced-symbols</td>
-			<td>Include at least one special symbol from the reduced set in the password</td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-
-		<tr>
-			<td>-1</td>
-			<td>-</td>
-			<td>Print the generated passwords one per line.</td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-
-		<tr>
-			<td>-a</td>
-			<td>--alt-phonic</td>
-			<td>This option doesn't do anything special; it is present only
-			for backwards compatibility.</td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-
-
-		<tr>
-			<td>-B</td>
-			<td>--ambiguous</td>
-			<td>Don't include ambiguous characters in the password</td>
-			<td>-B</td>
-			<td>--ambiguous</td>
-			<td>Don't include ambiguous characters in the password</td>
-		</tr>
-
-
-		<tr>
-			<td>-c</td>
-			<td>--capitalize</td>
-			<td>Include at least one capital letter in the password. This is
-			the default if the standard output is a tty device.</td>
-			<td>-c</td>
-			<td>--capitalize</td>
-			<td>Include at least one capital letter in the password. This is
-			the default if the standard output is a tty device.</td>
-		</tr>
-
-		<tr>
-			<td>-s</td>
-			<td>--secure</td>
-			<td>Generate completely random passwords</td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-
-
-		<tr>
-			<td>-h</td>
-			<td>--help</td>
-			<td>Print a help message</td>
-			<td>-h</td>
-			<td>--help</td>
-			<td>Print a help message</td>
-		</tr>
-
-		<tr>
-			<td>-C</td>
-			<td></td>
-			<td>Print the generated passwords in columns</td>
-			<td>-C</td>
-			<td>--columns</td>
-			<td>Print the generated passwords in columns</td>
-		</tr>
-
-		<tr>
-			<td>-v</td>
-			<td>--no-vowels</td>
-			<td>Use sha1 hash of given file as a (not so) random generator</td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-
-
-		<tr>
-			<td>-H</td>
-			<td>--sha1=path/to/file[#seed]</td>
-			<td>Do not use any vowels so as to avoid accidental nasty words</td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-b</td>
-			<td>--start-no-small-letter</td>
-			<td>Generates password starting with a character different than
-			a small letter</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-d</td>
-			<td>--end-no-small-letter</td>
-			<td>Generates password ending with a character different than a
-			small letter</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-D</td>
-			<td>--allow-ambiguous</td>
-			<td>Allow ambiguous characters in the password</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-e</td>
-			<td>--start-no-uppercase-letter</td>
-			<td>Generates password starting with a character different than
-			a uppercase letter</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-f</td>
-			<td>--end-no-uppercase-letter</td>
-			<td>Generates password ending with a character different than a
-			uppercase letter</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-g</td>
-			<td>--end-no-digit</td>
-			<td>Generates password ending with a character different than a
-			digit</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-i</td>
-			<td>--start-no-digit-letter</td>
-			<td>Generates password starting with a character different than
-			a digit</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-j</td>
-			<td>--start-no-symbol-letter</td>
-			<td>Generates password starting with a character different than
-			a symbol</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-k</td>
-			<td>--end-no-symbol</td>
-			<td>Generates password ending with a character different than a
-			symbol</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-l</td>
-			<td>--list-sr-providers</td>
-			<td>Lists the available security service providers for
-			SecureRandom and exits</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-L</td>
-			<td>--list-providers</td>
-			<td>Lists all available security providers and algorithms</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-m</td>
-			<td>--one-upercase</td>
-			<td>Generates password containing exactly one uppercase letter</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-M</td>
-			<td>--max-attempts &lt;arg&gt;</td>
-			<td>Sets the maximum number of attempts for generating a
-			password with the provided policies</td>
-		</tr>
-
-		<tr>
-			<td>second parameter</td>
-			<td>second parameter</td>
-			<td></td>
-			<td>-N</td>
-			<td>--number &lt;arg&gt;</td>
-			<td>The number of passwords to be generated</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-o</td>
-			<td>--one-symbol</td>
-			<td>Generates password containing exactly one symbol</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-p</td>
-			<td>--two-symbol</td>
-			<td>Generates password containing at least two symbols</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-q</td>
-			<td>--one-digit</td>
-			<td>Generates password containing exactly one digit</td>
-		</tr>
-
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-r</td>
-			<td>--random</td>
-			<td>Use simple random for password generation</td>
-		</tr>
-
-		<tr>
-			<td>first parameter</td>
-			<td>first parameter</td>
-			<td>The length of the generated password</td>
-			<td>-s</td>
-			<td>--size &lt;arg&gt;</td>
-			<td>The length of the generated password</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-S</td>
-			<td>--set-algorithm &lt;arg&gt;</td>
-			<td>set-algorithm</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-t</td>
-			<td>--term-width &lt;arg&gt;</td>
-			<td>Sets the character width of the jpwgen terminal</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>-u</td>
-			<td>--two-digits</td>
-			<td>Generates password containing at least two digits</td>
-		</tr>
-
-	</tbody>
-</table>
+ * <caption>CLI options comparison to original pwgen</caption> <tbody>
+ * <tr>
+ * <th colspan="3">pwgen</th>
+ * <th colspan="3">jpwgen</th>
+ * </tr>
+ * <tr>
+ * <th>short</th>
+ * <th>long</th>
+ * <th>description</th>
+ * <th>short</th>
+ * <th>long</th>
+ * <th>description</th>
+ * </tr>
+ * 
+ * <tr>
+ * <td>-0</td>
+ * <td>--no-numerals</td>
+ * <td>Don't include numbers in the generated passwords.</td>
+ * <td>-O</td>
+ * <td>--no-numerals</td>
+ * <td>Don't include numbers in the generated passwords.</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td>-n</td>
+ * <td>--numerals</td>
+ * <td>Include at least one number in the password</td>
+ * <td>-n</td>
+ * <td>--numerals</td>
+ * <td>Include at least one number in the password</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td>-y</td>
+ * <td>--symbols</td>
+ * <td>Include at least one special symbol in the password</td>
+ * <td>-y</td>
+ * <td>--symbols</td>
+ * <td>Include at least one special symbol in the password</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td>-z</td>
+ * <td>--reduced-symbols</td>
+ * <td>Include at least one special symbol from the reduced set in the password</td>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * </tr>
+ * 
+ * <tr>
+ * <td>-1</td>
+ * <td>-</td>
+ * <td>Print the generated passwords one per line.</td>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * </tr>
+ * 
+ * <tr>
+ * <td>-a</td>
+ * <td>--alt-phonic</td>
+ * <td>This option doesn't do anything special; it is present only for backwards
+ * compatibility.</td>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * </tr>
+ * 
+ * 
+ * <tr>
+ * <td>-B</td>
+ * <td>--ambiguous</td>
+ * <td>Don't include ambiguous characters in the password</td>
+ * <td>-B</td>
+ * <td>--ambiguous</td>
+ * <td>Don't include ambiguous characters in the password</td>
+ * </tr>
+ * 
+ * 
+ * <tr>
+ * <td>-c</td>
+ * <td>--capitalize</td>
+ * <td>Include at least one capital letter in the password. This is the default
+ * if the standard output is a tty device.</td>
+ * <td>-c</td>
+ * <td>--capitalize</td>
+ * <td>Include at least one capital letter in the password. This is the default
+ * if the standard output is a tty device.</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td>-s</td>
+ * <td>--secure</td>
+ * <td>Generate completely random passwords</td>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * </tr>
+ * 
+ * 
+ * <tr>
+ * <td>-h</td>
+ * <td>--help</td>
+ * <td>Print a help message</td>
+ * <td>-h</td>
+ * <td>--help</td>
+ * <td>Print a help message</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td>-C</td>
+ * <td></td>
+ * <td>Print the generated passwords in columns</td>
+ * <td>-C</td>
+ * <td>--columns</td>
+ * <td>Print the generated passwords in columns</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td>-v</td>
+ * <td>--no-vowels</td>
+ * <td>Use sha1 hash of given file as a (not so) random generator</td>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * </tr>
+ * 
+ * 
+ * <tr>
+ * <td>-H</td>
+ * <td>--sha1=path/to/file[#seed]</td>
+ * <td>Do not use any vowels so as to avoid accidental nasty words</td>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-b</td>
+ * <td>--start-no-small-letter</td>
+ * <td>Generates password starting with a character different than a small
+ * letter</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-d</td>
+ * <td>--end-no-small-letter</td>
+ * <td>Generates password ending with a character different than a small letter</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-D</td>
+ * <td>--allow-ambiguous</td>
+ * <td>Allow ambiguous characters in the password</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-e</td>
+ * <td>--start-no-uppercase-letter</td>
+ * <td>Generates password starting with a character different than a uppercase
+ * letter</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-f</td>
+ * <td>--end-no-uppercase-letter</td>
+ * <td>Generates password ending with a character different than a uppercase
+ * letter</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-g</td>
+ * <td>--end-no-digit</td>
+ * <td>Generates password ending with a character different than a digit</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-i</td>
+ * <td>--start-no-digit-letter</td>
+ * <td>Generates password starting with a character different than a digit</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-j</td>
+ * <td>--start-no-symbol-letter</td>
+ * <td>Generates password starting with a character different than a symbol</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-k</td>
+ * <td>--end-no-symbol</td>
+ * <td>Generates password ending with a character different than a symbol</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-l</td>
+ * <td>--list-sr-providers</td>
+ * <td>Lists the available security service providers for SecureRandom and exits
+ * </td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-L</td>
+ * <td>--list-providers</td>
+ * <td>Lists all available security providers and algorithms</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-m</td>
+ * <td>--one-upercase</td>
+ * <td>Generates password containing exactly one uppercase letter</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-M</td>
+ * <td>--max-attempts &lt;arg&gt;</td>
+ * <td>Sets the maximum number of attempts for generating a password with the
+ * provided policies</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td>second parameter</td>
+ * <td>second parameter</td>
+ * <td></td>
+ * <td>-N</td>
+ * <td>--number &lt;arg&gt;</td>
+ * <td>The number of passwords to be generated</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-o</td>
+ * <td>--one-symbol</td>
+ * <td>Generates password containing exactly one symbol</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-p</td>
+ * <td>--two-symbol</td>
+ * <td>Generates password containing at least two symbols</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-q</td>
+ * <td>--one-digit</td>
+ * <td>Generates password containing exactly one digit</td>
+ * </tr>
+ * 
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-r</td>
+ * <td>--random</td>
+ * <td>Use simple random for password generation</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td>first parameter</td>
+ * <td>first parameter</td>
+ * <td>The length of the generated password</td>
+ * <td>-s</td>
+ * <td>--size &lt;arg&gt;</td>
+ * <td>The length of the generated password</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-S</td>
+ * <td>--set-algorithm &lt;arg&gt;</td>
+ * <td>set-algorithm</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-t</td>
+ * <td>--term-width &lt;arg&gt;</td>
+ * <td>Sets the character width of the jpwgen terminal</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td></td>
+ * <td></td>
+ * <td></td>
+ * <td>-u</td>
+ * <td>--two-digits</td>
+ * <td>Generates password containing at least two digits</td>
+ * </tr>
+ * 
+ * </tbody>
+ * </table>
  * 
  * 
  * 
@@ -428,8 +422,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * 
  * <h3>
- * Example:
- * </h3>
+ * Example:</h3>
  * <ul>
  * <br>
  * String flags = "-N 50 -M 100 -y -s 16 -m -o -q ";<br>
@@ -439,15 +432,16 @@ import org.apache.commons.logging.LogFactory;
  * 
  * PwGenerator generator = new PwGenerator();<br>
  * 
- * generator.getDefaultBlacklistFilter().addToBlacklist("badpassword"); List<String>
- * passwords = generator.process(ar); <br>
+ * generator.getDefaultBlacklistFilter().addToBlacklist("badpassword");
+ * List<String> passwords = generator.process(ar); <br>
  * int count = 0;<br>
  * System.out.printf("\n");<br>
- * for (Iterator iter = passwords.iterator(); iter.hasNext();) <br> {<br>
+ * for (Iterator iter = passwords.iterator(); iter.hasNext();) <br>
+ * {<br>
  * <br>
  * String element = (String) iter.next();<br>
  * System.out.printf("%3d Password: * %s\n", ++count, element); <br>
- * <br>}
+ * <br>
  * 
  * 
  * @author unrz205
@@ -493,7 +487,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 
 	// An instance of the Random number that would be used during the generation
 	// process
-	private Random random;
+	// private Random random;
 
 	// The singleton instance of the PwGenertor
 	// private static PwGenerator instance;
@@ -579,84 +573,31 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 */
 	public PwGenerator()
 	{
-		try
-		{
-			passwordFlags |= PW_UPPERS;
-			logger.debug(Messages.getString("PwGenerator.TRACE_UPPERCASE_ON")); //$NON-NLS-1$
-			passwordFlags |= PW_DIGITS;
-			logger.debug(Messages.getString("PwGenerator.TRACE_DIGITS_ON")); //$NON-NLS-1$
-			// passwordFlags |= PW_SYMBOLS;
-			// passwordFlags |= PW_AMBIGUOUS;
+		passwordFlags |= PW_UPPERS;
+		logger.debug(Messages.getString("PwGenerator.TRACE_UPPERCASE_ON")); //$NON-NLS-1$
+		passwordFlags |= PW_DIGITS;
+		logger.debug(Messages.getString("PwGenerator.TRACE_DIGITS_ON")); //$NON-NLS-1$
+		// passwordFlags |= PW_SYMBOLS;
+		// passwordFlags |= PW_AMBIGUOUS;
 
-			options = createOptions();
+		options = createOptions();
 
-			filters = new HashMap<String, IPasswordFilter>();
+		filters = new HashMap<String, IPasswordFilter>();
 
-			defaultRegexFilter = new DefaultRegExFilter();
-			filters.put(defaultRegexFilter.getID(), defaultRegexFilter);
+		defaultRegexFilter = new DefaultRegExFilter();
+		filters.put(defaultRegexFilter.getID(), defaultRegexFilter);
 
-			defaultBlacklistFilter = new DefaultBlacklistFilter();
-			filters.put(defaultBlacklistFilter.getID(), defaultBlacklistFilter);
+		defaultBlacklistFilter = new DefaultBlacklistFilter();
+		filters.put(defaultBlacklistFilter.getID(), defaultBlacklistFilter);
 
-			randomFactory = RandomFactory.getInstance();
-
-			random = randomFactory.getSecureRandom();
-		} catch (NoSuchAlgorithmException e)
-		{
-			e.printStackTrace();
-			random = randomFactory.getRandom();
-		} catch (NoSuchProviderException e)
-		{
-			e.printStackTrace();
-			random = randomFactory.getRandom();
-		}
-	}
-	
-	/**
-	 * Constructor of the PwGenerator
-	 */
-	public PwGenerator(boolean unparanoid)
-	{
-		try
-		{
-			passwordFlags |= PW_UPPERS;
-			logger.debug(Messages.getString("PwGenerator.TRACE_UPPERCASE_ON")); //$NON-NLS-1$
-			passwordFlags |= PW_DIGITS;
-			logger.debug(Messages.getString("PwGenerator.TRACE_DIGITS_ON")); //$NON-NLS-1$
-			// passwordFlags |= PW_SYMBOLS;
-			// passwordFlags |= PW_AMBIGUOUS;
-
-			options = createOptions();
-
-			filters = new HashMap<String, IPasswordFilter>();
-
-			defaultRegexFilter = new DefaultRegExFilter();
-			filters.put(defaultRegexFilter.getID(), defaultRegexFilter);
-
-			defaultBlacklistFilter = new DefaultBlacklistFilter();
-			filters.put(defaultBlacklistFilter.getID(), defaultBlacklistFilter);
-
-			randomFactory = RandomFactory.getInstance();
-			if (unparanoid)
-				random = randomFactory.getRandom();
-			else
-				random = randomFactory.getSecureRandom();
-		} catch (NoSuchAlgorithmException e)
-		{
-			e.printStackTrace();
-			random = randomFactory.getRandom();
-		} catch (NoSuchProviderException e)
-		{
-			e.printStackTrace();
-			random = randomFactory.getRandom();
-		}
+		randomFactory = RandomFactory.getInstance();
 	}
 
 	/**
 	 * This method logs some general info about the given settings and tries to
 	 * generate passwords with the given flags and given length. The method
-	 * return <em>null</em> if it does not manage to create a suitable
-	 * password within the <em>MAX_ATTEMPTS</em>.
+	 * return <em>null</em> if it does not manage to create a suitable password
+	 * within the <em>MAX_ATTEMPTS</em>.
 	 * 
 	 * @param passwordLength
 	 *            the length of the password to be generated
@@ -665,7 +606,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 * @return a suitable password or <em>null</em> if such could not be
 	 *         generated
 	 */
-	public String generatePassword(int passwordLength, int passwordFlags)
+	public String generatePassword(int passwordLength, int passwordFlags, Random random)
 	{
 		if (passwordLength <= 2)
 		{
@@ -685,13 +626,14 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 		if (passwordLength <= 2)
 		{
 			passwordFlags &= ~PW_SYMBOLS_REDUCED;
-			logger.warn(Messages.getString("PwGenerator.WARN_PL_SYMBOLS_REDUCED_OFF")); //$NON-NLS-1$
+			logger.warn(Messages
+					.getString("PwGenerator.WARN_PL_SYMBOLS_REDUCED_OFF")); //$NON-NLS-1$
 		}
-		
+
 		String password = null;
 		for (int i = 0; i < MAX_ATTEMPTS; i++)
 		{
-			password = phonemes(passwordLength, passwordFlags);
+			password = phonemes(passwordLength, passwordFlags, random);
 			Set<String> filterIDs = filters.keySet();
 
 			for (Iterator<String> iter = filterIDs.iterator(); iter.hasNext();)
@@ -723,19 +665,21 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	public static void main(String[] args)
 	{
 		PwGenerator generator = new PwGenerator();
-    final List<String> passwords = generator.process(args);
-    if (generator.doColumns) {
+		final List<String> passwords = generator.process(args);
+		if (generator.doColumns)
+		{
 			generator.printColumns(passwords, generator.termWidth);
-    } else {
+		} else
+		{
 			generator.print(passwords);
-    }
-  }
+		}
+	}
 
 	/**
 	 * This method parses the command line options, initializes the needed
 	 * objects and generates the required number of passwords by calling
-	 * <em>generatePassword()</em>. When not used as a stand-alone program
-	 * this method is to be preferred instead of the main(String[]).
+	 * <em>generatePassword()</em>. When not used as a stand-alone program this
+	 * method is to be preferred instead of the main(String[]).
 	 * 
 	 * @param args
 	 *            the arguments used to initialize the generation process
@@ -848,11 +792,26 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 						Messages.getString("PwGenerator.TERMINAL_LENGTH") + termWidth, false); //$NON-NLS-1$
 			}
 
+			Random random = null;
 			parser.parse(options, args);
 			if (commandLine.hasOption(CL_RANDOM))
 			{
 				random = randomFactory.getRandom();
 				log(Messages.getString("PwGenerator.NORMAL_RANDOM"), false); //$NON-NLS-1$
+			} else
+			{
+				try
+				{
+					random = randomFactory.getSecureRandom();
+				} catch (NoSuchAlgorithmException e)
+				{
+					e.printStackTrace();
+					random = randomFactory.getRandom();
+				} catch (NoSuchProviderException e)
+				{
+					e.printStackTrace();
+					random = randomFactory.getRandom();
+				}
 			}
 
 			parser.parse(options, args);
@@ -932,7 +891,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				passwordFlags |= PW_SYMBOLS_REDUCED;
 				log(Messages.getString("PwGenerator.SYMBOLS_REDUCED_ON"), false); //$NON-NLS-1$
 			}
-			
+
 			if (commandLine.hasOption(CL_NO_SYMBOLS))
 			{
 				passwordFlags &= ~PW_SYMBOLS;
@@ -940,7 +899,6 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				log(Messages.getString("PwGenerator.SYMBOLS_OFF"), false); //$NON-NLS-1$
 			}
 
-			
 			if (commandLine.hasOption(CL_MAX_ATTEMPTS))
 			{
 				String maxAttempts = commandLine
@@ -1001,7 +959,8 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 			res = passwordFlags & PW_SYMBOLS;
 			log(Messages.getString("PwGenerator.SYMBOLS") + (res != 0), false); //$NON-NLS-1$
 			res = passwordFlags & PW_SYMBOLS_REDUCED;
-			log(Messages.getString("PwGenerator.SYMBOLS_REDUCED") + (res != 0), false); //$NON-NLS-1$
+			log(
+					Messages.getString("PwGenerator.SYMBOLS_REDUCED") + (res != 0), false); //$NON-NLS-1$
 			res = passwordFlags & PW_UPPERS;
 			log(Messages.getString("PwGenerator.UPPERS") + (res != 0), false); //$NON-NLS-1$
 			log(Messages.getString("PwGenerator.SEPARATOR"), //$NON-NLS-1$
@@ -1017,7 +976,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 			for (i = 0; i < numberOfPasswords; i++)
 			{
 				String password = generatePassword(passwordLength,
-						passwordFlags);
+						passwordFlags, random);
 				if (password != null)
 					passwords.add(password);
 			}
@@ -1107,7 +1066,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 *            the settings for the password
 	 * @return the newly created password
 	 */
-	private String phonemes(int size, int pw_flags)
+	private String phonemes(int size, int pw_flags, Random random)
 	{
 		int c, i, len, flags, feature_flags;
 		int prev, should_be;
@@ -1154,7 +1113,6 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				 */
 				buf.append(str);
 
-				
 				/* Handle PW_SYMBOLS */
 				if ((pw_flags & PW_SYMBOLS) != 0)
 				{
@@ -1170,14 +1128,15 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 						buf = buf.append(ch);
 						feature_flags &= ~PW_SYMBOLS;
 					}
-				}else if ((pw_flags & PW_SYMBOLS_REDUCED) != 0)
+				} else if ((pw_flags & PW_SYMBOLS_REDUCED) != 0)
 				{
 					if (!first && (random.nextInt(10) < 2))
 					{
 						do
 						{
 							ch = PW_SPECIAL_SYMBOLS_REDUCED.charAt(random
-									.nextInt(PW_SPECIAL_SYMBOLS_REDUCED.length()));
+									.nextInt(PW_SPECIAL_SYMBOLS_REDUCED
+											.length()));
 						} while (((pw_flags & PW_AMBIGUOUS) != 0)
 								&& (PW_AMBIGUOUS_SYMBOLS.indexOf(ch) != -1));
 						c++;
@@ -1185,10 +1144,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 						feature_flags &= ~PW_SYMBOLS_REDUCED;
 					}
 				}
-				
-				
-				
-				
+
 				/* Handle PW_UPPERS */
 				if ((pw_flags & PW_UPPERS) != 0)
 				{
@@ -1309,10 +1265,10 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				false, false);
 		options.addOption(option);
 
-		option = createOption(CL_SYMBOLS_REDUCED, CL_SYMBOLS_REDUCED_LONG, CL_SYMBOLS_REDUCED_DESC,
-				false, false);
+		option = createOption(CL_SYMBOLS_REDUCED, CL_SYMBOLS_REDUCED_LONG,
+				CL_SYMBOLS_REDUCED_DESC, false, false);
 		options.addOption(option);
-		
+
 		option = createOption(CL_NO_SYMBOLS, CL_NO_SYMBOLS_LONG,
 				CL_NO_SYMBOLS_DESC, false, false);
 		options.addOption(option);
@@ -1325,8 +1281,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				CL_NO_AMBIGOUS_DESC, false, false);
 		options.addOption(option);
 
-		option = createOption(CL_HELP, CL_HELP_LONG, CL_HELP_DESC, false,
-				false);
+		option = createOption(CL_HELP, CL_HELP_LONG, CL_HELP_DESC, false, false);
 		options.addOption(option);
 
 		option = createOption(CL_RANDOM, CL_RANDOM_LONG, CL_RANDOM_DESC, false,
