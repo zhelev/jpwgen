@@ -278,7 +278,7 @@
 		<site>
 			<id>jpwgen::at::berlios.de</id>
 			<url>
-				scpexe://shell.berlios.de/home/groups/jpwgen/htdocs/
+				sftp://shell.berlios.de/home/groups/jpwgen/htdocs/
 			</url>
 		</site>
 	</distributionManagement>
