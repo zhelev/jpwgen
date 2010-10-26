@@ -28,7 +28,7 @@
 	<skin>
 		<groupId>de.rrze</groupId>
 		<artifactId>rrzemavenskin</artifactId>
-		<version>0.0.3</version>
+		<version>0.0.4</version>
 	</skin>
 	<body>
 		<head>
