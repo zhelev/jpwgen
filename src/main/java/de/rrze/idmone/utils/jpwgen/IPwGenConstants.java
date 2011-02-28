@@ -126,7 +126,7 @@ public interface IPwGenConstants
 	/**
 	 * A reduced set of special characters that can be included in a password.
 	 */
-	public static final String PW_SPECIAL_SYMBOLS_REDUCED = "*!#$%&+,-./:;\\_<=>?@|";
+	public static final String PW_SPECIAL_SYMBOLS_REDUCED = "*!#$%&+,-._<=>?@";
 
 	/**
 	 * Represents ambiguous characters that can look alike and can confuse

@@ -704,7 +704,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				printUsage();
 				log(Messages.getString("PwGenerator.SEPARATOR"), //$NON-NLS-1$
 						false);
-				System.exit(0);
+				return passwords;
 			}
 
 			parser.parse(options, args);
@@ -723,7 +723,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 							Messages.getString("PwGenerator.SERVICE_PROVIDERS") + element + Messages.getString("PwGenerator.NEW_LINE"), false); //$NON-NLS-1$ //$NON-NLS-2$
 					log(Messages.getString("PwGenerator.SEPARATOR"), //$NON-NLS-1$
 							false);
-					System.exit(0);
+					return passwords;
 				}
 			}
 
@@ -751,7 +751,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				}
 				log(Messages.getString("PwGenerator.SEPARATOR"), //$NON-NLS-1$
 						false);
-				System.exit(0);
+				return passwords;
 			}
 
 			if (commandLine.hasOption(CL_NUMBER_PASSWORD))
@@ -774,7 +774,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				log(
 						Messages.getString("PwGenerator.PASSWORD_LENGTH") + passwordLength, false); //$NON-NLS-1$
 			}
-
+			
 			parser.parse(options, args);
 			if (commandLine.hasOption(CL_COLUMN))
 			{
@@ -972,6 +972,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 			log(Messages.getString("PwGenerator.PW"), //$NON-NLS-1$
 					false);
 
+			System.out.println("Generating passowrds with length: "+passwordLength);
 			int i;
 			for (i = 0; i < numberOfPasswords; i++)
 			{
@@ -1112,6 +1113,55 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				 * it!
 				 */
 				buf.append(str);
+				
+				c += len;
+				/* Handle the AMBIGUOUS flag */
+				if ((pw_flags & PW_AMBIGUOUS) != 0)
+				{
+					int k = -1;
+					for (int j = 0; j < PW_AMBIGUOUS_SYMBOLS.length(); j++)
+					{
+						k = buf.indexOf(String.valueOf(PW_AMBIGUOUS_SYMBOLS
+								.charAt(j)));
+						if (k != -1)
+							break;
+					}
+					if (k != -1)
+					{
+						buf.delete(k, buf.length());
+						c = buf.length();
+					}
+				}
+
+				/* Time to stop? */
+				if (c >= size)
+				{
+					//System.out.println("BREAK 1: "+c + " - "+size);
+					break;
+				}
+				/*
+				 * Handle PW_DIGITS
+				 */
+				if ((pw_flags & PW_DIGITS) != 0)
+				{
+					if (!first && (random.nextInt(10) < 3))
+					{
+						do
+						{
+							ch = (new Integer(random.nextInt(10))).toString()
+									.charAt(0);
+						} while (((pw_flags & PW_AMBIGUOUS) != 0)
+								&& (PW_AMBIGUOUS_SYMBOLS.indexOf(ch) != -1));
+						c++;
+						buf = buf.append(ch);
+						feature_flags &= ~PW_DIGITS;
+
+						first = true;
+						prev = 0;
+						should_be = random.nextBoolean() ? VOWEL : CONSONANT;
+						continue;
+					}
+				}
 
 				/* Handle PW_SYMBOLS */
 				if ((pw_flags & PW_SYMBOLS) != 0)
@@ -1158,53 +1208,8 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 					}
 				}
 
-				c += len;
-				/* Handle the AMBIGUOUS flag */
-				if ((pw_flags & PW_AMBIGUOUS) != 0)
-				{
-					int k = -1;
-					for (int j = 0; j < PW_AMBIGUOUS_SYMBOLS.length(); j++)
-					{
-						k = buf.indexOf(String.valueOf(PW_AMBIGUOUS_SYMBOLS
-								.charAt(j)));
-						if (k != -1)
-							break;
-					}
-					if (k != -1)
-					{
-						buf.delete(k, buf.length());
-						c = buf.length();
-					}
-				}
-
-				/* Time to stop? */
-				if (c >= size)
-					break;
-
-				/*
-				 * Handle PW_DIGITS
-				 */
-				if ((pw_flags & PW_DIGITS) != 0)
-				{
-					if (!first && (random.nextInt(10) < 3))
-					{
-						do
-						{
-							ch = (new Integer(random.nextInt(10))).toString()
-									.charAt(0);
-						} while (((pw_flags & PW_AMBIGUOUS) != 0)
-								&& (PW_AMBIGUOUS_SYMBOLS.indexOf(ch) != -1));
-						c++;
-						buf = buf.append(ch);
-						feature_flags &= ~PW_DIGITS;
-
-						first = true;
-						prev = 0;
-						should_be = random.nextBoolean() ? VOWEL : CONSONANT;
-						continue;
-					}
-				}
-
+				
+				
 				/*
 				 * OK, figure out what the next element should be
 				 */
@@ -1223,7 +1228,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				first = false;
 
 			}
-		} while ((feature_flags & (PW_UPPERS | PW_DIGITS | PW_SYMBOLS)) != 0);
+		} while ((feature_flags & (PW_UPPERS | PW_DIGITS | PW_SYMBOLS| PW_SYMBOLS_REDUCED)) != 0);
 
 		return buf.toString();
 	}
