@@ -430,10 +430,9 @@ import org.apache.commons.logging.LogFactory;
  * flags = BlankRemover.itrim(flags); <br>
  * String[] ar = flags.split(" "); <br>
  * 
- * PwGenerator generator = new PwGenerator();<br>
  * 
- * generator.getDefaultBlacklistFilter().addToBlacklist("badpassword");
- * List<String> passwords = generator.process(ar); <br>
+ * PwGenerator.getDefaultBlacklistFilter().addToBlacklist("badpassword");
+ * List<String> passwords = PwGenerator.process(ar); <br>
  * int count = 0;<br>
  * System.out.printf("\n");<br>
  * for (Iterator iter = passwords.iterator(); iter.hasNext();) <br>

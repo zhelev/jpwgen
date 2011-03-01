@@ -24,11 +24,15 @@
 						<strong>From the command line</strong>
 					</li>
 					In order to use the program from the command line
-					you have to download the jar file and its
-					dependencies. The program and its dependencies have
-					to be located in the same directory. Then you should
+					you have to
+					download the jar file and its
+					dependencies. The program and its
+					dependencies have
+					to be located in the same directory. Then you
+					should
 					navigate to the directory containing the files and
-					type something like:
+					type
+					something like:
 					<br />
 					<br />
 					<code>
@@ -38,7 +42,8 @@
 					<br />
 					<br />
 					For more information about the CLI options start the
-					program with the
+					program with
+					the
 					<em>--help</em>
 					option or refer to the page comparing the
 					<em>jpwgen</em>
@@ -49,30 +54,27 @@
 					<br />
 					<li>
 						<strong>
-							Embedded in a different application
+							Embedded in an application
 						</strong>
 					</li>
 					To use the program as a library you should place it
-					in the classpath of your application together with
-					its the dependencies. Then from within your code you
+					in the classpath
+					of your application together with
+					its the dependencies. Then from
+					within your code you
 					can do something like:
-					<br />
 					<br />
 					<code>
 						<br />
-						String flags = "-N 50 -M 100 -y -s 16 -m -o -q
-						";
+						String flags = "-N 50 -M 100 -y -s 16 -m -o -q";
 						<br />
 						flags = BlankRemover.itrim(flags);
 						<br />
 						String[] ar = flags.split(" ");
 						<br />
-						PwGenerator generator = new PwGenerator();
+						PwGenerator.getDefaultBlacklistFilter().addToBlacklist("badpassword");
 						<br />
-						generator.getDefaultBlacklistFilter().addToBlacklist("badpassword");
-						<br />
-						List &lt;String&gt; passwords =
-						generator.process(ar);
+						List &lt;String&gt; passwords = generator.process(ar);
 						<br />
 						int count = 0;
 						<br />
@@ -92,6 +94,48 @@
 
 					</code>
 					<br />
+					<hr/>
+					or
+					<strong>even better</strong>
+					- an OptionBuilder was contributed by Sheldon Fuchs, which makes
+					building up the arguments much easier and saves time checking up
+					the CLI table
+					<code>
+						<br />
+						PwGeneratorOptionBuilder options = new PwGeneratorOptionBuilder()
+						<br />
+						.setNumberOfPasswords(numPasswords).setMaxAttempts(100)
+						<br />
+						.setOnly1Digit().setPasswordLength(passLength)
+						<br />
+						.setDoNotEndWithSmallLetter().setIncludeAmbiguous(false)
+						<br />
+						.setIncludeSymbols(false).setUseRandom()
+						<br />
+						.setDoNotStartWithDigit();
+						<br />
+						<br />
+						List &lt;String&gt; passwords =
+						PwGenerator.process(options.build());
+
+						<br />
+						int count = 0;
+						<br />
+						System.out.printf("\n");
+						<br />
+						for (Iterator iter = passwords.iterator();
+						iter.hasNext();)
+						<br />
+						{
+						<br />
+						String element = (String) iter.next();
+						<br />
+						System.out.printf("%3d Password: * %s\n",
+						++count, element);
+						<br />
+						}
+					</code>
+					<br />
 					<br />
 					Using 'jpwgen' as an embedded library was improved
 					by
@@ -105,8 +149,10 @@
 
 		<section name="What about SecureRandom?">
 			If you want to get more information about the SecureRandom
-			and which providers and algorithms are available at your
-			system check out the project source code. The
+			and which
+			providers and algorithms are available at your
+			system check out the
+			project source code. The
 			<em>RandomFactoryTest.java</em>
 			can be pretty useful.
 		</section>

@@ -117,6 +117,7 @@ public class RandomFactory implements IRandomFactory
 	 * 
 	 * @see de.rrze.idmone.utils.pwgen.IRandomFactory#getAlgorithms()
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Set<String> getAlgorithms()
 	{
 		Set<String> result = new HashSet<String>();
@@ -126,10 +127,8 @@ public class RandomFactory implements IRandomFactory
 		for (int i = 0; i < providers.length; i++)
 		{
 			// Get services provided by each provider
-			@SuppressWarnings("rawtypes")
 			Set keys = providers[i].keySet();
-			for (@SuppressWarnings("unchecked")
-			Iterator<String> it = keys.iterator(); it.hasNext();)
+			for (Iterator<String> it = keys.iterator(); it.hasNext();)
 			{
 				String key = (String) it.next();
 				String value = (String) providers[i].get(key);
@@ -145,6 +144,7 @@ public class RandomFactory implements IRandomFactory
 	 * @return a set of service providers that can be used for SecureRandom
 	 *         feed.
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Set<String> getServiceProviders()
 	{
 		Set<String> result = new HashSet<String>();
@@ -154,10 +154,8 @@ public class RandomFactory implements IRandomFactory
 		for (int i = 0; i < providers.length; i++)
 		{
 			// Get services provided by each provider
-			@SuppressWarnings("rawtypes")
 			Set keys = providers[i].keySet();
-			for (@SuppressWarnings("unchecked")
-			Iterator<String> it = keys.iterator(); it.hasNext();)
+			for (Iterator<String> it = keys.iterator(); it.hasNext();)
 			{
 				String key = (String) it.next();
 				key = key.split(" ")[0]; //$NON-NLS-1$
@@ -181,6 +179,7 @@ public class RandomFactory implements IRandomFactory
 	 * de.rrze.idmone.utils.pwgen.IRandomFactory#getServiceProviderFor(java.
 	 * lang.String)
 	 */
+	@SuppressWarnings("rawtypes")
 	public Set<String> getServiceProviderFor(String type)
 	{
 		Set<String> result = new HashSet<String>();
@@ -189,10 +188,9 @@ public class RandomFactory implements IRandomFactory
 		for (int i = 0; i < providers.length; i++)
 		{
 			// Get services provided by each provider
-			@SuppressWarnings("rawtypes")
+
 			Set keys = providers[i].keySet();
-			for (@SuppressWarnings("rawtypes")
-			Iterator it = keys.iterator(); it.hasNext();)
+			for (Iterator it = keys.iterator(); it.hasNext();)
 			{
 				String key = (String) it.next();
 				key = key.split(" ")[0]; //$NON-NLS-1$

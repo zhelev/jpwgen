@@ -41,7 +41,7 @@ public class PwGeneratorRunnerTest extends PwGeneratorTest
 		stopWatch.start();
 
 		PwGeneratorOptionBuilder options = new PwGeneratorOptionBuilder()
-				.setNumberOfPasswords(numPasswords).setMaxAttempts(1000)
+				.setNumberOfPasswords(numPasswords).setMaxAttempts(100)
 				.setOnly1Digit().setPasswordLength(passLength)
 				.setDoNotEndWithSmallLetter().setIncludeAmbiguous(false)
 				.setIncludeSymbols(false).setUseRandom()
