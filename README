@@ -1,0 +1,2 @@
+Use this commond to produce enough entropy for the SecureRandom(on Linux machines, obviously):
+sudo rngd -r /dev/urandom

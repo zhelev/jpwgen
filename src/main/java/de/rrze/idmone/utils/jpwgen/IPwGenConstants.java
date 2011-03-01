@@ -37,7 +37,11 @@ package de.rrze.idmone.utils.jpwgen;
  */
 public interface IPwGenConstants
 {
-
+	/**
+	 * Default number of attempts to generate a password with specified flags, before giving up
+	 */
+	public static final int DEFAULT_MAX_ATTEMPTS = 50;
+	
 	/**
 	 * Default password length, used if none is specified
 	 */

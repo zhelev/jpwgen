@@ -65,7 +65,7 @@ public class DefaultBlacklistFilter implements IPasswordFilter
 	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#filter(int,
 	 *      java.lang.String)
 	 */
-	public String filter(int passwordFlags, String password)
+	public synchronized String filter(int passwordFlags, String password)
 	{
 		// Iterate over the list and check whether it contains the word
 		for (Iterator<String> iter = blacklist.iterator(); iter.hasNext();)
@@ -89,7 +89,7 @@ public class DefaultBlacklistFilter implements IPasswordFilter
 	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#filter(int,
 	 *      java.util.List)
 	 */
-	public List<String> filter(int passwordFlags, List<String> password)
+	public synchronized List<String> filter(int passwordFlags, List<String> password)
 	{
 		List<String> suiatble = new ArrayList<String>();
 		for (Iterator<String> iter = password.iterator(); iter.hasNext();)
@@ -167,7 +167,7 @@ public class DefaultBlacklistFilter implements IPasswordFilter
 	 * 
 	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#addToBlacklist(java.lang.String)
 	 */
-	public boolean addToBlacklist(String blackWord)
+	public synchronized boolean addToBlacklist(String blackWord)
 	{
 		return blacklist.add(blackWord);
 	}
@@ -177,7 +177,7 @@ public class DefaultBlacklistFilter implements IPasswordFilter
 	 * 
 	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#removeFromBlacklist(java.lang.String)
 	 */
-	public boolean removeFromBlacklist(String blackWord)
+	public synchronized boolean removeFromBlacklist(String blackWord)
 	{
 		return blacklist.remove(blackWord);
 	}

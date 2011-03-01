@@ -6,8 +6,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import de.rrze.idmone.utils.jpwgen.BlankRemover;
+import de.rrze.idmone.utils.jpwgen.PwGenerator;
 
-public class BlankRemoverTest
+public class PwGeneratorReducedTest extends PwGeneratorTest
 {
 
 	@BeforeClass
@@ -27,27 +28,30 @@ public class BlankRemoverTest
 	}
 
 	@Test(groups =
-	{ "default" })
-	public void test()
+	{ "default" }, invocationCount = 20)
+	public void reducedSymbolsTest()
 	{
 
-		System.out.println("Start: " + this.getClass().getSimpleName());
+		int numPasswords = 30;
+		int passLength = 8;
 
-		String oldStr = " >     <1-2-1-2-1-2-1-2-1-2-1-----2-1-2-1-2-1-2-1-2-1-2-1-2>   < ";
-		String newStr = oldStr.replaceAll("-", " ");
-
+		System.out
+				.println("REDUCED SYMBOL TEST STARTED: Generating passwords:");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 
-		System.out.println("Modifing: " + newStr);
-		System.out.println(BlankRemover.ltrim(newStr));
-		System.out.println(BlankRemover.rtrim(newStr));
-		System.out.println(BlankRemover.itrim(newStr));
-		System.out.println(BlankRemover.lrtrim(newStr));
+		String flags = "-N " + numPasswords + " -M 500 -m 1 -s " + passLength
+				+ " -z -r";
+
+		flags = BlankRemover.itrim(flags);
+		String[] ar = flags.split(" ");
+
+		PwGenerator.getDefaultBlacklistFilter().addToBlacklist("qwerty");
+
+		process(this.getClass().getSimpleName(), ar, numPasswords, passLength);
 
 		stopWatch.stop();
-		System.out.println("\n" + this.getClass().getSimpleName() + " Runtime:"
+		System.out.println("\nREDUCED SYMBOL TEST FINISHED Runtime:"
 				+ stopWatch.toString() + "\n");
 	}
-
 }

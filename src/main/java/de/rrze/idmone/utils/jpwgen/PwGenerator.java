@@ -449,13 +449,12 @@ import org.apache.commons.logging.LogFactory;
 public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 		IPwGenRegEx
 {
-	// The class logger
-	private static final Log logger = LogFactory.getLog(PwGenerator.class);
+	protected static final Log logger = LogFactory.getLog(PwGenerator.class);
 
 	// A static list of predefined vowels and consonants dipthongs. Suitable for
 	// English speaking people.
 	// This can be exchanged or extended with a different one if needed.
-	private static final PwElement[] PW_ELEMENTS =
+	public static final PwElement[] PW_ELEMENTS =
 	{ new PwElement("a", VOWEL), new PwElement("ae", VOWEL | DIPTHONG), //$NON-NLS-1$ //$NON-NLS-2$
 			new PwElement("ah", VOWEL | DIPTHONG), //$NON-NLS-1$
 			new PwElement("ai", VOWEL | DIPTHONG), //$NON-NLS-1$
@@ -485,37 +484,23 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 			new PwElement("w", CONSONANT), new PwElement("x", CONSONANT), //$NON-NLS-1$ //$NON-NLS-2$
 			new PwElement("y", CONSONANT), new PwElement("z", CONSONANT) }; //$NON-NLS-1$ //$NON-NLS-2$
 
-	// An instance of the Random number that would be used during the generation
-	// process
-	// private Random random;
-
-	// The singleton instance of the PwGenertor
-	// private static PwGenerator instance;
-
 	// The command options with which the program was started
-	private Options options;
+	private static Options options = createOptions();
 
-	// Flags used during the process of password generation
-	private int passwordFlags = 0;
+	private static int termWidth = DEFAULT_TERM_WIDTH;
 
-	// The length of the password to be generated
-	private int passwordLength = DEFAULT_PASSWORD_LENGTH;
+	private static boolean doColumns = DEFAULT_DO_COLUMNS;
 
-	private int numberOfPasswords = DEFAULT_NUMBER_OF_PASSWORDS;
+	private static IPasswordFilter defaultRegexFilter = new DefaultRegExFilter();
 
-	private int termWidth = DEFAULT_TERM_WIDTH;
+	private static IPasswordFilter defaultBlacklistFilter = new DefaultBlacklistFilter();
 
-	private boolean doColumns = DEFAULT_DO_COLUMNS;
-
-	private Map<String, IPasswordFilter> filters;
-
-	private static int MAX_ATTEMPTS = 10000;
-
-	private IPasswordFilter defaultRegexFilter;
-
-	private IPasswordFilter defaultBlacklistFilter;
-
-	private IRandomFactory randomFactory;
+	private static Map<String, IPasswordFilter> filters = new HashMap<String, IPasswordFilter>();
+	static
+	{
+		filters.put(defaultRegexFilter.getID(), defaultRegexFilter);
+		filters.put(defaultBlacklistFilter.getID(), defaultBlacklistFilter);
+	}
 
 	/**
 	 * Adds a password filter to the registry
@@ -524,7 +509,8 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 *            the filter instance to be registered
 	 * @return the registered instance
 	 */
-	public IPasswordFilter addFilter(IPasswordFilter filter)
+
+	public static synchronized IPasswordFilter addFilter(IPasswordFilter filter)
 	{
 		return filters.put(filter.getID(), filter);
 	}
@@ -536,7 +522,9 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 *            the instance of the filter
 	 * @return the removed instance
 	 */
-	public IPasswordFilter removeFilter(IPasswordFilter filter)
+
+	public static synchronized IPasswordFilter removeFilter(
+			IPasswordFilter filter)
 	{
 		return filters.remove(filter.getID());
 	}
@@ -548,7 +536,8 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 *            the identifier of the filter
 	 * @return the removed instance
 	 */
-	public IPasswordFilter removeFilter(String id)
+
+	public static synchronized IPasswordFilter removeFilter(String id)
 	{
 		return filters.remove(id);
 	}
@@ -561,18 +550,19 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 * @param error
 	 *            indicates whether the message is an error or not
 	 */
-	private void log(String message, boolean error)
+	private static synchronized void log(String message, boolean error)
 	{
 		if (error)
 			logger.error(message);
+		
 		logger.debug(message);
 	}
 
-	/**
-	 * Constructor of the PwGenerator
-	 */
-	public PwGenerator()
+	private static int initDefaultFlags()
 	{
+		// Flags used during the process of password generation
+		int passwordFlags = 0;
+
 		passwordFlags |= PW_UPPERS;
 		logger.debug(Messages.getString("PwGenerator.TRACE_UPPERCASE_ON")); //$NON-NLS-1$
 		passwordFlags |= PW_DIGITS;
@@ -580,17 +570,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 		// passwordFlags |= PW_SYMBOLS;
 		// passwordFlags |= PW_AMBIGUOUS;
 
-		options = createOptions();
-
-		filters = new HashMap<String, IPasswordFilter>();
-
-		defaultRegexFilter = new DefaultRegExFilter();
-		filters.put(defaultRegexFilter.getID(), defaultRegexFilter);
-
-		defaultBlacklistFilter = new DefaultBlacklistFilter();
-		filters.put(defaultBlacklistFilter.getID(), defaultBlacklistFilter);
-
-		randomFactory = RandomFactory.getInstance();
+		return passwordFlags;
 	}
 
 	/**
@@ -606,7 +586,9 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 * @return a suitable password or <em>null</em> if such could not be
 	 *         generated
 	 */
-	public String generatePassword(int passwordLength, int passwordFlags, Random random)
+
+	public static synchronized String generatePassword(int passwordLength,
+			int passwordFlags, int maxAttempts, Random random)
 	{
 		if (passwordLength <= 2)
 		{
@@ -631,9 +613,10 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 		}
 
 		String password = null;
-		for (int i = 0; i < MAX_ATTEMPTS; i++)
+		for (int i = 0; i < maxAttempts; i++)
 		{
 			password = phonemes(passwordLength, passwordFlags, random);
+
 			Set<String> filterIDs = filters.keySet();
 
 			for (Iterator<String> iter = filterIDs.iterator(); iter.hasNext();)
@@ -648,9 +631,8 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 			if (password != null)
 				break;
 
-			logger
-					.debug(Messages.getString("PwGenerator.TRACE_ATTEMPT") + i + Messages.getString("PwGenerator.TRACE_ATTEMPT_GENERATE") //$NON-NLS-1$ //$NON-NLS-2$
-							+ passwordFlags);
+			logger.debug(Messages.getString("PwGenerator.TRACE_ATTEMPT") + i + Messages.getString("PwGenerator.TRACE_ATTEMPT_GENERATE") //$NON-NLS-1$ //$NON-NLS-2$
+					+ passwordFlags);
 		}
 
 		return password;
@@ -664,14 +646,13 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 */
 	public static void main(String[] args)
 	{
-		PwGenerator generator = new PwGenerator();
-		final List<String> passwords = generator.process(args);
-		if (generator.doColumns)
+		List<String> passwords = process(args);
+		if (doColumns)
 		{
-			generator.printColumns(passwords, generator.termWidth);
+			printColumns(passwords, termWidth);
 		} else
 		{
-			generator.print(passwords);
+			print(passwords);
 		}
 	}
 
@@ -686,8 +667,17 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 * @return a list of passwords or <em>null</em> if no suitable passwords
 	 *         could be generated.
 	 */
-	public List<String> process(String[] args)
+
+	public static synchronized List<String> process(String[] args)
 	{
+		int passwordFlags = initDefaultFlags();
+
+		// The length of the password to be generated
+		int passwordLength = DEFAULT_PASSWORD_LENGTH;
+
+		int numberOfPasswords = DEFAULT_NUMBER_OF_PASSWORDS;
+
+		int maxAttempts = DEFAULT_MAX_ATTEMPTS;
 
 		log(Messages.getString("PwGenerator.PASSWORD_GENERATOR"), //$NON-NLS-1$
 				false);
@@ -710,8 +700,9 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 			parser.parse(options, args);
 			if (commandLine.hasOption(CL_SR_PROVIDERS))
 			{
-				Set<String> serviceProviders = randomFactory
-						.getServiceProviderFor(IRandomFactory.TYPE_SECURE_RANDOM);
+				Set<String> serviceProviders = RandomFactory.getInstance()
+						.getServiceProviderFor(
+								IRandomFactory.TYPE_SECURE_RANDOM);
 				log(Messages.getString("PwGenerator.SERVICES_PROVIDERS_FOR") //$NON-NLS-1$
 						+ IRandomFactory.TYPE_SECURE_RANDOM
 						+ Messages.getString("PwGenerator.NEW_LINE"), false); //$NON-NLS-1$
@@ -719,8 +710,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 						.hasNext();)
 				{
 					String element = (String) iter.next();
-					log(
-							Messages.getString("PwGenerator.SERVICE_PROVIDERS") + element + Messages.getString("PwGenerator.NEW_LINE"), false); //$NON-NLS-1$ //$NON-NLS-2$
+					log(Messages.getString("PwGenerator.SERVICE_PROVIDERS") + element + Messages.getString("PwGenerator.NEW_LINE"), false); //$NON-NLS-1$ //$NON-NLS-2$
 					log(Messages.getString("PwGenerator.SEPARATOR"), //$NON-NLS-1$
 							false);
 					return passwords;
@@ -733,18 +723,17 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				log(Messages.getString("PwGenerator.ALL_SEC_PROVIDERS") //$NON-NLS-1$
 						+ IRandomFactory.TYPE_SECURE_RANDOM
 						+ Messages.getString("PwGenerator.NEW_LINE"), false); //$NON-NLS-1$
-				Provider[] serviceProviders = randomFactory.getProviders();
+				Provider[] serviceProviders = RandomFactory.getInstance()
+						.getProviders();
 				for (int i = 0; i < serviceProviders.length; i++)
 				{
 					log(Messages.getString("PwGenerator.SEPARATOR"), //$NON-NLS-1$
 							false);
-					log(
-							Messages.getString("PwGenerator.PROVIDER") + serviceProviders[i].getName() + Messages.getString("PwGenerator.NEW_LINE"), //$NON-NLS-1$ //$NON-NLS-2$
-							false);
+					log(Messages.getString("PwGenerator.PROVIDER") + serviceProviders[i].getName() + Messages.getString("PwGenerator.NEW_LINE"), //$NON-NLS-1$ //$NON-NLS-2$
+					false);
 					Set<Provider.Service> services = serviceProviders[i]
 							.getServices();
-					log(
-							Messages.getString("PwGenerator.SERVICES") + Messages.getString("PwGenerator.NEW_LINE"), false); //$NON-NLS-1$ //$NON-NLS-2$
+					log(Messages.getString("PwGenerator.SERVICES") + Messages.getString("PwGenerator.NEW_LINE"), false); //$NON-NLS-1$ //$NON-NLS-2$
 					log(services.toString(), false);
 					log(Messages.getString("PwGenerator.SEPARATOR"), //$NON-NLS-1$
 							false);
@@ -760,8 +749,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 						.getOptionValue(CL_NUMBER_PASSWORD);
 				if (sNumberOfPasswords != null)
 					numberOfPasswords = Integer.parseInt(sNumberOfPasswords);
-				log(
-						Messages.getString("PwGenerator.NUM_PASSWORDS") + numberOfPasswords, false); //$NON-NLS-1$
+				log(Messages.getString("PwGenerator.NUM_PASSWORDS") + numberOfPasswords, false); //$NON-NLS-1$
 			}
 
 			commandLine = parser.parse(options, args);
@@ -771,10 +759,9 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 						.getOptionValue(CL_PASSWORD_LENGTH);
 				if (sPasswordLength != null)
 					passwordLength = Integer.parseInt(sPasswordLength);
-				log(
-						Messages.getString("PwGenerator.PASSWORD_LENGTH") + passwordLength, false); //$NON-NLS-1$
+				log(Messages.getString("PwGenerator.PASSWORD_LENGTH") + passwordLength, false); //$NON-NLS-1$
 			}
-			
+
 			parser.parse(options, args);
 			if (commandLine.hasOption(CL_COLUMN))
 			{
@@ -788,29 +775,28 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				String sTermWidth = commandLine.getOptionValue(CL_TERM_WIDTH);
 				if (sTermWidth != null)
 					termWidth = Integer.parseInt(sTermWidth);
-				log(
-						Messages.getString("PwGenerator.TERMINAL_LENGTH") + termWidth, false); //$NON-NLS-1$
+				log(Messages.getString("PwGenerator.TERMINAL_LENGTH") + termWidth, false); //$NON-NLS-1$
 			}
 
 			Random random = null;
 			parser.parse(options, args);
 			if (commandLine.hasOption(CL_RANDOM))
 			{
-				random = randomFactory.getRandom();
+				random = RandomFactory.getInstance().getRandom();
 				log(Messages.getString("PwGenerator.NORMAL_RANDOM"), false); //$NON-NLS-1$
 			} else
 			{
 				try
 				{
-					random = randomFactory.getSecureRandom();
+					random = RandomFactory.getInstance().getSecureRandom();
 				} catch (NoSuchAlgorithmException e)
 				{
 					e.printStackTrace();
-					random = randomFactory.getRandom();
+					random = RandomFactory.getInstance().getRandom();
 				} catch (NoSuchProviderException e)
 				{
 					e.printStackTrace();
-					random = randomFactory.getRandom();
+					random = RandomFactory.getInstance().getRandom();
 				}
 			}
 
@@ -822,24 +808,19 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				{
 					try
 					{
-						random = randomFactory
-								.getSecureRandom(data[0], data[1]);
-						log(
-								Messages.getString("PwGenerator.SEC_ALG") + data[0] //$NON-NLS-1$
-										+ Messages
-												.getString("PwGenerator.PROV") + data[1] + Messages.getString("PwGenerator.DOR"), false); //$NON-NLS-1$ //$NON-NLS-2$
+						random = RandomFactory.getInstance().getSecureRandom(
+								data[0], data[1]);
+
+						log(Messages.getString("PwGenerator.SEC_ALG") + data[0] //$NON-NLS-1$
+								+ Messages.getString("PwGenerator.PROV") + data[1] + Messages.getString("PwGenerator.DOR"), false); //$NON-NLS-1$ //$NON-NLS-2$
 					} catch (NoSuchAlgorithmException e)
 					{
-						log(
-								Messages.getString("PwGenerator.ERROR") + e.getMessage() + Messages.getString("PwGenerator.NEW_LINE"), true); //$NON-NLS-1$ //$NON-NLS-2$
-						log(
-								Messages.getString("PwGenerator.DEFAUL_RANDOM"), true); //$NON-NLS-1$
+						log(Messages.getString("PwGenerator.ERROR") + e.getMessage() + Messages.getString("PwGenerator.NEW_LINE"), true); //$NON-NLS-1$ //$NON-NLS-2$
+						log(Messages.getString("PwGenerator.DEFAUL_RANDOM"), true); //$NON-NLS-1$
 					} catch (NoSuchProviderException e)
 					{
-						log(
-								Messages.getString("PwGenerator.ERROR") + e.getMessage() + Messages.getString("PwGenerator.NEW_LINE"), true); //$NON-NLS-1$ //$NON-NLS-2$
-						log(
-								Messages.getString("PwGenerator.DEFAUL_RANDOM"), true); //$NON-NLS-1$
+						log(Messages.getString("PwGenerator.ERROR") + e.getMessage() + Messages.getString("PwGenerator.NEW_LINE"), true); //$NON-NLS-1$ //$NON-NLS-2$
+						log(Messages.getString("PwGenerator.DEFAUL_RANDOM"), true); //$NON-NLS-1$
 					}
 				}
 			}
@@ -901,12 +882,11 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 
 			if (commandLine.hasOption(CL_MAX_ATTEMPTS))
 			{
-				String maxAttempts = commandLine
+				String sMaxAttempts = commandLine
 						.getOptionValue(CL_MAX_ATTEMPTS);
-				if (maxAttempts != null)
-					MAX_ATTEMPTS = Integer.parseInt(maxAttempts);
-				log(
-						Messages.getString("PwGenerator.MAX_ATTEMPTS") + MAX_ATTEMPTS, false); //$NON-NLS-1$
+				if (sMaxAttempts != null)
+					maxAttempts = Integer.parseInt(sMaxAttempts);
+				log(Messages.getString("PwGenerator.MAX_ATTEMPTS") + maxAttempts, false); //$NON-NLS-1$
 			}
 
 			if (commandLine.hasOption(CL_REGEX_STARTS_NO_SMALL_LETTER))
@@ -959,37 +939,32 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 			res = passwordFlags & PW_SYMBOLS;
 			log(Messages.getString("PwGenerator.SYMBOLS") + (res != 0), false); //$NON-NLS-1$
 			res = passwordFlags & PW_SYMBOLS_REDUCED;
-			log(
-					Messages.getString("PwGenerator.SYMBOLS_REDUCED") + (res != 0), false); //$NON-NLS-1$
+			log(Messages.getString("PwGenerator.SYMBOLS_REDUCED") + (res != 0), false); //$NON-NLS-1$
 			res = passwordFlags & PW_UPPERS;
 			log(Messages.getString("PwGenerator.UPPERS") + (res != 0), false); //$NON-NLS-1$
 			log(Messages.getString("PwGenerator.SEPARATOR"), //$NON-NLS-1$
 					false);
 
-			log(
-					Messages.getString("PwGenerator.GENERATING") + numberOfPasswords + Messages.getString("PwGenerator.PW_LENGTH") //$NON-NLS-1$ //$NON-NLS-2$
-							+ passwordLength, false);
+			log(Messages.getString("PwGenerator.GENERATING") + numberOfPasswords + Messages.getString("PwGenerator.PW_LENGTH") //$NON-NLS-1$ //$NON-NLS-2$
+					+ passwordLength, false);
 			log(Messages.getString("PwGenerator.PW"), //$NON-NLS-1$
 					false);
 
-			System.out.println("Generating passowrds with length: "+passwordLength);
 			int i;
 			for (i = 0; i < numberOfPasswords; i++)
 			{
 				String password = generatePassword(passwordLength,
-						passwordFlags, random);
+						passwordFlags, maxAttempts, random);
 				if (password != null)
 					passwords.add(password);
 			}
 		} catch (ParseException e)
 		{
-			log(
-					Messages.getString("PwGenerator.PARAM_ERROR") + e.getLocalizedMessage(), true); //$NON-NLS-1$
+			log(Messages.getString("PwGenerator.PARAM_ERROR") + e.getLocalizedMessage(), true); //$NON-NLS-1$
 			printUsage();
 		} catch (NumberFormatException e)
 		{
-			log(
-					Messages.getString("PwGenerator.NUM_FORM_ERROR") + e.getLocalizedMessage(), true); //$NON-NLS-1$
+			log(Messages.getString("PwGenerator.NUM_FORM_ERROR") + e.getLocalizedMessage(), true); //$NON-NLS-1$
 			printUsage();
 		}
 
@@ -1005,12 +980,9 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 * @param termWidth
 	 *            the width in characters of the terminal
 	 */
-	public void printColumns(List<String> passwords, int termWidth)
-	{
 
-		int numberOfColumns = termWidth / (passwordLength + 1);
-		if (numberOfColumns == 0)
-			numberOfColumns = 1;
+	public static void printColumns(List<String> passwords, int termWidth)
+	{
 
 		log(Messages.getString("PwGenerator.N_SEPARATOR"), //$NON-NLS-1$
 				false);
@@ -1020,8 +992,13 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 			String password = (String) passwords.get(i);
 			if (logger.isInfoEnabled())
 			{
+				int numberOfColumns = termWidth / (password.length() + 1);
+				if (numberOfColumns == 0)
+					numberOfColumns = 1;
+
 				if (((i % numberOfColumns) == (numberOfColumns - 1)))
 				{
+
 					System.out.print(password
 							+ Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$
 				} else
@@ -1040,7 +1017,8 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 * @param passwords
 	 *            a list of passwords to be printed
 	 */
-	public void print(List<String> passwords)
+
+	public static void print(List<String> passwords)
 	{
 		log(Messages.getString("PwGenerator.N_SEPARATOR"), //$NON-NLS-1$
 				false);
@@ -1067,7 +1045,8 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 *            the settings for the password
 	 * @return the newly created password
 	 */
-	private String phonemes(int size, int pw_flags, Random random)
+	private synchronized static String phonemes(int size, int pw_flags,
+			Random random)
 	{
 		int c, i, len, flags, feature_flags;
 		int prev, should_be;
@@ -1113,7 +1092,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				 * it!
 				 */
 				buf.append(str);
-				
+
 				c += len;
 				/* Handle the AMBIGUOUS flag */
 				if ((pw_flags & PW_AMBIGUOUS) != 0)
@@ -1136,7 +1115,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				/* Time to stop? */
 				if (c >= size)
 				{
-					//System.out.println("BREAK 1: "+c + " - "+size);
+					// System.out.println("BREAK 1: "+c + " - "+size);
 					break;
 				}
 				/*
@@ -1202,14 +1181,12 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 							&& (random.nextInt(10) < 2))
 					{
 						int lastChar = buf.length() - 1;
-						buf.setCharAt(lastChar, Character.toUpperCase(buf
-								.charAt(lastChar)));
+						buf.setCharAt(lastChar,
+								Character.toUpperCase(buf.charAt(lastChar)));
 						feature_flags &= ~PW_UPPERS;
 					}
 				}
 
-				
-				
 				/*
 				 * OK, figure out what the next element should be
 				 */
@@ -1228,7 +1205,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 				first = false;
 
 			}
-		} while ((feature_flags & (PW_UPPERS | PW_DIGITS | PW_SYMBOLS| PW_SYMBOLS_REDUCED)) != 0);
+		} while ((feature_flags & (PW_UPPERS | PW_DIGITS | PW_SYMBOLS | PW_SYMBOLS_REDUCED)) != 0);
 
 		return buf.toString();
 	}
@@ -1238,7 +1215,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 * 
 	 * @return the CLI options
 	 */
-	private Options createOptions()
+	private synchronized static Options createOptions()
 	{
 		options = new Options();
 
@@ -1403,8 +1380,8 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 *            specifies whether the option is required
 	 * @return a new instance of a CLI option with the predefined properties
 	 */
-	private Option createOption(String shortOption, String longOption,
-			String description, boolean arg, boolean required)
+	private synchronized static Option createOption(String shortOption,
+			String longOption, String description, boolean arg, boolean required)
 	{
 		OptionBuilder.withLongOpt(longOption);
 		OptionBuilder.withDescription(description);
@@ -1419,7 +1396,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	/**
 	 * Prints the usage info
 	 */
-	private void printUsage()
+	private static synchronized void printUsage()
 	{
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp(Messages.getString("PwGenerator.USAGE"), //$NON-NLS-1$
@@ -1434,20 +1411,10 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 * 
 	 * @return the default blacklist filter
 	 */
-	public IPasswordFilter getDefaultBlacklistFilter()
+
+	public static IPasswordFilter getDefaultBlacklistFilter()
 	{
 		return defaultBlacklistFilter;
-	}
-
-	/**
-	 * Sets the instance of default blacklist filter
-	 * 
-	 * @param defaultBlacklistFilter
-	 *            a new instance for the default blacklist filter
-	 */
-	public void setDefaultBlacklistFilter(IPasswordFilter defaultBlacklistFilter)
-	{
-		this.defaultBlacklistFilter = defaultBlacklistFilter;
 	}
 
 	/**
@@ -1456,18 +1423,10 @@ public class PwGenerator implements IPwGenConstants, IPwGenCommandLineOptions,
 	 * 
 	 * @return the default regular expression filter
 	 */
-	public IPasswordFilter getDefaultRegexFilter()
+
+	public static IPasswordFilter getDefaultRegexFilter()
 	{
 		return defaultRegexFilter;
 	}
 
-	/**
-	 * Sets the instance of default regular expression filter
-	 * 
-	 * @param defaultRegexFilter
-	 */
-	public void setDefaultRegexFilter(IPasswordFilter defaultRegexFilter)
-	{
-		this.defaultRegexFilter = defaultRegexFilter;
-	}
 }

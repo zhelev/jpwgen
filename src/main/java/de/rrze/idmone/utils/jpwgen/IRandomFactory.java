@@ -28,8 +28,6 @@
  */
 package de.rrze.idmone.utils.jpwgen;
 
-import org.apache.commons.logging.Log;
-
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;

@@ -35,11 +35,11 @@ public class RandomFactoryTest
 	}
 
 	@Test(groups =
-	{ "normal" })
+	{ "default" })
 	public void test()
 	{
 		try
-		{			
+		{
 			System.out.println("Start: " + this.getClass().getSimpleName());
 			StopWatch stopWatch = new StopWatch();
 			stopWatch.start();

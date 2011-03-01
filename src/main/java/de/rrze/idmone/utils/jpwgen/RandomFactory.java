@@ -74,7 +74,8 @@ public class RandomFactory implements IRandomFactory
 	 * <em>SecureRandom</em> class provided by SUN. Uses a two step procedure
 	 * for feeding the generator seed with two separate SecureRandom instances.
 	 * 
-	 * @see http://java.sun.com/j2se/1.4.2/docs/api/java/security/SecureRandom.html
+	 * @see http 
+	 *      ://java.sun.com/j2se/1.4.2/docs/api/java/security/SecureRandom.html
 	 * 
 	 * @param algorithm
 	 *            The algorithm used for creating the pseudo random generator
@@ -125,8 +126,10 @@ public class RandomFactory implements IRandomFactory
 		for (int i = 0; i < providers.length; i++)
 		{
 			// Get services provided by each provider
+			@SuppressWarnings("rawtypes")
 			Set keys = providers[i].keySet();
-			for (Iterator<String> it = keys.iterator(); it.hasNext();)
+			for (@SuppressWarnings("unchecked")
+			Iterator<String> it = keys.iterator(); it.hasNext();)
 			{
 				String key = (String) it.next();
 				String value = (String) providers[i].get(key);
@@ -151,8 +154,10 @@ public class RandomFactory implements IRandomFactory
 		for (int i = 0; i < providers.length; i++)
 		{
 			// Get services provided by each provider
+			@SuppressWarnings("rawtypes")
 			Set keys = providers[i].keySet();
-			for (Iterator<String> it = keys.iterator(); it.hasNext();)
+			for (@SuppressWarnings("unchecked")
+			Iterator<String> it = keys.iterator(); it.hasNext();)
 			{
 				String key = (String) it.next();
 				key = key.split(" ")[0]; //$NON-NLS-1$
@@ -172,7 +177,9 @@ public class RandomFactory implements IRandomFactory
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see de.rrze.idmone.utils.pwgen.IRandomFactory#getServiceProviderFor(java.lang.String)
+	 * @see
+	 * de.rrze.idmone.utils.pwgen.IRandomFactory#getServiceProviderFor(java.
+	 * lang.String)
 	 */
 	public Set<String> getServiceProviderFor(String type)
 	{
@@ -182,8 +189,10 @@ public class RandomFactory implements IRandomFactory
 		for (int i = 0; i < providers.length; i++)
 		{
 			// Get services provided by each provider
+			@SuppressWarnings("rawtypes")
 			Set keys = providers[i].keySet();
-			for (Iterator it = keys.iterator(); it.hasNext();)
+			for (@SuppressWarnings("rawtypes")
+			Iterator it = keys.iterator(); it.hasNext();)
 			{
 				String key = (String) it.next();
 				key = key.split(" ")[0]; //$NON-NLS-1$
@@ -245,7 +254,9 @@ public class RandomFactory implements IRandomFactory
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see de.rrze.idmone.utils.pwgen.IRandomFactory#getSecureRandom(java.lang.String)
+	 * @see
+	 * de.rrze.idmone.utils.pwgen.IRandomFactory#getSecureRandom(java.lang.String
+	 * )
 	 */
 	public Random getSecureRandom(String algorithm)
 			throws NoSuchAlgorithmException, NoSuchProviderException
@@ -256,8 +267,9 @@ public class RandomFactory implements IRandomFactory
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see de.rrze.idmone.utils.pwgen.IRandomFactory#getSecureRandom(java.lang.String,
-	 *      java.lang.String)
+	 * @see
+	 * de.rrze.idmone.utils.pwgen.IRandomFactory#getSecureRandom(java.lang.String
+	 * , java.lang.String)
 	 */
 	public Random getSecureRandom(String algorithm, String provider)
 			throws NoSuchAlgorithmException, NoSuchProviderException

@@ -6,8 +6,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import de.rrze.idmone.utils.jpwgen.BlankRemover;
+import de.rrze.idmone.utils.jpwgen.PwGenerator;
 
-public class BlankRemoverTest
+public class PwGeneratorSecureRandomTest extends PwGeneratorTest
 {
 
 	@BeforeClass
@@ -27,27 +28,32 @@ public class BlankRemoverTest
 	}
 
 	@Test(groups =
-	{ "default" })
-	public void test()
+	{ "secure" }, invocationCount = 20)
+	public void secureTest()
 	{
 
-		System.out.println("Start: " + this.getClass().getSimpleName());
+		int numPasswords = 20;
+		int passLength = 12;
 
-		String oldStr = " >     <1-2-1-2-1-2-1-2-1-2-1-----2-1-2-1-2-1-2-1-2-1-2-1-2>   < ";
-		String newStr = oldStr.replaceAll("-", " ");
+		System.out
+				.println("SECURE TEST STARTED: Generating password with secure random:");
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 
-		System.out.println("Modifing: " + newStr);
-		System.out.println(BlankRemover.ltrim(newStr));
-		System.out.println(BlankRemover.rtrim(newStr));
-		System.out.println(BlankRemover.itrim(newStr));
-		System.out.println(BlankRemover.lrtrim(newStr));
+		String flags = "-N " + numPasswords + " -s " + passLength
+				+ " -C -Y -S SHA1PRNG SUN";
+
+		flags = BlankRemover.itrim(flags);
+		String[] ar = flags.split(" ");
+
+		PwGenerator.getDefaultBlacklistFilter().addToBlacklist("qwerty");
+
+		process(this.getClass().getSimpleName(), ar, numPasswords, passLength);
 
 		stopWatch.stop();
-		System.out.println("\n" + this.getClass().getSimpleName() + " Runtime:"
-				+ stopWatch.toString() + "\n");
+		System.out.println("\nSECURE TEST FINISHED:" + stopWatch.toString()
+				+ "\n");
 	}
 
 }
