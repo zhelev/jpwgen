@@ -5,7 +5,7 @@
 	<groupId>de.rrze</groupId>
 	<artifactId>jpwgen</artifactId>
 	<name>jpwgen</name>
-	<version>1.1.0</version>
+	<version>1.2.0</version>
 	<description>
 		The 'jpwgen' program is a Java-based password generator whose
 		functionality resembles the popular 'pwgen' program.
@@ -33,7 +33,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<mainClass>
-								de.rrze.idmone.utils.jpwgen.PwGenerator
+								de.rrze.idmone.utils.jpwgen.PwHelper
 							</mainClass>
 							<packageName>
 								de.rrze.idmone.utils.jpwgen
@@ -340,14 +340,10 @@
 			<version>1.1</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.maven.surefire</groupId>
 			<artifactId>surefire-testng</artifactId>
 			<version>2.4.3</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
