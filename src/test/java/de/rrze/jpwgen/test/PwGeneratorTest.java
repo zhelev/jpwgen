@@ -11,7 +11,7 @@ import de.rrze.jpwgen.utils.PwHelper;
 
 public class PwGeneratorTest
 {
-	protected void process(String test, String[] ar, int numPasswords,
+	protected List<String> process(String test, String[] ar, int numPasswords,
 			int passLength)
 	{
 
@@ -30,6 +30,7 @@ public class PwGeneratorTest
 				+ " --> " + Thread.currentThread().getName()
 				+ " #############################");
 
+		return passwords;
 	}
 
 	protected void assertLengthCount(String test, int passLength,
