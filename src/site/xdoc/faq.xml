@@ -26,7 +26,7 @@
 					In order to use the program from the command line
 					you have to
 					download the jar file and its
-					dependencies. The program and its
+					<a href="./dependencies.html">dependencies</a>. The program and its
 					dependencies have
 					to be located in the same directory. Then you
 					should
@@ -60,7 +60,7 @@
 					To use the program as a library you should place it
 					in the classpath
 					of your application together with
-					its the dependencies. Then from
+					its <a href="./dependencies.html">dependencies</a>. Then from
 					within your code you
 					can do something like:
 					<br />
@@ -72,9 +72,12 @@
 						<br />
 						String[] ar = flags.split(" ");
 						<br />
-						PwGenerator.getDefaultBlacklistFilter().addToBlacklist("badpassword");
+						List &lt;String&gt; blacklist = new ArrayList&lt;String&gt;();
+						<br/>
+						blacklist.add("badpassword");
 						<br />
-						List &lt;String&gt; passwords = generator.process(ar);
+						List &lt;String&gt; passwords =
+						PwHelper.process(ar, blacklist);
 						<br />
 						int count = 0;
 						<br />
@@ -96,7 +99,7 @@
 					<br />
 				
 					or
-					<strong>even better</strong>
+					<strong>if you prefer to set the CLI options programatically</strong>
 					- an OptionBuilder was contributed by Sheldon Fuchs, which makes
 					building up the arguments much easier and saves time checking up
 					the CLI table
@@ -114,9 +117,12 @@
 						<br />
 						.setDoNotStartWithDigit();
 						<br />
+						List &lt;String&gt; blacklist = new ArrayList&lt;String&gt;();
+						<br/>
+						blacklist.add("badpassword");
 						<br />
 						List &lt;String&gt; passwords =
-						PwGenerator.process(options.build());
+						PwHelper.process(options.build(), blacklist);
 
 						<br />
 						int count = 0;
@@ -136,8 +142,51 @@
 						}
 					</code>
 					<br />
+				
+					still
+					<strong>the RECOMMENDED way of using the jar as a library is by using the PwGeneratorFlagBuilder:</strong>
+					<code>
+						<br />
+					PwGeneratorFlagBuilder flags = new PwGeneratorFlagBuilder();
 					<br />
-					Using 'jpwgen' as an embedded library was improved
+					flags.setIncludeNumerals(true)
+					<br />
+				.setIncludeSymbols(SYMBOL_OPTIONS.REDUCED)
+				<br />
+				.setIncludeOneCapital(true).setFilterAmbiguous(true);
+				<br />
+                <br />
+						List &lt;String&gt; passwords = PwGenerator.generate(passLength, numPasswords,
+				100, flags.build(), null, null);
+					    <br />
+					    
+					  	<br />
+						int count = 0;
+						<br />
+						System.out.printf("\n");
+						<br />
+						for (Iterator iter = passwords.iterator();
+						iter.hasNext();)
+						<br />
+						{
+						<br />
+						String element = (String) iter.next();
+						<br />
+						System.out.printf("%3d Password: * %s\n",
+						++count, element);
+						<br />
+						}  
+					    
+					    </code>
+					    <br />
+					    Using the flag builder should provide some performance boost. In case performance is an issue for You,
+					    You should consider setting a simple Random as the last but one argument of the PwGenerator call. You can
+					    use the RandomFactory to initiate such or simply use <i>new Random(System.cuurentTimeMillis())</i>. The last
+					    argument the PwGenerator's call take is a progress monitor which should implement <i>IProgressListener</i>.
+					    A progress listener can be also used for interrupting the generation process.
+					<br />
+						<br />
+					Using 'jpwgen' as an embedded library was also improved
 					by
 					<a href="http://www.stephen.starkey.name/">
 						Stephen Starkey
