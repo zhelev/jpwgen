@@ -130,4 +130,9 @@ public interface IPwGenConstants
 	 * Default password flags(options) to be used in case none are provided
 	 * */
 	public static final int DEFAULT_FLAGS = NULL_FLAGS | PW_UPPERS | PW_DIGITS;
+	
+	public enum SYMBOL_OPTIONS
+	{
+		NONE, ALL, REDUCED
+	};
 }

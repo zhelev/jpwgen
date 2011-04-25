@@ -48,9 +48,7 @@ public class PwGeneratorUpperTest extends PwGeneratorTest
 		flags = BlankRemover.itrim(flags);
 		String[] ar = flags.split(" ");
 
-		PwGenerator.getDefaultBlacklistFilter().addToBlacklist("qwerty");
-
-		List<String> passwords = process(this.getClass().getSimpleName(), ar, numPasswords, passLength);
+		List<String> passwords = process(this.getClass().getSimpleName(), ar, numPasswords, passLength, null);
 
 		for (String password : passwords)
 		{

@@ -47,9 +47,7 @@ public class PwGeneratorSecureRandomTest extends PwGeneratorTest
 		flags = BlankRemover.itrim(flags);
 		String[] ar = flags.split(" ");
 
-		PwGenerator.getDefaultBlacklistFilter().addToBlacklist("qwerty");
-
-		process(this.getClass().getSimpleName(), ar, numPasswords, passLength);
+		process(this.getClass().getSimpleName(), ar, numPasswords, passLength, null);
 
 		stopWatch.stop();
 		System.out.println("\nSECURE TEST FINISHED:" + stopWatch.toString()

@@ -5,7 +5,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import de.rrze.jpwgen.impl.PwGenerator;
 import de.rrze.jpwgen.utils.BlankRemover;
 
 // Error reported for:
@@ -38,8 +37,7 @@ public class AmbigousTest extends PwGeneratorTest
 		int numPasswords = 10;
 		int passLength = 8;
 
-		System.out
-				.println("AMBIGOUS TEST STARTED: Generating passwords:");
+		System.out.println("AMBIGOUS TEST STARTED: Generating passwords:");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 
@@ -48,9 +46,8 @@ public class AmbigousTest extends PwGeneratorTest
 		flags = BlankRemover.itrim(flags);
 		String[] ar = flags.split(" ");
 
-		PwGenerator.getDefaultBlacklistFilter().addToBlacklist("qwerty");
-
-		process(this.getClass().getSimpleName(), ar, numPasswords, passLength);
+		process(this.getClass().getSimpleName(), ar, numPasswords, passLength,
+				null);
 
 		stopWatch.stop();
 		System.out.println("\nAMBIGOUS TEST FINISHED Runtime:"

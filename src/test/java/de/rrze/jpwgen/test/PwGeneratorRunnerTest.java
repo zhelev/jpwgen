@@ -47,7 +47,7 @@ public class PwGeneratorRunnerTest extends PwGeneratorTest
 				.setIncludeSymbols(false).setUseRandom()
 				.setDoNotStartWithDigit();
 
-		List<String> passwords = PwHelper.process(options.build());
+		List<String> passwords = PwHelper.process(options.build(),null);
 		assertLengthCount(this.getClass().getSimpleName(), passLength,
 				numPasswords, passwords);
 

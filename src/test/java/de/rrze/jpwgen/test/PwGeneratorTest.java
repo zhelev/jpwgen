@@ -12,7 +12,7 @@ import de.rrze.jpwgen.utils.PwHelper;
 public class PwGeneratorTest
 {
 	protected List<String> process(String test, String[] ar, int numPasswords,
-			int passLength)
+			int passLength, List<String> blacklist)
 	{
 
 		System.out.println(ManagementFactory.getRuntimeMXBean().getName()
@@ -20,7 +20,7 @@ public class PwGeneratorTest
 				+ test + " --> " + Arrays.deepToString(ar) + " -> "
 				+ passLength);
 
-		List<String> passwords = PwHelper.process(ar);
+		List<String> passwords = PwHelper.process(ar, blacklist);
 
 		Assert.assertEquals(passwords.size(), numPasswords);
 

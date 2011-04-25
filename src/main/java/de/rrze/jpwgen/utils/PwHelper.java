@@ -45,7 +45,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 	 */
 	public static void main(String[] args)
 	{
-		List<String> passwords = process(args);
+		List<String> passwords = process(args, null);
 		if (doColumns)
 		{
 			printColumns(passwords, termWidth);
@@ -261,7 +261,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 	 * @return a list of passwords or <em>null</em> if no suitable passwords
 	 *         could be generated.
 	 */
-	public static synchronized List<String> process(String[] args)
+	public static synchronized List<String> process(String[] args, List<String> blackList)
 	{
 		int passwordFlags = DEFAULT_FLAGS;
 
@@ -548,6 +548,9 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 			LOGGER.info(Messages.getString("PwGenerator.PW") //$NON-NLS-1$
 			);
 
+			if(blackList!=null)
+				PwGenerator.getDefaultBlacklistFilter().getBlacklist().addAll(blackList);
+			
 			int i;
 			for (i = 0; i < numberOfPasswords; i++)
 			{

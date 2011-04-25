@@ -30,9 +30,11 @@ package de.rrze.jpwgen.impl;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -605,7 +607,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 		return password;
 	}
 
-	public static synchronized Set<String> generate(int length, int number,
+	public static synchronized List<String> generate(int length, int number,
 			int maxAttempts, int flags, Random random,
 			IProgressListener progressListener)
 	{
@@ -613,9 +615,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 		Set<String> passwords = new HashSet<String>();
 		try
 		{
-			int passwordFlags = DEFAULT_FLAGS;
-			if (flags != 0)
-				passwordFlags = flags;
+			int passwordFlags = flags;
 
 			// The length of the password to be generated
 			int passwordLength = DEFAULT_PASSWORD_LENGTH;
@@ -670,7 +670,10 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 			LOGGER.warning(Messages.getString("PwGenerator.NUM_FORM_ERROR") + e.getLocalizedMessage()); //$NON-NLS-1$
 		}
 
-		return passwords;
+		List<String> result = new ArrayList<String>();
+		result.addAll(passwords);
+
+		return result;
 	}
 
 	/**

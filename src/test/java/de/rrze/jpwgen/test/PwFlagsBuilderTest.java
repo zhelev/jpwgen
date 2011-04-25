@@ -1,14 +1,17 @@
 package de.rrze.jpwgen.test;
 
+import java.util.List;
+
 import org.apache.maven.surefire.shade.org.apache.commons.lang.time.StopWatch;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import de.rrze.jpwgen.IPwGenConstants.SYMBOL_OPTIONS;
+import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
 import de.rrze.jpwgen.impl.PwGenerator;
-import de.rrze.jpwgen.utils.BlankRemover;
 
-public class PwGeneratorReducedTest extends PwGeneratorTest
+public class PwFlagsBuilderTest extends PwGeneratorTest
 {
 
 	@BeforeClass
@@ -29,27 +32,30 @@ public class PwGeneratorReducedTest extends PwGeneratorTest
 
 	@Test(groups =
 	{ "default" }, invocationCount = 20)
-	public void reducedSymbolsTest()
+	public void flagsBuilderTest()
 	{
-
-		int numPasswords = 30;
+		int numPasswords = 10;
 		int passLength = 8;
 
-		System.out
-				.println("REDUCED SYMBOL TEST STARTED: Generating passwords:");
+		System.out.println("FLAG BUILDER TEST STARTED: Generating passwords:");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 
-		String flags = "-N " + numPasswords + " -M 500 -m 1 -s " + passLength
-				+ " -z -r";
+		PwGeneratorFlagBuilder flags = new PwGeneratorFlagBuilder();
+		flags.setIncludeNumerals(true)
+				.setIncludeSymbols(SYMBOL_OPTIONS.REDUCED)
+				.setIncludeOneCapital(true).setFilterAmbiguous(true);
 
-		flags = BlankRemover.itrim(flags);
-		String[] ar = flags.split(" ");
+		List<String> passwords = PwGenerator.generate(passLength, numPasswords,
+				100, flags.build(), null, null);
 
-		process(this.getClass().getSimpleName(), ar, numPasswords, passLength, null);
+		assertLengthCount(getClass().getSimpleName(), passLength, numPasswords,
+				passwords);
 
 		stopWatch.stop();
-		System.out.println("\nREDUCED SYMBOL TEST FINISHED Runtime:"
+		System.out.println("\nFLAG BUILDER TEST FINISHED Runtime:"
 				+ stopWatch.toString() + "\n");
+
 	}
+
 }
