@@ -33,10 +33,10 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<mainClass>
-								de.rrze.idmone.utils.jpwgen.PwHelper
+								de.rrze.jpwgen.PwHelper
 							</mainClass>
 							<packageName>
-								de.rrze.idmone.utils.jpwgen
+								de.rrze.jpwgen
 							</packageName>
 							<!-- 
 								<addExtensions />

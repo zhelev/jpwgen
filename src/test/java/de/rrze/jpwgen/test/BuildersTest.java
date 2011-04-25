@@ -27,7 +27,6 @@ public class BuildersTest extends PwGeneratorTest
 
 		PwGeneratorFlagBuilder flags = new PwGeneratorFlagBuilder();
 		flags.setIncludeNumerals(true)
-				.setIncludeSymbols(SYMBOL_OPTIONS.REDUCED)
 				.setIncludeOneCapital(true).setFilterAmbiguous(true);
 
 		List<String> passwords = PwGenerator.generate(passLength, numPasswords,

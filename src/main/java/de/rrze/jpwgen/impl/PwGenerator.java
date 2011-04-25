@@ -797,7 +797,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 				 */
 				if ((pw_flags & PW_DIGITS) != 0)
 				{
-					if (!first && (random.nextInt(10) < 3))
+					if (!first && (random.nextInt(10) < 2))
 					{
 						do
 						{
