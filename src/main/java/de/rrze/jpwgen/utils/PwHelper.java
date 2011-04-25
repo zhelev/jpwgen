@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.cli.BasicParser;
@@ -246,7 +247,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp(Messages.getString("PwGenerator.USAGE"), //$NON-NLS-1$
 				options);
-		LOGGER.info(Messages.getString("PwGenerator.EXAMPLE") //$NON-NLS-1$
+		LOGGER.fine(Messages.getString("PwGenerator.EXAMPLE") //$NON-NLS-1$
 		);
 	}
 
@@ -272,7 +273,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 
 		int maxAttempts = DEFAULT_MAX_ATTEMPTS;
 
-		LOGGER.info(Messages.getString("PwGenerator.PASSWORD_GENERATOR") //$NON-NLS-1$
+		LOGGER.fine(Messages.getString("PwGenerator.PASSWORD_GENERATOR") //$NON-NLS-1$
 		);
 
 		ArrayList<String> passwords = new ArrayList<String>();
@@ -285,7 +286,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 			if (commandLine.hasOption(CL_HELP))
 			{
 				printUsage();
-				LOGGER.info(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
 				);
 				return passwords;
 			}
@@ -296,7 +297,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 				Set<String> serviceProviders = RandomFactory.getInstance()
 						.getServiceProviderFor(
 								IRandomFactory.TYPE_SECURE_RANDOM);
-				LOGGER.info(Messages
+				LOGGER.fine(Messages
 						.getString("PwGenerator.SERVICES_PROVIDERS_FOR") //$NON-NLS-1$
 						+ IRandomFactory.TYPE_SECURE_RANDOM
 						+ Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$
@@ -304,9 +305,9 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 						.hasNext();)
 				{
 					String element = (String) iter.next();
-					LOGGER.info(Messages
+					LOGGER.fine(Messages
 							.getString("PwGenerator.SERVICE_PROVIDERS") + element + Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$ //$NON-NLS-2$
-					LOGGER.info(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
+					LOGGER.fine(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
 					);
 					return passwords;
 				}
@@ -315,25 +316,25 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 			parser.parse(options, args);
 			if (commandLine.hasOption(CL_PROVIDERS))
 			{
-				LOGGER.info(Messages.getString("PwGenerator.ALL_SEC_PROVIDERS") //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.ALL_SEC_PROVIDERS") //$NON-NLS-1$
 						+ IRandomFactory.TYPE_SECURE_RANDOM
 						+ Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$
 				Provider[] serviceProviders = RandomFactory.getInstance()
 						.getProviders();
 				for (int i = 0; i < serviceProviders.length; i++)
 				{
-					LOGGER.info(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
+					LOGGER.fine(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
 					);
-					LOGGER.info(Messages.getString("PwGenerator.PROVIDER") + serviceProviders[i].getName() + Messages.getString("PwGenerator.NEW_LINE") //$NON-NLS-1$ //$NON-NLS-2$
+					LOGGER.fine(Messages.getString("PwGenerator.PROVIDER") + serviceProviders[i].getName() + Messages.getString("PwGenerator.NEW_LINE") //$NON-NLS-1$ //$NON-NLS-2$
 					);
 					Set<Provider.Service> services = serviceProviders[i]
 							.getServices();
-					LOGGER.info(Messages.getString("PwGenerator.SERVICES") + Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$ //$NON-NLS-2$
-					LOGGER.info(services.toString());
-					LOGGER.info(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
+					LOGGER.fine(Messages.getString("PwGenerator.SERVICES") + Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$ //$NON-NLS-2$
+					LOGGER.fine(services.toString());
+					LOGGER.fine(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
 					);
 				}
-				LOGGER.info(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
 				);
 				return passwords;
 			}
@@ -344,7 +345,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 						.getOptionValue(CL_NUMBER_PASSWORD);
 				if (sNumberOfPasswords != null)
 					numberOfPasswords = Integer.parseInt(sNumberOfPasswords);
-				LOGGER.info(Messages.getString("PwGenerator.NUM_PASSWORDS") + numberOfPasswords); //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.NUM_PASSWORDS") + numberOfPasswords); //$NON-NLS-1$
 			}
 
 			commandLine = parser.parse(options, args);
@@ -354,14 +355,14 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 						.getOptionValue(CL_PASSWORD_LENGTH);
 				if (sPasswordLength != null)
 					passwordLength = Integer.parseInt(sPasswordLength);
-				LOGGER.info(Messages.getString("PwGenerator.PASSWORD_LENGTH") + passwordLength); //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.PASSWORD_LENGTH") + passwordLength); //$NON-NLS-1$
 			}
 
 			parser.parse(options, args);
 			if (commandLine.hasOption(CL_COLUMN))
 			{
 				doColumns = true;
-				LOGGER.info(Messages.getString("PwGenerator.COLUMNS_ENABLED")); //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.COLUMNS_ENABLED")); //$NON-NLS-1$
 			}
 
 			parser.parse(options, args);
@@ -370,7 +371,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 				String sTermWidth = commandLine.getOptionValue(CL_TERM_WIDTH);
 				if (sTermWidth != null)
 					termWidth = Integer.parseInt(sTermWidth);
-				LOGGER.info(Messages.getString("PwGenerator.TERMINAL_LENGTH") + termWidth); //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.TERMINAL_LENGTH") + termWidth); //$NON-NLS-1$
 			}
 
 			Random random = null;
@@ -378,7 +379,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 			if (commandLine.hasOption(CL_RANDOM))
 			{
 				random = RandomFactory.getInstance().getRandom();
-				LOGGER.info(Messages.getString("PwGenerator.NORMAL_RANDOM")); //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.NORMAL_RANDOM")); //$NON-NLS-1$
 			} else
 			{
 				try
@@ -406,17 +407,17 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 						random = RandomFactory.getInstance().getSecureRandom(
 								data[0], data[1]);
 
-						LOGGER.info(Messages.getString("PwGenerator.SEC_ALG") + data[0] //$NON-NLS-1$
+						LOGGER.fine(Messages.getString("PwGenerator.SEC_ALG") + data[0] //$NON-NLS-1$
 								+ Messages.getString("PwGenerator.PROV") + data[1] + Messages.getString("PwGenerator.DOR")); //$NON-NLS-1$ //$NON-NLS-2$
 					} catch (NoSuchAlgorithmException e)
 					{
-						LOGGER.info(Messages.getString("PwGenerator.ERROR") + e.getMessage() + Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$ //$NON-NLS-2$
-						LOGGER.info(Messages
+						LOGGER.fine(Messages.getString("PwGenerator.ERROR") + e.getMessage() + Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$ //$NON-NLS-2$
+						LOGGER.fine(Messages
 								.getString("PwGenerator.DEFAUL_RANDOM")); //$NON-NLS-1$
 					} catch (NoSuchProviderException e)
 					{
-						LOGGER.info(Messages.getString("PwGenerator.ERROR") + e.getMessage() + Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$ //$NON-NLS-2$
-						LOGGER.info(Messages
+						LOGGER.fine(Messages.getString("PwGenerator.ERROR") + e.getMessage() + Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$ //$NON-NLS-2$
+						LOGGER.fine(Messages
 								.getString("PwGenerator.DEFAUL_RANDOM")); //$NON-NLS-1$
 					}
 				}
@@ -425,49 +426,49 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 			if (commandLine.hasOption(CL_NUMERALS))
 			{
 				passwordFlags |= PW_DIGITS;
-				LOGGER.info(Messages.getString("PwGenerator.DIGITS_ON")); //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.DIGITS_ON")); //$NON-NLS-1$
 			}
 
 			if (commandLine.hasOption(CL_NO_NUMERALS))
 			{
 				passwordFlags &= ~PW_DIGITS;
-				LOGGER.info(Messages.getString("PwGenerator.DIGITS_OFF")); //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.DIGITS_OFF")); //$NON-NLS-1$
 			}
 
 			if (commandLine.hasOption(CL_CAPITALIZE))
 			{
 				passwordFlags |= PW_UPPERS;
-				LOGGER.info(Messages.getString("PwGenerator.UPPERCASE_ON")); //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.UPPERCASE_ON")); //$NON-NLS-1$
 			}
 
 			if (commandLine.hasOption(CL_NO_CAPITALIZE))
 			{
 				passwordFlags &= ~PW_UPPERS;
-				LOGGER.info(Messages.getString("PwGenerator.UPPERCASE_OFF")); //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.UPPERCASE_OFF")); //$NON-NLS-1$
 			}
 
 			if (commandLine.hasOption(CL_AMBIGOUS))
 			{
 				passwordFlags |= PW_AMBIGUOUS;
-				LOGGER.info(Messages.getString("PwGenerator.AMBIGOUS_ON")); //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.AMBIGOUS_ON")); //$NON-NLS-1$
 			}
 
 			if (commandLine.hasOption(CL_NO_AMBIGOUS))
 			{
 				passwordFlags &= ~PW_AMBIGUOUS;
-				LOGGER.info(Messages.getString("PwGenerator.AMBIGOUS_OFF")); //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.AMBIGOUS_OFF")); //$NON-NLS-1$
 			}
 
 			if (commandLine.hasOption(CL_SYMBOLS))
 			{
 				passwordFlags |= PW_SYMBOLS;
-				LOGGER.info(Messages.getString("PwGenerator.SYMBOLS_ON")); //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.SYMBOLS_ON")); //$NON-NLS-1$
 			}
 
 			if (commandLine.hasOption(CL_SYMBOLS_REDUCED))
 			{
 				passwordFlags |= PW_SYMBOLS_REDUCED;
-				LOGGER.info(Messages
+				LOGGER.fine(Messages
 						.getString("PwGenerator.SYMBOLS_REDUCED_ON")); //$NON-NLS-1$
 			}
 
@@ -475,7 +476,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 			{
 				passwordFlags &= ~PW_SYMBOLS;
 				passwordFlags &= ~PW_SYMBOLS_REDUCED;
-				LOGGER.info(Messages.getString("PwGenerator.SYMBOLS_OFF")); //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.SYMBOLS_OFF")); //$NON-NLS-1$
 			}
 
 			if (commandLine.hasOption(CL_MAX_ATTEMPTS))
@@ -484,7 +485,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 						.getOptionValue(CL_MAX_ATTEMPTS);
 				if (sMaxAttempts != null)
 					maxAttempts = Integer.parseInt(sMaxAttempts);
-				LOGGER.info(Messages.getString("PwGenerator.MAX_ATTEMPTS") + maxAttempts); //$NON-NLS-1$
+				LOGGER.fine(Messages.getString("PwGenerator.MAX_ATTEMPTS") + maxAttempts); //$NON-NLS-1$
 			}
 
 			if (commandLine.hasOption(CL_REGEX_STARTS_NO_SMALL_LETTER))
@@ -527,25 +528,25 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 				passwordFlags |= REGEX_AT_LEAST_2_DIGITS_FLAG;
 			// -------------------------------------------------------------------
 
-			LOGGER.info(Messages.getString("PwGenerator.GENRIC_FLAGS") //$NON-NLS-1$
+			LOGGER.fine(Messages.getString("PwGenerator.GENRIC_FLAGS") //$NON-NLS-1$
 			);
 
 			int res = passwordFlags & PW_DIGITS;
-			LOGGER.info(Messages.getString("PwGenerator.DIGITS") + (res != 0)); //$NON-NLS-1$
+			LOGGER.fine(Messages.getString("PwGenerator.DIGITS") + (res != 0)); //$NON-NLS-1$
 			res = passwordFlags & PW_AMBIGUOUS;
-			LOGGER.info(Messages.getString("PwGenerator.AMBIGOUS") + (res != 0)); //$NON-NLS-1$
+			LOGGER.fine(Messages.getString("PwGenerator.AMBIGOUS") + (res != 0)); //$NON-NLS-1$
 			res = passwordFlags & PW_SYMBOLS;
-			LOGGER.info(Messages.getString("PwGenerator.SYMBOLS") + (res != 0)); //$NON-NLS-1$
+			LOGGER.fine(Messages.getString("PwGenerator.SYMBOLS") + (res != 0)); //$NON-NLS-1$
 			res = passwordFlags & PW_SYMBOLS_REDUCED;
-			LOGGER.info(Messages.getString("PwGenerator.SYMBOLS_REDUCED") + (res != 0)); //$NON-NLS-1$
+			LOGGER.fine(Messages.getString("PwGenerator.SYMBOLS_REDUCED") + (res != 0)); //$NON-NLS-1$
 			res = passwordFlags & PW_UPPERS;
-			LOGGER.info(Messages.getString("PwGenerator.UPPERS") + (res != 0)); //$NON-NLS-1$
-			LOGGER.info(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
+			LOGGER.fine(Messages.getString("PwGenerator.UPPERS") + (res != 0)); //$NON-NLS-1$
+			LOGGER.fine(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
 			);
 
-			LOGGER.info(Messages.getString("PwGenerator.GENERATING") + numberOfPasswords + Messages.getString("PwGenerator.PW_LENGTH") //$NON-NLS-1$ //$NON-NLS-2$
+			LOGGER.fine(Messages.getString("PwGenerator.GENERATING") + numberOfPasswords + Messages.getString("PwGenerator.PW_LENGTH") //$NON-NLS-1$ //$NON-NLS-2$
 					+ passwordLength);
-			LOGGER.info(Messages.getString("PwGenerator.PW") //$NON-NLS-1$
+			LOGGER.fine(Messages.getString("PwGenerator.PW") //$NON-NLS-1$
 			);
 
 			if(blackList!=null)
@@ -561,11 +562,11 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 			}
 		} catch (ParseException e)
 		{
-			LOGGER.info(Messages.getString("PwGenerator.PARAM_ERROR") + e.getLocalizedMessage()); //$NON-NLS-1$
+			LOGGER.fine(Messages.getString("PwGenerator.PARAM_ERROR") + e.getLocalizedMessage()); //$NON-NLS-1$
 			printUsage();
 		} catch (NumberFormatException e)
 		{
-			LOGGER.info(Messages.getString("PwGenerator.NUM_FORM_ERROR") + e.getLocalizedMessage()); //$NON-NLS-1$
+			LOGGER.fine(Messages.getString("PwGenerator.NUM_FORM_ERROR") + e.getLocalizedMessage()); //$NON-NLS-1$
 			printUsage();
 		}
 
@@ -584,7 +585,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 	public static void printColumns(List<String> passwords, int termWidth)
 	{
 
-		LOGGER.info(Messages.getString("PwGenerator.N_SEPARATOR") //$NON-NLS-1$
+		System.out.println(Messages.getString("PwGenerator.N_SEPARATOR") //$NON-NLS-1$
 		);
 
 		for (int i = 0; i < passwords.size(); i++)
@@ -605,7 +606,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 				System.out.print(password + ' ');
 			}
 		}
-		LOGGER.info(Messages.getString("PwGenerator.N_SEPARATOR") //$NON-NLS-1$
+		System.out.println("\n"+Messages.getString("PwGenerator.N_SEPARATOR") //$NON-NLS-1$
 		);
 	}
 
@@ -618,7 +619,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 
 	public static void print(List<String> passwords)
 	{
-		LOGGER.info(Messages.getString("PwGenerator.N_SEPARATOR") //$NON-NLS-1$
+		System.out.println(Messages.getString("PwGenerator.N_SEPARATOR") //$NON-NLS-1$
 		);
 
 		for (int i = 0; i < passwords.size(); i++)
@@ -628,7 +629,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwGenConstants,
 			System.out.print(password
 					+ Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$
 		}
-		LOGGER.info(Messages.getString("PwGenerator.N_SEPARATOR") //$NON-NLS-1$
+		System.out.println(Messages.getString("PwGenerator.N_SEPARATOR") //$NON-NLS-1$
 		);
 	}
 
