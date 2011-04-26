@@ -2,7 +2,9 @@ package de.rrze.jpwgen.flags;
 
 public interface IPwFlag
 {
-	int mask(int flags);
+	public int mask(int flags);
 	
-	int unmask(int flags);
+	public int unmask(int flags);
+	
+	public int getMask();
 }

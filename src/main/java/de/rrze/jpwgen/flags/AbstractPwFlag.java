@@ -14,4 +14,9 @@ public abstract class AbstractPwFlag implements IPwFlag
 		return flags & (~mask);
 	}
 
+	public int getMask()
+	{
+		return mask;
+	}
+	
 }
