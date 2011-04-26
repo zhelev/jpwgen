@@ -4,6 +4,10 @@ import de.rrze.jpwgen.IPwGenRegEx;
 
 public class StartsNoSmallLetterFlag extends AbstractPwFlag
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	public StartsNoSmallLetterFlag()
 	{

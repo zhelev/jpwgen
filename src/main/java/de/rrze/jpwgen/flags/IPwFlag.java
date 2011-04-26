@@ -1,6 +1,8 @@
 package de.rrze.jpwgen.flags;
 
-public interface IPwFlag
+import java.io.Serializable;
+
+public interface IPwFlag extends Serializable
 {
 	public int mask(int flags);
 	

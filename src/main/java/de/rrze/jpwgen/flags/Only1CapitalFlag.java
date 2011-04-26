@@ -5,6 +5,10 @@ import de.rrze.jpwgen.IPwGenRegEx;
 
 public class Only1CapitalFlag extends AbstractPwFlag
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	public Only1CapitalFlag()
 	{

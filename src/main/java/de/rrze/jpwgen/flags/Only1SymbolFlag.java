@@ -5,6 +5,11 @@ import de.rrze.jpwgen.IPwGenRegEx;
 
 public class Only1SymbolFlag extends AbstractPwFlag
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public Only1SymbolFlag()
 	{
 		mask = IPwGenRegEx.REGEX_ONLY_1_SYMBOL_FLAG;

@@ -5,6 +5,11 @@ import java.util.List;
 
 public class PwGeneratorFlagBuilder
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	List<IPwFlag> flagList = new ArrayList<IPwFlag>();
 
 	int flags = 0;
