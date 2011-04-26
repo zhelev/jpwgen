@@ -19,4 +19,8 @@ public abstract class AbstractPwFlag implements IPwFlag
 		return mask;
 	}
 	
+	public boolean isMasked(int flags)
+	{
+		return (flags & mask) != 0;
+	}
 }

@@ -7,4 +7,6 @@ public interface IPwFlag
 	public int unmask(int flags);
 	
 	public int getMask();
+	
+	public boolean isMasked(int flags);
 }
