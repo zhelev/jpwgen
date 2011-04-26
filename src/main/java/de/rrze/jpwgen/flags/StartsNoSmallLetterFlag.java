@@ -2,10 +2,12 @@ package de.rrze.jpwgen.flags;
 
 import de.rrze.jpwgen.IPwGenRegEx;
 
-public class StartsNoSmallLetterFlag implements IPwFlag
+public class StartsNoSmallLetterFlag extends AbstractPwFlag
 {
-	public int mask(int flags)
+	
+	public StartsNoSmallLetterFlag()
 	{
-		return flags | IPwGenRegEx.REGEX_STARTS_NO_SMALL_LETTER_FLAG;
+		mask = IPwGenRegEx.REGEX_STARTS_NO_SMALL_LETTER_FLAG;
 	}
+
 }

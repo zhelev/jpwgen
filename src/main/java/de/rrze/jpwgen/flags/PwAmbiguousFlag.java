@@ -2,24 +2,10 @@ package de.rrze.jpwgen.flags;
 
 import de.rrze.jpwgen.IPwGenConstants;
 
-public class PwAmbiguousFlag implements IPwFlag
+public class PwAmbiguousFlag extends AbstractPwFlag
 {
-	private boolean enabled = false;
-
-	public PwAmbiguousFlag(boolean enabled)
+	public PwAmbiguousFlag()
 	{
-		this.enabled = enabled;
-	}
-
-	public int mask(int flags)
-	{
-		if (enabled)
-		{
-			return flags | IPwGenConstants.PW_AMBIGUOUS;
-		}
-		else
-		{
-			return flags & (~IPwGenConstants.PW_AMBIGUOUS);
-		}
+		mask = IPwGenConstants.PW_AMBIGUOUS;
 	}
 }

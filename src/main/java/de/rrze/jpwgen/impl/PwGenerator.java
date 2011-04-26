@@ -709,18 +709,6 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 
 	private static Random checkRandom(Random random)
 	{
-		try
-		{
-			if (random == null)
-				random = RandomFactory.getInstance().getSimpleSecureRandom();
-		} catch (NoSuchAlgorithmException e)
-		{
-			LOGGER.warning(e.getMessage());
-		} catch (NoSuchProviderException e)
-		{
-			LOGGER.warning(e.getMessage());
-		}
-
 		if (random == null)
 			random = RandomFactory.getInstance().getRandom();
 
@@ -852,12 +840,15 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 				if ((pw_flags & PW_UPPERS) != 0)
 				{
 					if ((first || ((flags & CONSONANT) != 0))
-							&& (random.nextInt(10) < 2))
+							&& (random.nextInt(10) < 3))
 					{
 						int lastChar = buf.length() - 1;
-						buf.setCharAt(lastChar,
-								Character.toUpperCase(buf.charAt(lastChar)));
-						feature_flags &= ~PW_UPPERS;
+						char c1 = buf.charAt(lastChar);
+						if (Character.isLetter(c1))
+						{
+							buf.setCharAt(lastChar, Character.toUpperCase(c1));
+							feature_flags &= ~PW_UPPERS;
+						}
 					}
 				}
 
@@ -874,8 +865,25 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 					}
 					if (k != -1)
 					{
-						buf.delete(k, buf.length());
+						char curr = buf.charAt(k);
+						buf.deleteCharAt(k);
 						c = buf.length();
+
+						if (Character.isUpperCase(curr)
+								&& (pw_flags & PW_UPPERS) != 0)
+							feature_flags |= PW_UPPERS;
+
+						if (Character.isDigit(curr)
+								&& (pw_flags & PW_DIGITS) != 0)
+							feature_flags |= PW_DIGITS;
+
+						if (PW_SPECIAL_SYMBOLS_REDUCED.contains("" + curr)
+								&& (pw_flags & PW_SYMBOLS_REDUCED) != 0)
+							feature_flags |= PW_SYMBOLS_REDUCED;
+
+						if (PW_SPECIAL_SYMBOLS.contains("" + curr)
+								&& (pw_flags & PW_SYMBOLS) != 0)
+							feature_flags |= PW_SYMBOLS;
 					}
 				}
 

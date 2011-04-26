@@ -5,17 +5,17 @@ import java.util.List;
 import org.apache.maven.surefire.shade.org.apache.commons.lang.time.StopWatch;
 import org.testng.annotations.Test;
 
-import de.rrze.jpwgen.IPwGenConstants.SYMBOL_OPTIONS;
 import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
 import de.rrze.jpwgen.impl.PwGenerator;
 import de.rrze.jpwgen.options.PwGeneratorOptionBuilder;
 import de.rrze.jpwgen.utils.PwHelper;
+import de.rrze.jpwgen.utils.RandomFactory;
 
 public class BuildersTest extends PwGeneratorTest
 {
 
 	@Test(groups =
-	{ "default" }, invocationCount = 20)
+	{ "default" }, invocationCount = 30)
 	public void flagsBuilderTest()
 	{
 		int numPasswords = 10;
@@ -26,11 +26,12 @@ public class BuildersTest extends PwGeneratorTest
 		stopWatch.start();
 
 		PwGeneratorFlagBuilder flags = new PwGeneratorFlagBuilder();
-		flags.setIncludeNumerals(true)
-				.setIncludeOneCapital(true).setFilterAmbiguous(true);
+		flags.setIncludeNumerals().setIncludeCapitals()
+				.setIncludeReducedSymbols().setFilterAmbiguous();
 
-		List<String> passwords = PwGenerator.generate(passLength, numPasswords,
-				0, flags.build(), null, null);
+		List<String> passwords = PwGenerator
+				.generate(passLength, numPasswords, 0, flags.build(),
+						RandomFactory.getInstance().getRandom(), null);
 
 		assertLengthCount(getClass().getSimpleName(), passLength, numPasswords,
 				passwords);
@@ -55,11 +56,11 @@ public class BuildersTest extends PwGeneratorTest
 
 		PwGeneratorOptionBuilder options = new PwGeneratorOptionBuilder();
 		options.setIncludeNumerals(true).setNumberOfPasswords(10)
-				.setIncludeSymbols(true)
-				.setIncludeOneCapital().setIncludeAmbiguous(true);
+				.setIncludeSymbols(true).setIncludeOneCapital().setUseRandom()
+				.setIncludeAmbiguous(true);
 
 		List<String> passwords = PwHelper.process(options.build(), null);
-		
+
 		assertLengthCount(getClass().getSimpleName(), passLength, numPasswords,
 				passwords);
 

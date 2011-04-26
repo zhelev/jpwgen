@@ -3,11 +3,9 @@ package de.rrze.jpwgen.flags;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.rrze.jpwgen.IPwGenConstants;
-
 public class PwGeneratorFlagBuilder
 {
-	List<IPwFlag> _options = new ArrayList<IPwFlag>();
+	List<IPwFlag> flagList = new ArrayList<IPwFlag>();
 
 	int flags = 0;
 
@@ -20,106 +18,111 @@ public class PwGeneratorFlagBuilder
 		this.flags = flags;
 	}
 
-	public PwGeneratorFlagBuilder setIncludeOneCapital(boolean enabled)
+	public PwGeneratorFlagBuilder setIncludeCapitals()
 	{
-		_options.add(new PwCapitalizeFlag(enabled));
+		flagList.add(new PwCapitalizeFlag());
 		return this;
 	}
 
-	public PwGeneratorFlagBuilder setIncludeNumerals(boolean enabled)
+	public PwGeneratorFlagBuilder setIncludeNumerals()
 	{
-		_options.add(new PwNumeralsFlag(enabled));
+		flagList.add(new PwNumeralsFlag());
 		return this;
 	}
 
-	public PwGeneratorFlagBuilder setIncludeSymbols(
-			IPwGenConstants.SYMBOL_OPTIONS type)
+	public PwGeneratorFlagBuilder setIncludeSymbols()
 	{
-		_options.add(new PwSymbolsFlag(type));
+		flagList.add(new PwSymbolsFlag());
 		return this;
 	}
 
-	public PwGeneratorFlagBuilder setFilterAmbiguous(boolean enabled)
+	public PwGeneratorFlagBuilder setIncludeReducedSymbols()
 	{
-		_options.add(new PwAmbiguousFlag(enabled));
+		flagList.add(new PwReducedSymbolsFlag());
+		return this;
+	}
+
+	public PwGeneratorFlagBuilder setFilterAmbiguous()
+	{
+		flagList.add(new PwAmbiguousFlag());
 		return this;
 	}
 
 	public PwGeneratorFlagBuilder setDoNotStartWithSmallLetter()
 	{
-		_options.add(new StartsNoSmallLetterFlag());
+		flagList.add(new StartsNoSmallLetterFlag());
 		return this;
 	}
 
 	public PwGeneratorFlagBuilder setDoNotEndWithSmallLetter()
 	{
-		_options.add(new EndsNoSmallLetterFlag());
+		flagList.add(new EndsNoSmallLetterFlag());
 		return this;
 	}
 
 	public PwGeneratorFlagBuilder setDoNotStartWithUpperLetter()
 	{
-		_options.add(new StartsNoUpperLetterFlag());
+		flagList.add(new StartsNoUpperLetterFlag());
 		return this;
 	}
 
 	public PwGeneratorFlagBuilder setDoNotEndWithUpperLetter()
 	{
-		_options.add(new EndsNoUpperLetterFlag());
+		flagList.add(new EndsNoUpperLetterFlag());
 		return this;
 	}
 
 	public PwGeneratorFlagBuilder setDoNotStartWithDigit()
 	{
-		_options.add(new StartsNoDigitFlag());
+		flagList.add(new StartsNoDigitFlag());
 		return this;
 	}
 
 	public PwGeneratorFlagBuilder setDoNotEndWithDigit()
 	{
-		_options.add(new EndsNoDigitFlag());
+		flagList.add(new EndsNoDigitFlag());
 		return this;
 	}
 
 	public PwGeneratorFlagBuilder setDoNotStartsWithSymbol()
 	{
-		_options.add(new StartsNoSymbolFlag());
+		flagList.add(new StartsNoSymbolFlag());
 		return this;
 	}
 
 	public PwGeneratorFlagBuilder setDoNotEndWithSymbol()
 	{
-		_options.add(new EndsNoSymbolFlag());
+		flagList.add(new EndsNoSymbolFlag());
 		return this;
 	}
 
 	public PwGeneratorFlagBuilder setOnly1Capital()
 	{
-		_options.add(new Only1CapitalFlag());
+		flagList.add(new Only1CapitalFlag());
 		return this;
 	}
 
 	public PwGeneratorFlagBuilder setOnly1Symbol()
 	{
-		_options.add(new Only1SymbolFlag());
+		flagList.add(new Only1SymbolFlag());
 		return this;
 	}
 
 	public PwGeneratorFlagBuilder setAtLeast2Symbols()
 	{
-		_options.add(new AtLeast2SymbolsFlag());
+		flagList.add(new AtLeast2SymbolsFlag());
 		return this;
 	}
 
 	public PwGeneratorFlagBuilder setOnly1Digit()
 	{
-		_options.add(new Only1DigitFlag());
+		flagList.add(new Only1DigitFlag());
 		return this;
 	}
 
 	public PwGeneratorFlagBuilder setAtLeast2Digits()
 	{
-		_options.add(new AtLeast2DigitsFlag());
+		flagList.add(new AtLeast2DigitsFlag());
 		return this;
 	}
 
@@ -127,9 +130,9 @@ public class PwGeneratorFlagBuilder
 	{
 		int build = flags;
 
-		for (IPwFlag option : _options)
+		for (IPwFlag fl : flagList)
 		{
-			build = option.mask(build);
+			build = fl.mask(build);
 		}
 
 		return build;

@@ -2,10 +2,12 @@ package de.rrze.jpwgen.flags;
 
 import de.rrze.jpwgen.IPwGenRegEx;
 
-public class StartsNoDigitFlag implements IPwFlag
+public class StartsNoDigitFlag extends AbstractPwFlag
 {
-	public int mask(int flags)
+
+	public StartsNoDigitFlag()
 	{
-		return flags | IPwGenRegEx.REGEX_STARTS_NO_DIGIT_FLAG;
+		mask = IPwGenRegEx.REGEX_STARTS_NO_DIGIT_FLAG;
 	}
+
 }

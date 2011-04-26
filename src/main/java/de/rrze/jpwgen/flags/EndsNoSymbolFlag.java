@@ -2,10 +2,10 @@ package de.rrze.jpwgen.flags;
 
 import de.rrze.jpwgen.IPwGenRegEx;
 
-public class EndsNoSymbolFlag implements IPwFlag
+public class EndsNoSymbolFlag extends AbstractPwFlag
 {
-	public int mask(int flags)
+	public EndsNoSymbolFlag()
 	{
-		return flags | IPwGenRegEx.REGEX_ENDS_NO_SYMBOL_FLAG;
+		mask = IPwGenRegEx.REGEX_ENDS_NO_SYMBOL_FLAG;
 	}
 }
