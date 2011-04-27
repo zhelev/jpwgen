@@ -21,8 +21,8 @@ import de.rrze.jpwgen.utils.RandomFactory;
 public class BuildersTest extends PwGeneratorTest
 {
 
-//	@Test(groups =
-//	{ "default" }, invocationCount = 30)
+	@Test(groups =
+	{ "default" }, invocationCount = 30)
 	public void flagsBuilderTest()
 	{
 		int numPasswords = 10;
@@ -49,8 +49,8 @@ public class BuildersTest extends PwGeneratorTest
 
 	}
 
-//	@Test(groups =
-//	{ "default" }, invocationCount = 20)
+	@Test(groups =
+	{ "default" }, invocationCount = 20)
 	public void optionsBuilderTest()
 	{
 		int numPasswords = 10;
