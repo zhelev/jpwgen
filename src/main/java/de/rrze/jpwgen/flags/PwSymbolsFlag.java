@@ -17,20 +17,21 @@ public class PwSymbolsFlag extends AbstractPwFlag
 
 	public int mask(int flags)
 	{
-		return new PwReducedSymbolsFlag().unmask(super.mask(flags));
+		int maskedFlag = super.mask(flags);
+		return new PwReducedSymbolsFlag().unmask(maskedFlag);
 	}
 
 	public int unmask(int flags)
 	{
 		int tmp = flags;
 
-		if (new PwReducedSymbolsFlag().isMasked(flags))
+		if (new PwReducedSymbolsFlag().isMasked(tmp))
 		{
-			tmp = super.unmask(flags);
+			tmp = super.unmask(tmp);
 		} else
 		{
 			tmp = new AtLeast2SymbolsFlag().unmask(new Only1SymbolFlag()
-					.unmask(super.unmask(flags)));
+					.unmask(super.unmask(tmp)));
 		}
 
 		return tmp;
