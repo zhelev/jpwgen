@@ -111,9 +111,14 @@ public class BuildersTest extends PwGeneratorTest
 		Assert.assertFalse(new PwReducedSymbolsFlag().isMasked(flags));
 		Assert.assertTrue(new Only1SymbolFlag().isMasked(flags));
 
+		Assert.assertTrue(new PwSymbolsFlag().isMasked(flags));
+		flags = new PwSymbolsFlag().unmask(flags);
+
 		System.out.println("Only 1 Symbol set: "
 				+ new Only1SymbolFlag().isMasked(flags));
 
+		Assert.assertFalse(new Only1SymbolFlag().isMasked(flags));
+		
 		System.out.println("Numerals set: "
 				+ new PwNumeralsFlag().isMasked(flags));
 	}

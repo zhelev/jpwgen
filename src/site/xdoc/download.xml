@@ -26,12 +26,6 @@
 						commons-cli-1.1.jar
 					</a>
 				</li>
-				<li>
-					<a
-						href="http://repo1.maven.org/maven2/commons-logging/commons-logging/1.1/commons-logging-1.1.jar">
-						commons-logging-1.1.jar
-					</a>
-				</li>
 			</ul>
 		</section>
 	</body>

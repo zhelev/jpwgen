@@ -149,17 +149,13 @@
 						<br />
 					PwGeneratorFlagBuilder flags = new PwGeneratorFlagBuilder();
 					<br />
-					flags.setIncludeNumerals(true)
+					flags.setIncludeNumerals().setIncludeCapitals()
 					<br />
-				.setIncludeSymbols(SYMBOL_OPTIONS.REDUCED)
+				.setIncludeReducedSymbols().setFilterAmbiguous();
 				<br />
-				.setIncludeOneCapital(true).setFilterAmbiguous(true);
-				<br />
-                <br />
 						List &lt;String&gt; passwords = PwGenerator.generate(passLength, numPasswords,
 				100, flags.build(), null, null);
 					    <br />
-					    
 					  	<br />
 						int count = 0;
 						<br />
@@ -179,9 +175,7 @@
 					    
 					    </code>
 					    <br />
-					    Using the flag builder should provide some performance boost. In case performance is an issue for You,
-					    You should consider setting a simple Random as the last but one argument of the PwGenerator call. You can
-					    use the RandomFactory to initiate such or simply use <i>new Random(System.cuurentTimeMillis())</i>. The last
+					    Using the flag builder should provide some performance boost. The last
 					    argument the PwGenerator's call take is a progress monitor which should implement <i>IProgressListener</i>.
 					    A progress listener can be also used for interrupting the generation process.
 					<br />
