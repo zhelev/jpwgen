@@ -25,7 +25,7 @@ public class PwReducedSymbolsFlag extends AbstractPwFlag
 	{
 		int tmp = flags;
 
-		if (new PwSymbolsFlag().isMasked(tmp))
+		if (new PwSymbolsFlag().isMasked(tmp) || isMasked(tmp))
 		{
 			tmp = super.unmask(tmp);
 		} else
