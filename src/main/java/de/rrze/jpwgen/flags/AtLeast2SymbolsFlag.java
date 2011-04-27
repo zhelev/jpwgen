@@ -1,6 +1,5 @@
 package de.rrze.jpwgen.flags;
 
-import de.rrze.jpwgen.IPwGenConstants;
 import de.rrze.jpwgen.IPwGenRegEx;
 
 public class AtLeast2SymbolsFlag extends AbstractPwFlag
@@ -10,7 +9,7 @@ public class AtLeast2SymbolsFlag extends AbstractPwFlag
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	public AtLeast2SymbolsFlag()
 	{
 		mask = IPwGenRegEx.REGEX_AT_LEAST_2_SYMBOLS_FLAG;
@@ -18,7 +17,12 @@ public class AtLeast2SymbolsFlag extends AbstractPwFlag
 
 	public int mask(int flags)
 	{
-		return super.mask(flags) | IPwGenConstants.PW_SYMBOLS;
+		int tmp = new Only1SymbolFlag().unmask(flags);
+		if (new PwReducedSymbolsFlag().isMasked(tmp)
+				|| new PwSymbolsFlag().isMasked(tmp))
+			return super.mask(tmp);
+
+		return super.mask(new PwReducedSymbolsFlag().mask(tmp));
 	}
 
 }

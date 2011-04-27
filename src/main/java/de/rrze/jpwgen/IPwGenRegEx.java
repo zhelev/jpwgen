@@ -40,7 +40,7 @@ public interface IPwGenRegEx
 	/**
 	 * Flag that disables passwords starting with a lower letter character
 	 */
-	public static final int REGEX_STARTS_NO_SMALL_LETTER_FLAG = 0x10;
+	public static final int REGEX_STARTS_NO_SMALL_LETTER_FLAG = 0x20;
 
 	/**
 	 * Regular expression that matches passwords starting with a lower letter
@@ -51,7 +51,7 @@ public interface IPwGenRegEx
 	/**
 	 * Flag that disables passwords ending with a lower letter character
 	 */
-	public static final int REGEX_ENDS_NO_SMALL_LETTER_FLAG = 0x20;
+	public static final int REGEX_ENDS_NO_SMALL_LETTER_FLAG = 0x40;
 
 	/**
 	 * Regular expression that matches passwords ending with a lower letter
@@ -62,7 +62,7 @@ public interface IPwGenRegEx
 	/**
 	 * Flag that disables passwords starting with a upper letter character
 	 */
-	public static final int REGEX_STARTS_NO_UPPER_LETTER_FLAG = 0x40;
+	public static final int REGEX_STARTS_NO_UPPER_LETTER_FLAG = 0x80;
 
 	/**
 	 * Regular expression that matches passwords starting with a upper letter
@@ -73,7 +73,7 @@ public interface IPwGenRegEx
 	/**
 	 * Flag that disables passwords ending with a upper letter character
 	 */
-	public static final int REGEX_ENDS_NO_UPPER_LETTER_FLAG = 0x80;
+	public static final int REGEX_ENDS_NO_UPPER_LETTER_FLAG = 0x100;
 
 	/**
 	 * Regular expression that matches passwords ending with a upper letter
@@ -84,7 +84,7 @@ public interface IPwGenRegEx
 	/**
 	 * Flag that disables passwords ending with a digit
 	 */
-	public static final int REGEX_ENDS_NO_DIGIT_FLAG = 0x100;
+	public static final int REGEX_ENDS_NO_DIGIT_FLAG = 0x200;
 
 	/**
 	 * Regular expression that matches passwords ending with a digit
@@ -94,7 +94,7 @@ public interface IPwGenRegEx
 	/**
 	 * Flag that disables passwords starting with a digit
 	 */
-	public static final int REGEX_STARTS_NO_DIGIT_FLAG = 0x200;
+	public static final int REGEX_STARTS_NO_DIGIT_FLAG = 0x400;
 
 	/**
 	 * Regular expression that matches passwords starting with a digit
@@ -104,7 +104,7 @@ public interface IPwGenRegEx
 	/**
 	 * Flag that disables passwords starting with a symbol
 	 */
-	public static final int REGEX_STARTS_NO_SYMBOL_FLAG = 0x400;
+	public static final int REGEX_STARTS_NO_SYMBOL_FLAG = 0x800;
 
 	/**
 	 * Regular expression that matches passwords starting with a symbol
@@ -114,7 +114,7 @@ public interface IPwGenRegEx
 	/**
 	 * Flag that disables passwords ending with a symbol
 	 */
-	public static final int REGEX_ENDS_NO_SYMBOL_FLAG = 0x800;
+	public static final int REGEX_ENDS_NO_SYMBOL_FLAG = 0x1000;
 
 	/**
 	 * Regular expression that matches passwords ending with a symbol
@@ -124,7 +124,7 @@ public interface IPwGenRegEx
 	/**
 	 * Flag that disables passwords containing more than one upper case letter
 	 */
-	public static final int REGEX_ONLY_1_CAPITAL_FLAG = 0x1000;
+	public static final int REGEX_ONLY_1_CAPITAL_FLAG = 0x2000;
 
 	/**
 	 * Regular expression that matches passwords containing exactly one upper
@@ -135,7 +135,7 @@ public interface IPwGenRegEx
 	/**
 	 * Flag that disables passwords containing more than one upper case letter
 	 */
-	public static final int REGEX_ONLY_1_SYMBOL_FLAG = 0x2000;
+	public static final int REGEX_ONLY_1_SYMBOL_FLAG = 0x4000;
 
 	/**
 	 * Regular expression that matches passwords containing exactly one symbol
@@ -145,7 +145,7 @@ public interface IPwGenRegEx
 	/**
 	 * Flag that disables passwords containing less than two upper case letter
 	 */
-	public static final int REGEX_AT_LEAST_2_SYMBOLS_FLAG = 0x4000;
+	public static final int REGEX_AT_LEAST_2_SYMBOLS_FLAG = 0x8000;
 
 	/**
 	 * Regular expression that matches passwords containing at least 2 symbols
@@ -155,7 +155,7 @@ public interface IPwGenRegEx
 	/**
 	 * Flag that disables passwords containing more than one digit
 	 */
-	public static final int REGEX_ONLY_1_DIGIT_FLAG = 0x8000;
+	public static final int REGEX_ONLY_1_DIGIT_FLAG = 0x10000;
 
 	/**
 	 * Regular expression that matches passwords containing exactly one digit
@@ -165,7 +165,7 @@ public interface IPwGenRegEx
 	/**
 	 * Flag that disables passwords containing less than two upper case letter
 	 */
-	public static final int REGEX_AT_LEAST_2_DIGITS_FLAG = 0x10000;
+	public static final int REGEX_AT_LEAST_2_DIGITS_FLAG = 0x20000;
 
 	/**
 	 * Regular expression that matches passwords containing at least two digits
