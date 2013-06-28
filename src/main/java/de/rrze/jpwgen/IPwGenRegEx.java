@@ -172,6 +172,9 @@ public interface IPwGenRegEx
 	 */
 	public static final String REGEX_AT_LEAST_2_DIGITS = "\\w*[\\W]*[\\d]\\w*[\\W]*[\\d]\\w*[\\W]*";
 
+	// max 4294967295 -> 0xffffffff
+	// next 262144 -> 0x40000
+	
 	// Not needed any more
 
 	// public static final int REGEX_AT_LEAST_2_CAPITALS_FLAG = 0x2000;
