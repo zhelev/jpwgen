@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.maven.surefire.shade.org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.lang.time.StopWatch;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

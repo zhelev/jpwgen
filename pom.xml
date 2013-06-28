@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.rrze</groupId>
 	<artifactId>jpwgen</artifactId>
 	<name>jpwgen</name>
-	<version>1.2.1</version>
+	<version>1.2.3</version>
 	<description>
 		The 'jpwgen' program is a Java-based password generator whose
 		functionality resembles the popular 'pwgen' program.
@@ -38,29 +38,14 @@
 							<packageName>
 								de.rrze.jpwgen.utils
 							</packageName>
-							<!-- 
-								<addExtensions />
-								<classpathPrefix />
-							-->
+							<!-- <addExtensions /> <classpathPrefix /> -->
 						</manifest>
 
-						<!-- 
-							<manifestEntries>
-							<mode>development</mode>
-							<url>${pom.url}</url>
-							<key>value</key>
-							</manifestEntries>
-						-->
+						<!-- <manifestEntries> <mode>development</mode> <url>${pom.url}</url> 
+							<key>value</key> </manifestEntries> -->
 					</archive>
-					<!-- 
-						<useDefaultManifestFile>
-						true
-						</useDefaultManifestFile>
-						
-						<manifestFile>
-						src/main/resources/META-INF/MANIFEST.MF
-						</manifestFile>
-					-->
+					<!-- <useDefaultManifestFile> true </useDefaultManifestFile> <manifestFile> 
+						src/main/resources/META-INF/MANIFEST.MF </manifestFile> -->
 				</configuration>
 			</plugin>
 
@@ -80,21 +65,13 @@
 					<parallel>true</parallel>
 					<threadCount>10</threadCount>
 					<verbose>1</verbose>
-					<!-- 
-					<groups>${test.default},${test.secure},${test.builder}</groups>
-					 -->
+					<!-- <groups>${test.default},${test.secure},${test.builder}</groups> -->
 				</configuration>
 			</plugin>
 
-			<!--  replaced by a skin
-				<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<configuration>
-				<templateFile>${basedir}/src/site/maven-site.vm</templateFile>
-				</configuration>
-				</plugin>
-			-->
+			<!-- replaced by a skin <plugin> <groupId>org.apache.maven.plugins</groupId> 
+				<artifactId>maven-site-plugin</artifactId> <configuration> <templateFile>${basedir}/src/site/maven-site.vm</templateFile> 
+				</configuration> </plugin> -->
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -165,7 +142,7 @@
 				<role>Developer</role>
 			</roles>
 		</developer>
-		
+
 	</developers>
 
 	<!-- Contributors -->
@@ -264,22 +241,11 @@
 	</mailingLists>
 
 
-	<!-- 
-		<ciManagement>
-		<system>continuum</system>
-		<url>http://127.0.0.1:8080/continuum</url>
-		<notifiers>
-		<notifier>
-		<type>mail</type>
-		<sendOnError>true</sendOnError>
-		<sendOnFailure>true</sendOnFailure>
-		<sendOnSuccess>false</sendOnSuccess>
-		<sendOnWarning>false</sendOnWarning>
-		<configuration><address>continuum@127.0.0.1</address></configuration>
-		</notifier>
-		</notifiers>
-		</ciManagement>
-	-->
+	<!-- <ciManagement> <system>continuum</system> <url>http://127.0.0.1:8080/continuum</url> 
+		<notifiers> <notifier> <type>mail</type> <sendOnError>true</sendOnError> 
+		<sendOnFailure>true</sendOnFailure> <sendOnSuccess>false</sendOnSuccess> 
+		<sendOnWarning>false</sendOnWarning> <configuration><address>continuum@127.0.0.1</address></configuration> 
+		</notifier> </notifiers> </ciManagement> -->
 
 	<distributionManagement>
 		<repository>
@@ -301,28 +267,12 @@
 		</site>
 	</distributionManagement>
 
-	<!-- 
-		<pluginRepositories>
-		<pluginRepository>
-		<id>codehaus snapshot repository</id>
-		<url>http://snapshots.repository.codehaus.org/</url>
-		<releases>
-		<enabled>true</enabled>
-		</releases>
-		<snapshots>
-		<enabled>true</enabled>
-		</snapshots>
-		</pluginRepository>
-		</pluginRepositories>
-	-->
-	<!--  
-		<distributionManagement>
-		<site>
-		<id>shell.berlios.de</id>
-		<url>scpexe://shell.berlios.de:/home/groups/jpwgen/htdocs/</url>
-		</site>
-		</distributionManagement>
-	-->
+	<!-- <pluginRepositories> <pluginRepository> <id>codehaus snapshot repository</id> 
+		<url>http://snapshots.repository.codehaus.org/</url> <releases> <enabled>true</enabled> 
+		</releases> <snapshots> <enabled>true</enabled> </snapshots> </pluginRepository> 
+		</pluginRepositories> -->
+	<!-- <distributionManagement> <site> <id>shell.berlios.de</id> <url>scpexe://shell.berlios.de:/home/groups/jpwgen/htdocs/</url> 
+		</site> </distributionManagement> -->
 	<scm>
 		<connection>
 			scm:svn:https://svn.berlios.de/svnroot/repos/jpwgen/trunk
@@ -339,10 +289,18 @@
 			<artifactId>commons-cli</artifactId>
 			<version>1.1</version>
 		</dependency>
+		<!-- <dependency> <groupId>org.apache.maven.surefire</groupId> <artifactId>surefire-testng</artifactId> 
+			<version>2.15</version> <scope>test</scope> </dependency> -->
 		<dependency>
-			<groupId>org.apache.maven.surefire</groupId>
-			<artifactId>surefire-testng</artifactId>
-			<version>2.4.3</version>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.3.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -358,35 +316,14 @@
 				</artifactId>
 
 			</plugin>
-			<!-- 
-				<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jxr-maven-plugin</artifactId>
-				</plugin>
-			-->
-			<!-- 
-				<plugin>
-				<artifactId>maven-clover-plugin</artifactId>
-				</plugin>
-			-->
-			<!-- 
-				<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>changes-maven-plugin</artifactId>
-				</plugin>
-			-->
-			<!-- 
-				<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>changelog-maven-plugin</artifactId>
-				</plugin>
-			-->
-			<!-- 
-				<plugin>
-				
-				<artifactId>maven-surefire-plugin</artifactId>
-				</plugin>
-			-->
+			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>jxr-maven-plugin</artifactId> 
+				</plugin> -->
+			<!-- <plugin> <artifactId>maven-clover-plugin</artifactId> </plugin> -->
+			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>changes-maven-plugin</artifactId> 
+				</plugin> -->
+			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>changelog-maven-plugin</artifactId> 
+				</plugin> -->
+			<!-- <plugin> <artifactId>maven-surefire-plugin</artifactId> </plugin> -->
 			<plugin>
 				<artifactId>maven-pmd-plugin</artifactId>
 				<configuration>
