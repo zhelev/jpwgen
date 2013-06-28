@@ -50,7 +50,7 @@ public class PwGeneratorFilterTest extends PwGeneratorDefaultTest
 		String[] ar = flags.split(" ");
 
 		List<IPasswordFilter> filters = new ArrayList<IPasswordFilter>();
-		filters.add(new SimpleRegexFilter("ididid",SimpleRegexFilter.REGEX_STARTS_NO_SMALL_LETTER,true));
+		//filters.add(new SimpleRegexFilter("ididid",SimpleRegexFilter.REGEX_STARTS_NO_SMALL_LETTER,true));
 
 		process(this.getClass().getSimpleName(), ar, numPasswords, passLength,
 				null, filters);

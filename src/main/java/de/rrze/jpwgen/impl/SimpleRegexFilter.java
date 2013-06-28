@@ -17,7 +17,6 @@ public class SimpleRegexFilter extends AbstractPasswordFilter
 			throws PatternSyntaxException
 	{
 		super();
-		
 		this.id=id;
 		regexPattern = Pattern.compile(regex);
 		this.search = search;

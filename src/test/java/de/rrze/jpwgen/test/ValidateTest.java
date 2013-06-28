@@ -11,16 +11,17 @@ import org.apache.commons.lang.time.StopWatch;
 import org.testng.annotations.Test;
 
 import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
+import de.rrze.jpwgen.impl.DefaultRegExFilter;
 import de.rrze.jpwgen.impl.PwGenerator;
 import de.rrze.jpwgen.impl.SimpleRegexFilter;
 import de.rrze.jpwgen.utils.RandomFactory;
 
-public class InstanceTest
+public class ValidateTest
 {
 
 	@Test(groups =
 	{ "instance" }, invocationCount = 30)
-	public void instanceTest() throws Exception
+	public void conformTest() throws Exception
 	{
 		int numPasswords = 10;
 		int passLength = 8;
@@ -36,19 +37,30 @@ public class InstanceTest
 
 		int builtFlag = flags.build();
 
-		System.out.println("Applied falgs: " +  PwGeneratorFlagBuilder.evalFlags(builtFlag));
+	
 
 		PwGenerator pg = new PwGenerator();
 		pg.addInstanceFilter(new SimpleRegexFilter("lala","(?=.{8,})(?=.*?[^\\w\\s])(?=.*?[0-9])(?=.*?[A-Z]).*?[a-z].*",false));
 		pg.addInstanceFilter(new SimpleRegexFilter("lala1","^a.*4.*",false));
 
-		List<String> passwords = pg
-				.gen(passLength, numPasswords, 0, builtFlag,
-				RandomFactory.getInstance().getRandom(), null);
 		
-		assertLengthCount("InstanceTest", passLength, numPasswords, passwords);
-
-		Assert.assertEquals(numPasswords,passwords.size());
+		String password = "bEx>ae4a";
+		
+		System.out.println("inValid: " + PwGenerator.isInvalid(builtFlag, password));
+		
+		List<String> appliedFilters =  PwGeneratorFlagBuilder.evalFlags(builtFlag);
+		for (String key : appliedFilters) {
+			int clear = 0;
+			int masked = PwGeneratorFlagBuilder.FLAGS.get(key).mask(clear);
+			DefaultRegExFilter df = new DefaultRegExFilter();
+			String filtered = df.filter(masked, password);
+			if(filtered==null)
+				System.out.println("Key: " + key + " fails: " + password);
+		}
+		
+		System.out.println("instanceInvalid: " + pg.isInstanceInvalid(builtFlag, password));
+		
+		Assert.assertEquals(false,false);
 		
 		stopWatch.stop();
 		System.out.println("\nFLAG BUILDER TEST FINISHED Runtime:"
