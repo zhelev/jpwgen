@@ -1,4 +1,4 @@
-package de.rrze.jpwgen.flags.impl;
+package de.rrze.jpwgen.flags;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -6,7 +6,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import de.rrze.jpwgen.flags.IPwFlag;
+import de.rrze.jpwgen.flags.impl.AtLeast2DigitsFlag;
+import de.rrze.jpwgen.flags.impl.AtLeast2SymbolsFlag;
+import de.rrze.jpwgen.flags.impl.EndsNoDigitFlag;
+import de.rrze.jpwgen.flags.impl.EndsNoSmallLetterFlag;
+import de.rrze.jpwgen.flags.impl.EndsNoSymbolFlag;
+import de.rrze.jpwgen.flags.impl.EndsNoUpperLetterFlag;
+import de.rrze.jpwgen.flags.impl.Only1CapitalFlag;
+import de.rrze.jpwgen.flags.impl.Only1DigitFlag;
+import de.rrze.jpwgen.flags.impl.Only1SymbolFlag;
+import de.rrze.jpwgen.flags.impl.PwAmbiguousFlag;
+import de.rrze.jpwgen.flags.impl.PwCapitalizeFlag;
+import de.rrze.jpwgen.flags.impl.PwNumeralsFlag;
+import de.rrze.jpwgen.flags.impl.PwReducedSymbolsFlag;
+import de.rrze.jpwgen.flags.impl.PwSymbolsFlag;
+import de.rrze.jpwgen.flags.impl.StartsNoDigitFlag;
+import de.rrze.jpwgen.flags.impl.StartsNoSmallLetterFlag;
+import de.rrze.jpwgen.flags.impl.StartsNoSymbolFlag;
+import de.rrze.jpwgen.flags.impl.StartsNoUpperLetterFlag;
 
 public class PwGeneratorFlagBuilder implements Serializable {
 	/**

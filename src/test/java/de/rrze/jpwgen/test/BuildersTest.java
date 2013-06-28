@@ -8,8 +8,8 @@ import org.apache.commons.lang.time.StopWatch;
 import org.testng.annotations.Test;
 
 import de.rrze.jpwgen.IPwGenConstants;
+import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
 import de.rrze.jpwgen.flags.impl.Only1SymbolFlag;
-import de.rrze.jpwgen.flags.impl.PwGeneratorFlagBuilder;
 import de.rrze.jpwgen.flags.impl.PwNumeralsFlag;
 import de.rrze.jpwgen.flags.impl.PwReducedSymbolsFlag;
 import de.rrze.jpwgen.flags.impl.PwSymbolsFlag;
