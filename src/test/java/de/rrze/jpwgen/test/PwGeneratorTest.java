@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.testng.Assert;
 
+import de.rrze.jpwgen.IPasswordFilter;
+import de.rrze.jpwgen.impl.PwGenerator;
 import de.rrze.jpwgen.utils.PwHelper;
 
 public class PwGeneratorTest
@@ -14,11 +16,26 @@ public class PwGeneratorTest
 	protected List<String> process(String test, String[] ar, int numPasswords,
 			int passLength, List<String> blacklist)
 	{
+		return process(test, ar, numPasswords, passLength, blacklist, null);
+	}
+
+	protected List<String> process(String test, String[] ar, int numPasswords,
+			int passLength, List<String> blacklist,
+			List<IPasswordFilter> filters)
+	{
 
 		System.out.println(ManagementFactory.getRuntimeMXBean().getName()
 				+ " --> " + Thread.currentThread().getName() + " FLAGS: "
 				+ test + " --> " + Arrays.deepToString(ar) + " -> "
 				+ passLength);
+
+		if (filters !=null)
+		{
+			for (IPasswordFilter iPasswordFilter : filters)
+			{
+				PwGenerator.addFilter(iPasswordFilter);
+			}
+		}
 
 		List<String> passwords = PwHelper.process(ar, blacklist);
 
