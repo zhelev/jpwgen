@@ -8,11 +8,11 @@ import org.apache.maven.surefire.shade.org.apache.commons.lang.time.StopWatch;
 import org.testng.annotations.Test;
 
 import de.rrze.jpwgen.IPwGenConstants;
-import de.rrze.jpwgen.flags.Only1SymbolFlag;
-import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
-import de.rrze.jpwgen.flags.PwNumeralsFlag;
-import de.rrze.jpwgen.flags.PwReducedSymbolsFlag;
-import de.rrze.jpwgen.flags.PwSymbolsFlag;
+import de.rrze.jpwgen.flags.impl.Only1SymbolFlag;
+import de.rrze.jpwgen.flags.impl.PwGeneratorFlagBuilder;
+import de.rrze.jpwgen.flags.impl.PwNumeralsFlag;
+import de.rrze.jpwgen.flags.impl.PwReducedSymbolsFlag;
+import de.rrze.jpwgen.flags.impl.PwSymbolsFlag;
 import de.rrze.jpwgen.impl.PwGenerator;
 import de.rrze.jpwgen.options.PwGeneratorOptionBuilder;
 import de.rrze.jpwgen.utils.PwHelper;

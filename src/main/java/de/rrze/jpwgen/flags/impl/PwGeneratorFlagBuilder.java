@@ -1,7 +1,9 @@
-package de.rrze.jpwgen.flags;
+package de.rrze.jpwgen.flags.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.rrze.jpwgen.flags.IPwFlag;
 
 public class PwGeneratorFlagBuilder
 {

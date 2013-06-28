@@ -1,6 +1,7 @@
-package de.rrze.jpwgen.flags;
+package de.rrze.jpwgen.flags.impl;
 
 import de.rrze.jpwgen.IPwGenRegEx;
+import de.rrze.jpwgen.flags.AbstractPwFlag;
 
 public class EndsNoUpperLetterFlag extends AbstractPwFlag
 {

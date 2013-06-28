@@ -7,7 +7,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
+import de.rrze.jpwgen.flags.impl.PwGeneratorFlagBuilder;
 import de.rrze.jpwgen.impl.PwGenerator;
 
 public class PwFlagsBuilderTest extends PwGeneratorTest

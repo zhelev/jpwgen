@@ -1,7 +1,8 @@
-package de.rrze.jpwgen.flags;
+package de.rrze.jpwgen.flags.impl;
 
 import de.rrze.jpwgen.IPwGenConstants;
 import de.rrze.jpwgen.IPwGenRegEx;
+import de.rrze.jpwgen.flags.AbstractPwFlag;
 
 public class Only1CapitalFlag extends AbstractPwFlag
 {
