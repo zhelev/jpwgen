@@ -119,7 +119,7 @@ public interface IPwGenRegEx
 	/**
 	 * Regular expression that matches passwords ending with a symbol
 	 */
-	public static final String REGEX_ENDS_NO_SYMBOL = "[\\W]$";
+	public static final String REGEX_ENDS_NO_SYMBOL = "[\\W_]$";
 
 	/**
 	 * Flag that disables passwords containing more than one upper case letter

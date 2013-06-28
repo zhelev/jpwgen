@@ -164,8 +164,22 @@ public class PwGeneratorFlagBuilder implements Serializable {
 
 		return build;
 	}
+	
+	public synchronized List<String> applied() {
+		
+		List<String> applied = new ArrayList<String>();
 
-	public synchronized List<String> applied(int flags) {
+		Set<String> keys = FLAGS.keySet();
+		for (String key : keys) {
+			if (FLAGS.get(key).isMasked(build()))
+				applied.add(key);
+		}
+
+		return applied;
+	}
+	
+	public static synchronized List<String> evalFlags(int flags) {
+		
 		List<String> applied = new ArrayList<String>();
 
 		Set<String> keys = FLAGS.keySet();

@@ -11,15 +11,25 @@ public class SimpleRegexFilter extends AbstractPasswordFilter
 
 	private boolean search = false;
 
-	public SimpleRegexFilter(String regex, boolean search)
+	private String id;
+	
+	public SimpleRegexFilter(String id, String regex, boolean search)
 			throws PatternSyntaxException
 	{
 		super();
+		
+		this.id=id;
 		regexPattern = Pattern.compile(regex);
 		this.search = search;
 
 	}
-
+	
+	@Override
+	public String getID() 
+	{
+		return this.id;
+	}
+	
 	@Override
 	public String filter(int passwordFlags, String password)
 	{
@@ -41,7 +51,7 @@ public class SimpleRegexFilter extends AbstractPasswordFilter
 			}
 
 		}
-
+		
 		return pass;
 	}
 

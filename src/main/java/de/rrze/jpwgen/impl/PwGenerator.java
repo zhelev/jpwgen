@@ -443,14 +443,13 @@ import de.rrze.jpwgen.utils.RandomFactory;
  * 
  * @author unrz205
  */
-public class PwGenerator implements IPwGenConstants, IPwGenRegEx
-{
+public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 
 	// A static list of predefined vowels and consonants dipthongs. Suitable for
 	// English speaking people.
 	// This can be exchanged or extended with a different one if needed.
-	public static final PwElement[] PW_ELEMENTS =
-	{ new PwElement("a", VOWEL), new PwElement("ae", VOWEL | DIPTHONG), //$NON-NLS-1$ //$NON-NLS-2$
+	public static final PwElement[] PW_ELEMENTS = {
+			new PwElement("a", VOWEL), new PwElement("ae", VOWEL | DIPTHONG), //$NON-NLS-1$ //$NON-NLS-2$
 			new PwElement("ah", VOWEL | DIPTHONG), //$NON-NLS-1$
 			new PwElement("ai", VOWEL | DIPTHONG), //$NON-NLS-1$
 			new PwElement("b", CONSONANT), new PwElement("c", CONSONANT), //$NON-NLS-1$ //$NON-NLS-2$
@@ -485,13 +484,59 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 
 	private static Map<String, IPasswordFilter> filters = new HashMap<String, IPasswordFilter>();
 
+	private Map<String, IPasswordFilter> instanceFilters = new HashMap<String, IPasswordFilter>();
+
+	public Map<String, IPasswordFilter> getInstanceFilters() {
+		return instanceFilters;
+	}
+
+	public void setInstanceFilters(Map<String, IPasswordFilter> instanceFilters) {
+		this.instanceFilters = instanceFilters;
+	}
+
+	/**
+	 * Adds a password filter to the registry
+	 * 
+	 * @param filter
+	 *            the filter instance to be registered
+	 * @return the registered instance
+	 */
+
+	public synchronized IPasswordFilter addInstanceFilter(IPasswordFilter filter) {
+		return instanceFilters.put(filter.getID(), filter);
+	}
+
+	/**
+	 * Removes a filter from the registry by instance search
+	 * 
+	 * @param filter
+	 *            the instance of the filter
+	 * @return the removed instance
+	 */
+
+	public synchronized IPasswordFilter removeInstanceFilter(
+			IPasswordFilter filter) {
+		return instanceFilters.remove(filter.getID());
+	}
+
+	/**
+	 * Removes a filter from the registry by identifier search
+	 * 
+	 * @param id
+	 *            the identifier of the filter
+	 * @return the removed instance
+	 */
+
+	public synchronized IPasswordFilter removeInstanceFilter(String id) {
+		return instanceFilters.remove(id);
+	}
+
 	private final static Logger LOGGER = Logger.getLogger(PwGenerator.class
 			.getName());
 
 	// Add the default filters, the regex filter is at least necessary so we
 	// have to preserve 'state' here
-	static
-	{
+	static {
 		filters.put(defaultRegexFilter.getID(), defaultRegexFilter);
 		filters.put(defaultBlacklistFilter.getID(), defaultBlacklistFilter);
 	}
@@ -504,8 +549,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 	 * @return the registered instance
 	 */
 
-	public static synchronized IPasswordFilter addFilter(IPasswordFilter filter)
-	{
+	public static synchronized IPasswordFilter addFilter(IPasswordFilter filter) {
 		return filters.put(filter.getID(), filter);
 	}
 
@@ -518,8 +562,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 	 */
 
 	public static synchronized IPasswordFilter removeFilter(
-			IPasswordFilter filter)
-	{
+			IPasswordFilter filter) {
 		return filters.remove(filter.getID());
 	}
 
@@ -531,8 +574,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 	 * @return the removed instance
 	 */
 
-	public static synchronized IPasswordFilter removeFilter(String id)
-	{
+	public static synchronized IPasswordFilter removeFilter(String id) {
 		return filters.remove(id);
 	}
 
@@ -551,29 +593,9 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 	 */
 
 	public static synchronized String generatePassword(int passwordLength,
-			int passwordFlags, int maxAttempts, Random random)
-	{
-		if (passwordLength <= 2)
-		{
-			passwordFlags &= ~PW_UPPERS;
-			LOGGER.fine(Messages.getString("PwGenerator.WARN_PL_UPERCASE_OFF")); //$NON-NLS-1$
-		}
-		if (passwordLength <= 1)
-		{
-			passwordFlags &= ~PW_DIGITS;
-			LOGGER.fine(Messages.getString("PwGenerator.WARN_PL_DIGITS_OFF")); //$NON-NLS-1$
-		}
-		if (passwordLength <= 2)
-		{
-			passwordFlags &= ~PW_SYMBOLS;
-			LOGGER.fine(Messages.getString("PwGenerator.WARN_PL_SYMBOLS_OFF")); //$NON-NLS-1$
-		}
-		if (passwordLength <= 2)
-		{
-			passwordFlags &= ~PW_SYMBOLS_REDUCED;
-			LOGGER.fine(Messages
-					.getString("PwGenerator.WARN_PL_SYMBOLS_REDUCED_OFF")); //$NON-NLS-1$
-		}
+			int passwordFlags, int maxAttempts, Random random) {
+
+		passwordFlags = preprocess(passwordLength, passwordFlags);
 
 		if (maxAttempts < 1)
 			maxAttempts = DEFAULT_MAX_ATTEMPTS;
@@ -581,14 +603,12 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 		random = checkRandom(random);
 
 		String password = null;
-		for (int i = 0; i < maxAttempts; i++)
-		{
+		for (int i = 0; i < maxAttempts; i++) {
 			password = phonemes(passwordLength, passwordFlags, random);
 
 			Set<String> filterIDs = filters.keySet();
 
-			for (Iterator<String> iter = filterIDs.iterator(); iter.hasNext();)
-			{
+			for (Iterator<String> iter = filterIDs.iterator(); iter.hasNext();) {
 				String element = (String) iter.next();
 				IPasswordFilter filter = filters.get(element);
 				password = filter.filter(passwordFlags, password);
@@ -607,14 +627,34 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 		return password;
 	}
 
-	public static synchronized List<String> generate(int length, int number,
+	private synchronized static int preprocess(int passwordLength,
+			int passwordFlags) {
+		if (passwordLength <= 2) {
+			passwordFlags &= ~PW_UPPERS;
+			LOGGER.fine(Messages.getString("PwGenerator.WARN_PL_UPERCASE_OFF")); //$NON-NLS-1$
+		}
+		if (passwordLength <= 1) {
+			passwordFlags &= ~PW_DIGITS;
+			LOGGER.fine(Messages.getString("PwGenerator.WARN_PL_DIGITS_OFF")); //$NON-NLS-1$
+		}
+		if (passwordLength <= 2) {
+			passwordFlags &= ~PW_SYMBOLS;
+			LOGGER.fine(Messages.getString("PwGenerator.WARN_PL_SYMBOLS_OFF")); //$NON-NLS-1$
+		}
+		if (passwordLength <= 2) {
+			passwordFlags &= ~PW_SYMBOLS_REDUCED;
+			LOGGER.fine(Messages
+					.getString("PwGenerator.WARN_PL_SYMBOLS_REDUCED_OFF")); //$NON-NLS-1$
+		}
+		return passwordFlags;
+	}
+
+	public synchronized List<String> gen(int length, int number,
 			int maxAttempts, int flags, Random random,
-			IProgressListener progressListener)
-	{
+			IProgressListener progressListener){
 
 		Set<String> passwords = new HashSet<String>();
-		try
-		{
+		try {
 			int passwordFlags = flags;
 
 			// The length of the password to be generated
@@ -631,43 +671,32 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 
 			// -------------------------------------------------------------------
 
-			LOGGER.fine(Messages.getString("PwGenerator.GENRIC_FLAGS") //$NON-NLS-1$
-			);
+			preprocessWithLog(passwordFlags, passwordLength, numberOfPasswords);
 
-			int res = passwordFlags & PW_DIGITS;
-			LOGGER.fine(Messages.getString("PwGenerator.DIGITS") + (res != 0)); //$NON-NLS-1$
-			res = passwordFlags & PW_AMBIGUOUS;
-			LOGGER.fine(Messages.getString("PwGenerator.AMBIGOUS") + (res != 0)); //$NON-NLS-1$
-			res = passwordFlags & PW_SYMBOLS;
-			LOGGER.fine(Messages.getString("PwGenerator.SYMBOLS") + (res != 0)); //$NON-NLS-1$
-			res = passwordFlags & PW_SYMBOLS_REDUCED;
-			LOGGER.fine(Messages.getString("PwGenerator.SYMBOLS_REDUCED") + (res != 0)); //$NON-NLS-1$
-			res = passwordFlags & PW_UPPERS;
-			LOGGER.fine(Messages.getString("PwGenerator.UPPERS") + (res != 0)); //$NON-NLS-1$
-			LOGGER.fine(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
-			);
+			int attempts = 0;
+			while (passwords.size() != numberOfPasswords && attempts < DEFAULT_MAX_ATTEMPTS) {
+				String password = genPassword(passwordLength, passwordFlags,
+						maxAttempts, random);
 
-			LOGGER.fine(Messages.getString("PwGenerator.GENERATING") + numberOfPasswords + Messages.getString("PwGenerator.PW_LENGTH") //$NON-NLS-1$ //$NON-NLS-2$
-					+ passwordLength);
-			LOGGER.fine(Messages.getString("PwGenerator.PW") //$NON-NLS-1$
-			);
+				if (password != null) {
+					passwords.add(password);
+					if (progressListener != null) {
+						boolean stopped = progressListener.progress(
+								passwords.size(), numberOfPasswords);
+						if (stopped)
+							break;
+					}
 
-			// default iteration
-			fill(passwords, passwordFlags, passwordLength, numberOfPasswords,
-					maxAttempts, random, progressListener);
-
-			// retry to fill in missing passwords if we've achieved more than
-			// 50%
-			if (passwords.size() != numberOfPasswords)
-				if ((numberOfPasswords - passwords.size()) < numberOfPasswords / 2)
-				{
-					fill(passwords, passwordFlags, passwordLength,
-							numberOfPasswords, maxAttempts, random,
-							progressListener);
+					// in case we are in a back up loop(refill so to say)
+					if (passwords.size() >= numberOfPasswords)
+						break;
 				}
-		} catch (Exception e)
-		{
-			LOGGER.warning(Messages.getString("PwGenerator.NUM_FORM_ERROR") + e.getLocalizedMessage()); //$NON-NLS-1$
+
+				attempts++;
+			}
+		} catch (Exception e) {
+			//LOGGER.warning(Messages.getString("PwGenerator.NUM_FORM_ERROR") + e.getLocalizedMessage()); //$NON-NLS-1$
+			LOGGER.warning(Messages.getString("PwGenerator.NUM_FORM_ERROR") + e.getMessage()); //$NON-NLS-1$
 		}
 
 		List<String> result = new ArrayList<String>();
@@ -677,23 +706,161 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 	}
 
 	/**
+	 * This method logs some general info about the given settings and tries to
+	 * generate passwords with the given flags and given length. The method
+	 * return <em>null</em> if it does not manage to create a suitable password
+	 * within the <em>MAX_ATTEMPTS</em>.
+	 * 
+	 * @param passwordLength
+	 *            the length of the password to be generated
+	 * @param passwordFlags
+	 *            the settings for the particular password
+	 * @return a suitable password or <em>null</em> if such could not be
+	 *         generated
+	 */
+
+	public synchronized String genPassword(int passwordLength,
+			int passwordFlags, int maxAttempts, Random random) {
+
+		passwordFlags = preprocess(passwordLength, passwordFlags);
+
+		if (maxAttempts < 1)
+			maxAttempts = DEFAULT_MAX_ATTEMPTS;
+
+		random = checkRandom(random);
+
+		String password = null;
+		for (int i = 0; i < maxAttempts; i++) {
+			password = phonemes(passwordLength, passwordFlags, random);
+
+			Set<String> filterIDs = filters.keySet();
+
+			for (Iterator<String> iter = filterIDs.iterator(); iter.hasNext();) {
+				String element = (String) iter.next();
+				IPasswordFilter filter = filters.get(element);
+				password = filter.filter(passwordFlags, password);
+
+				if (password == null)
+					break;
+			}
+
+			if (password!=null) {
+				Set<String> instFilterIDs = instanceFilters.keySet();
+
+				for (Iterator<String> iter = instFilterIDs.iterator(); iter
+						.hasNext();) {
+					String element = (String) iter.next();
+					IPasswordFilter filter = instanceFilters.get(element);
+					password = filter.filter(passwordFlags, password);
+
+					if (password == null)
+						break;
+				}
+			}
+
+			if (password != null)
+				break;
+
+			LOGGER.fine(Messages.getString("PwGenerator.TRACE_ATTEMPT") + i + Messages.getString("PwGenerator.TRACE_ATTEMPT_GENERATE") //$NON-NLS-1$ //$NON-NLS-2$
+					+ passwordFlags);
+		}
+
+		return password;
+	}
+
+	public static synchronized List<String> generate(int length, int number,
+			int maxAttempts, int flags, Random random,
+			IProgressListener progressListener) {
+
+		Set<String> passwords = new HashSet<String>();
+		try {
+			int passwordFlags = flags;
+
+			// The length of the password to be generated
+			int passwordLength = DEFAULT_PASSWORD_LENGTH;
+			if (length > 0)
+				passwordLength = length;
+
+			int numberOfPasswords = DEFAULT_NUMBER_OF_PASSWORDS;
+			if (number > 0)
+				numberOfPasswords = number;
+
+			if (maxAttempts < 1)
+				maxAttempts = DEFAULT_MAX_ATTEMPTS;
+
+			// -------------------------------------------------------------------
+
+			preprocessWithLog(passwordFlags, passwordLength, numberOfPasswords);
+
+			int attempts = 0;
+			while (passwords.size() != numberOfPasswords && attempts < DEFAULT_MAX_ATTEMPTS) {
+				String password = generatePassword(passwordLength, passwordFlags,
+						maxAttempts, random);
+
+				if (password != null) {
+					passwords.add(password);
+					if (progressListener != null) {
+						boolean stopped = progressListener.progress(
+								passwords.size(), numberOfPasswords);
+						if (stopped)
+							break;
+					}
+
+					// in case we are in a back up loop(refill so to say)
+					if (passwords.size() >= numberOfPasswords)
+						break;
+				}
+
+				attempts++;
+			}
+		} catch (Exception e) {
+			LOGGER.warning(Messages.getString("PwGenerator.NUM_FORM_ERROR") + e.getLocalizedMessage()); //$NON-NLS-1$
+		}
+
+		List<String> result = new ArrayList<String>();
+		result.addAll(passwords);
+
+		return result;
+	}
+
+	private static void preprocessWithLog(int passwordFlags,
+			int passwordLength, int numberOfPasswords) {
+		LOGGER.fine(Messages.getString("PwGenerator.GENRIC_FLAGS") //$NON-NLS-1$
+		);
+
+		int res = passwordFlags & PW_DIGITS;
+		LOGGER.fine(Messages.getString("PwGenerator.DIGITS") + (res != 0)); //$NON-NLS-1$
+		res = passwordFlags & PW_AMBIGUOUS;
+		LOGGER.fine(Messages.getString("PwGenerator.AMBIGOUS") + (res != 0)); //$NON-NLS-1$
+		res = passwordFlags & PW_SYMBOLS;
+		LOGGER.fine(Messages.getString("PwGenerator.SYMBOLS") + (res != 0)); //$NON-NLS-1$
+		res = passwordFlags & PW_SYMBOLS_REDUCED;
+		LOGGER.fine(Messages.getString("PwGenerator.SYMBOLS_REDUCED") + (res != 0)); //$NON-NLS-1$
+		res = passwordFlags & PW_UPPERS;
+		LOGGER.fine(Messages.getString("PwGenerator.UPPERS") + (res != 0)); //$NON-NLS-1$
+		LOGGER.fine(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
+		);
+
+		LOGGER.fine(Messages.getString("PwGenerator.GENERATING") + numberOfPasswords + Messages.getString("PwGenerator.PW_LENGTH") //$NON-NLS-1$ //$NON-NLS-2$
+				+ passwordLength);
+		LOGGER.fine(Messages.getString("PwGenerator.PW") //$NON-NLS-1$
+		);
+	}
+
+	/**
 	 * Fill in the set of passwords
 	 * */
 	private static void fill(Set<String> passwords, int passwordFlags,
 			int passwordLength, int numberOfPasswords, int maxAttempts,
 			Random random, IProgressListener progressListener)
-			throws NoSuchAlgorithmException, NoSuchProviderException
-	{
-		for (int i = 0; i < numberOfPasswords; i++)
-		{
+			throws NoSuchAlgorithmException, NoSuchProviderException {
+		for (int i = 0; i < numberOfPasswords; i++) {
 			String password = generatePassword(passwordLength, passwordFlags,
 					maxAttempts, random);
 
-			if (password != null)
-			{
+			if (password != null) {
 				passwords.add(password);
-				if (progressListener != null)
-				{
+				if (progressListener != null) {
 					boolean stopped = progressListener.progress(
 							passwords.size(), numberOfPasswords);
 					if (stopped)
@@ -707,8 +874,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 		}
 	}
 
-	private static Random checkRandom(Random random)
-	{
+	private static Random checkRandom(Random random) {
 		if (random == null)
 			random = RandomFactory.getInstance().getRandom();
 
@@ -725,8 +891,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 	 * @return the newly created password
 	 */
 	private synchronized static String phonemes(int size, int pw_flags,
-			Random random)
-	{
+			Random random) {
 		int c, i, len, flags, feature_flags;
 		int prev, should_be;
 		boolean first;
@@ -734,8 +899,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 		char ch;
 		StringBuffer buf = new StringBuffer();
 
-		do
-		{
+		do {
 			buf.delete(0, buf.length());
 			feature_flags = pw_flags;
 			c = 0;
@@ -744,16 +908,14 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 			first = true;
 			should_be = random.nextBoolean() ? VOWEL : CONSONANT;
 
-			while (c < size)
-			{
+			while (c < size) {
 
 				i = random.nextInt(PW_ELEMENTS.length);
 				str = PW_ELEMENTS[i].getValue();
 				len = str.length();
 				flags = PW_ELEMENTS[i].getType();
 				/* Filter on the basic type of the next element */
-				if ((flags & should_be) == 0)
-				{
+				if ((flags & should_be) == 0) {
 					continue;
 				}
 				/* Handle the NOT_FIRST flag */
@@ -775,20 +937,16 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 				c += len;
 
 				/* Time to stop? */
-				if (c >= size)
-				{
+				if (c >= size) {
 					// System.out.println("BREAK 1: "+c + " - "+size);
 					break;
 				}
 				/*
 				 * Handle PW_DIGITS
 				 */
-				if ((pw_flags & PW_DIGITS) != 0)
-				{
-					if (!first && (random.nextInt(10) < 2))
-					{
-						do
-						{
+				if ((pw_flags & PW_DIGITS) != 0) {
+					if (!first && (random.nextInt(10) < 2)) {
+						do {
 							ch = (new Integer(random.nextInt(10))).toString()
 									.charAt(0);
 						} while (((pw_flags & PW_AMBIGUOUS) != 0)
@@ -805,12 +963,9 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 				}
 
 				/* Handle PW_SYMBOLS */
-				if ((pw_flags & PW_SYMBOLS) != 0)
-				{
-					if (!first && (random.nextInt(10) < 2))
-					{
-						do
-						{
+				if ((pw_flags & PW_SYMBOLS) != 0) {
+					if (!first && (random.nextInt(10) < 2)) {
+						do {
 							ch = PW_SPECIAL_SYMBOLS.charAt(random
 									.nextInt(PW_SPECIAL_SYMBOLS.length()));
 						} while (((pw_flags & PW_AMBIGUOUS) != 0)
@@ -819,12 +974,9 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 						buf = buf.append(ch);
 						feature_flags &= ~PW_SYMBOLS;
 					}
-				} else if ((pw_flags & PW_SYMBOLS_REDUCED) != 0)
-				{
-					if (!first && (random.nextInt(10) < 2))
-					{
-						do
-						{
+				} else if ((pw_flags & PW_SYMBOLS_REDUCED) != 0) {
+					if (!first && (random.nextInt(10) < 2)) {
+						do {
 							ch = PW_SPECIAL_SYMBOLS_REDUCED.charAt(random
 									.nextInt(PW_SPECIAL_SYMBOLS_REDUCED
 											.length()));
@@ -837,15 +989,12 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 				}
 
 				/* Handle PW_UPPERS */
-				if ((pw_flags & PW_UPPERS) != 0)
-				{
+				if ((pw_flags & PW_UPPERS) != 0) {
 					if ((first || ((flags & CONSONANT) != 0))
-							&& (random.nextInt(10) < 3))
-					{
+							&& (random.nextInt(10) < 3)) {
 						int lastChar = buf.length() - 1;
 						char c1 = buf.charAt(lastChar);
-						if (Character.isLetter(c1))
-						{
+						if (Character.isLetter(c1)) {
 							buf.setCharAt(lastChar, Character.toUpperCase(c1));
 							feature_flags &= ~PW_UPPERS;
 						}
@@ -853,18 +1002,15 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 				}
 
 				/* Handle the AMBIGUOUS flag */
-				if ((pw_flags & PW_AMBIGUOUS) != 0)
-				{
+				if ((pw_flags & PW_AMBIGUOUS) != 0) {
 					int k = -1;
-					for (int j = 0; j < PW_AMBIGUOUS_SYMBOLS.length(); j++)
-					{
+					for (int j = 0; j < PW_AMBIGUOUS_SYMBOLS.length(); j++) {
 						k = buf.indexOf(String.valueOf(PW_AMBIGUOUS_SYMBOLS
 								.charAt(j)));
 						if (k != -1)
 							break;
 					}
-					if (k != -1)
-					{
+					if (k != -1) {
 						char curr = buf.charAt(k);
 						buf.deleteCharAt(k);
 						c = buf.length();
@@ -890,11 +1036,9 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 				/*
 				 * OK, figure out what the next element should be
 				 */
-				if (should_be == CONSONANT)
-				{
+				if (should_be == CONSONANT) {
 					should_be = VOWEL;
-				} else
-				{ /* should_be == VOWEL */
+				} else { /* should_be == VOWEL */
 					if (((prev & VOWEL) != 0) || ((flags & DIPTHONG) != 0)
 							|| (random.nextInt(10) > 3))
 						should_be = CONSONANT;
@@ -917,8 +1061,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 	 * 
 	 * @return the default blacklist filter
 	 */
-	public static IPasswordFilter getDefaultBlacklistFilter()
-	{
+	public static IPasswordFilter getDefaultBlacklistFilter() {
 		return defaultBlacklistFilter;
 	}
 
@@ -929,8 +1072,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx
 	 * @return the default regular expression filter
 	 */
 
-	public static IPasswordFilter getDefaultRegexFilter()
-	{
+	public static IPasswordFilter getDefaultRegexFilter() {
 		return defaultRegexFilter;
 	}
 
