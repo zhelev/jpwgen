@@ -7,7 +7,8 @@ import junit.framework.Assert;
 import org.apache.commons.lang.time.StopWatch;
 import org.testng.annotations.Test;
 
-import de.rrze.jpwgen.IPwGenConstants;
+import de.rrze.jpwgen.IPwGenerator;
+import de.rrze.jpwgen.IPwProcessing;
 import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
 import de.rrze.jpwgen.flags.impl.Only1SymbolFlag;
 import de.rrze.jpwgen.flags.impl.PwNumeralsFlag;
@@ -18,13 +19,10 @@ import de.rrze.jpwgen.options.PwGeneratorOptionBuilder;
 import de.rrze.jpwgen.utils.PwHelper;
 import de.rrze.jpwgen.utils.RandomFactory;
 
-public class BuildersTest extends PwGeneratorTest
-{
+public class BuildersTest extends PwGeneratorTest {
 
-	@Test(groups =
-	{ "default" }, invocationCount = 30)
-	public void flagsBuilderTest()
-	{
+	@Test(groups = { "default" }, invocationCount = 30)
+	public void flagsBuilderTest() {
 		int numPasswords = 10;
 		int passLength = 8;
 
@@ -36,9 +34,10 @@ public class BuildersTest extends PwGeneratorTest
 		flags.setIncludeNumerals().setIncludeCapitals()
 				.setIncludeReducedSymbols().setFilterAmbiguous();
 
-		List<String> passwords = PwGenerator
-				.generate(passLength, numPasswords, 0, flags.build(),
-						RandomFactory.getInstance().getRandom(), null);
+		IPwGenerator pw = new PwGenerator();
+
+		List<String> passwords = pw.generatePasswords(passLength, numPasswords, 0,
+				flags.build(), RandomFactory.getInstance().getRandom(), null);
 
 		assertLengthCount(getClass().getSimpleName(), passLength, numPasswords,
 				passwords);
@@ -49,10 +48,8 @@ public class BuildersTest extends PwGeneratorTest
 
 	}
 
-	@Test(groups =
-	{ "default" }, invocationCount = 20)
-	public void optionsBuilderTest()
-	{
+	@Test(groups = { "default" }, invocationCount = 20)
+	public void optionsBuilderTest() {
 		int numPasswords = 10;
 		int passLength = 8;
 
@@ -77,12 +74,10 @@ public class BuildersTest extends PwGeneratorTest
 
 	}
 
-	@Test(groups =
-	{ "default" }, invocationCount = 20)
-	public void dependencyTest()
-	{
+	@Test(groups = { "default" }, invocationCount = 20)
+	public void dependencyTest() {
 		PwGeneratorFlagBuilder flagBuilder = new PwGeneratorFlagBuilder(
-				IPwGenConstants.DEFAULT_FLAGS);
+				IPwProcessing.DEFAULT_FLAGS);
 		int flags = flagBuilder.build();
 
 		flags = new Only1SymbolFlag().mask(flags);
@@ -118,7 +113,7 @@ public class BuildersTest extends PwGeneratorTest
 				+ new Only1SymbolFlag().isMasked(flags));
 
 		Assert.assertFalse(new Only1SymbolFlag().isMasked(flags));
-		
+
 		System.out.println("Numerals set: "
 				+ new PwNumeralsFlag().isMasked(flags));
 	}

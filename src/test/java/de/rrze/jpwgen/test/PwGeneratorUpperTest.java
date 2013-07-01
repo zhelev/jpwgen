@@ -10,35 +10,29 @@ import org.testng.annotations.Test;
 import de.rrze.jpwgen.impl.PwGenerator;
 import de.rrze.jpwgen.utils.BlankRemover;
 
-public class PwGeneratorUpperTest extends PwGeneratorTest
-{
+public class PwGeneratorUpperTest extends PwGeneratorTest {
 
 	@BeforeClass
-	public void setUp()
-	{
+	public void setUp() {
 		System.out.println("======================== "
 				+ this.getClass().getSimpleName()
 				+ " ================================");
 	}
 
 	@AfterClass
-	public void finish()
-	{
+	public void finish() {
 		System.out.println("======================== "
 				+ this.getClass().getSimpleName()
 				+ " ================================");
 	}
 
-	@Test(groups =
-	{ "default" }, invocationCount = 50)
-	public void upperSymbolsTest()
-	{
+	@Test(groups = { "default" }, invocationCount = 50)
+	public void upperSymbolsTest() {
 
 		int numPasswords = 30;
 		int passLength = 8;
-		
-		System.out
-				.println("UPPER TEST STARTED: Generating passwords:");
+
+		System.out.println("UPPER TEST STARTED: Generating passwords:");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 
@@ -48,21 +42,20 @@ public class PwGeneratorUpperTest extends PwGeneratorTest
 		flags = BlankRemover.itrim(flags);
 		String[] ar = flags.split(" ");
 
-		List<String> passwords = process(this.getClass().getSimpleName(), ar, numPasswords, passLength, null);
+		List<String> passwords = process(new PwGenerator(), this.getClass()
+				.getSimpleName(), ar, numPasswords, passLength, null);
 
-		for (String password : passwords)
-		{
+		for (String password : passwords) {
 			char[] cs = password.toCharArray();
 			boolean found = false;
-			for (int i = 0; i < cs.length; i++)
-			{
-				if(Character.isUpperCase(cs[i]))
+			for (int i = 0; i < cs.length; i++) {
+				if (Character.isUpperCase(cs[i]))
 					found = true;
 			}
-			if(!found)
+			if (!found)
 				throw new RuntimeException("No upper case letters");
 		}
-		
+
 		stopWatch.stop();
 		System.out.println("\nUPPER TEST FINISHED Runtime:"
 				+ stopWatch.toString() + "\n");

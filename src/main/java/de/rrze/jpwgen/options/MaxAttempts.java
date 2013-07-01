@@ -1,7 +1,7 @@
 package de.rrze.jpwgen.options;
 
 import de.rrze.jpwgen.IPwGenCommandLineOptions;
-import de.rrze.jpwgen.IPwGenConstants;
+import de.rrze.jpwgen.IPwDefConstants;
 
 /**
  * The number of attempts to generate a suitable password, before giving up
@@ -12,7 +12,7 @@ public class MaxAttempts extends PwOptionFlag
 {
 	public MaxAttempts()
 	{
-		setValue(Integer.toString(IPwGenConstants.DEFAULT_MAX_ATTEMPTS));
+		setValue(Integer.toString(IPwDefConstants.DEFAULT_MAX_ATTEMPTS));
 	}
 
 	public String getOptionName()

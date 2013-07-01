@@ -8,32 +8,27 @@ import java.util.List;
 import org.testng.Assert;
 
 import de.rrze.jpwgen.IPasswordFilter;
-import de.rrze.jpwgen.impl.PwGenerator;
+import de.rrze.jpwgen.IPwGenerator;
 import de.rrze.jpwgen.utils.PwHelper;
 
-public class PwGeneratorTest
-{
-	protected List<String> process(String test, String[] ar, int numPasswords,
-			int passLength, List<String> blacklist)
-	{
-		return process(test, ar, numPasswords, passLength, blacklist, null);
+public class PwGeneratorTest {
+	protected List<String> process(IPwGenerator pg, String test, String[] ar,
+			int numPasswords, int passLength, List<String> blacklist) {
+		return process(pg, test, ar, numPasswords, passLength, blacklist, null);
 	}
 
-	protected List<String> process(String test, String[] ar, int numPasswords,
-			int passLength, List<String> blacklist,
-			List<IPasswordFilter> filters)
-	{
+	protected List<String> process(IPwGenerator pg, String test, String[] ar,
+			int numPasswords, int passLength, List<String> blacklist,
+			List<IPasswordFilter> filters) {
 
 		System.out.println(ManagementFactory.getRuntimeMXBean().getName()
 				+ " --> " + Thread.currentThread().getName() + " FLAGS: "
 				+ test + " --> " + Arrays.deepToString(ar) + " -> "
 				+ passLength);
 
-		if (filters !=null)
-		{
-			for (IPasswordFilter iPasswordFilter : filters)
-			{
-				PwGenerator.addFilter(iPasswordFilter);
+		if (filters != null) {
+			for (IPasswordFilter iPasswordFilter : filters) {
+				pg.addFilter(iPasswordFilter);
 			}
 		}
 
@@ -51,16 +46,13 @@ public class PwGeneratorTest
 	}
 
 	protected void assertLengthCount(String test, int passLength,
-			int numPasswords, List<String> passwords)
-	{
+			int numPasswords, List<String> passwords) {
 
 		int count = 0;
-		for (Iterator<String> iter = passwords.iterator(); iter.hasNext();)
-		{
+		for (Iterator<String> iter = passwords.iterator(); iter.hasNext();) {
 			++count;
 			String password = (String) iter.next();
-			if (password.length() != passLength)
-			{
+			if (password.length() != passLength) {
 				System.out
 						.printf("#####========>%s %s %s %d Wrong number of characters: %d vs. %d for %s\n",
 								ManagementFactory.getRuntimeMXBean().getName(),

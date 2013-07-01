@@ -40,8 +40,9 @@ import java.util.logging.Logger;
 
 import de.rrze.jpwgen.IPasswordFilter;
 import de.rrze.jpwgen.IProgressListener;
-import de.rrze.jpwgen.IPwGenConstants;
-import de.rrze.jpwgen.IPwGenRegEx;
+import de.rrze.jpwgen.IPwDefConstants;
+import de.rrze.jpwgen.IPwGenerator;
+import de.rrze.jpwgen.IPwProcessing;
 import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
 import de.rrze.jpwgen.utils.Messages;
 import de.rrze.jpwgen.utils.RandomFactory;
@@ -442,7 +443,7 @@ import de.rrze.jpwgen.utils.RandomFactory;
  * 
  * @author unrz205
  */
-public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
+public class PwGenerator implements IPwDefConstants, IPwProcessing, IPwGenerator {
 
 	// A static list of predefined vowels and consonants dipthongs. Suitable for
 	// English speaking people.
@@ -477,127 +478,55 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 			new PwElement("w", CONSONANT), new PwElement("x", CONSONANT), //$NON-NLS-1$ //$NON-NLS-2$
 			new PwElement("y", CONSONANT), new PwElement("z", CONSONANT) }; //$NON-NLS-1$ //$NON-NLS-2$
 
-	private static final IPasswordFilter DEFAULT_REGEX_FILTER = new DefaultRegExFilter();
+	private final IPasswordFilter DEFAULT_PROCESSING_FILTER = new DefaultProcessingFilter();
 
-	private static final IPasswordFilter DEFAULT_BLACK_LIST_FILTER = new DefaultBlacklistFilter();
+	private final IPasswordFilter DEFAULT_BLACK_LIST_FILTER = new DefaultBlacklistFilter();
 
-	private static Map<String, IPasswordFilter> filters = new HashMap<String, IPasswordFilter>();
-
-	private Map<String, IPasswordFilter> instanceFilters = new HashMap<String, IPasswordFilter>();
-
-	public Map<String, IPasswordFilter> getInstanceFilters() {
-		return instanceFilters;
-	}
-
-	public void setInstanceFilters(Map<String, IPasswordFilter> instanceFilters) {
-		this.instanceFilters = instanceFilters;
-	}
-
-	/**
-	 * Adds a password filter to the registry
-	 * 
-	 * @param filter
-	 *            the filter instance to be registered
-	 * @return the registered instance
-	 */
-
-	public synchronized IPasswordFilter addInstanceFilter(IPasswordFilter filter) {
-		return instanceFilters.put(filter.getID(), filter);
-	}
-
-	/**
-	 * Removes a filter from the registry by instance search
-	 * 
-	 * @param filter
-	 *            the instance of the filter
-	 * @return the removed instance
-	 */
-
-	public synchronized IPasswordFilter removeInstanceFilter(
-			IPasswordFilter filter) {
-		return instanceFilters.remove(filter.getID());
-	}
-
-	/**
-	 * Removes a filter from the registry by identifier search
-	 * 
-	 * @param id
-	 *            the identifier of the filter
-	 * @return the removed instance
-	 */
-
-	public synchronized IPasswordFilter removeInstanceFilter(String id) {
-		return instanceFilters.remove(id);
-	}
+	private Map<String, IPasswordFilter> filters = new HashMap<String, IPasswordFilter>();
 
 	private final static Logger LOGGER = Logger.getLogger(PwGenerator.class
 			.getName());
 
-	// Add the default filters, the regex filter is at least necessary so we
-	// have to preserve 'state' here
-	static {
-		filters.put(DEFAULT_REGEX_FILTER.getID(), DEFAULT_REGEX_FILTER);
-		filters.put(DEFAULT_BLACK_LIST_FILTER.getID(), DEFAULT_BLACK_LIST_FILTER);
+	public PwGenerator() {
+		filters.put(DEFAULT_PROCESSING_FILTER.getID(),
+				DEFAULT_PROCESSING_FILTER);
+		filters.put(DEFAULT_BLACK_LIST_FILTER.getID(),
+				DEFAULT_BLACK_LIST_FILTER);
 	}
 
-	/**
-	 * Adds a password filter to the registry
-	 * 
-	 * @param filter
-	 *            the filter instance to be registered
-	 * @return the registered instance
+	/* (non-Javadoc)
+	 * @see de.rrze.jpwgen.impl.IPwGenerator#addFilter(de.rrze.jpwgen.IPasswordFilter)
 	 */
 
-	public static synchronized IPasswordFilter addFilter(IPasswordFilter filter) {
+	@Override
+	public synchronized IPasswordFilter addFilter(IPasswordFilter filter) {
 		return filters.put(filter.getID(), filter);
 	}
 
-	/**
-	 * Removes a filter from the registry by instance search
-	 * 
-	 * @param filter
-	 *            the instance of the filter
-	 * @return the removed instance
+	/* (non-Javadoc)
+	 * @see de.rrze.jpwgen.impl.IPwGenerator#removeFilter(de.rrze.jpwgen.IPasswordFilter)
 	 */
 
-	public static synchronized IPasswordFilter removeFilter(
-			IPasswordFilter filter) {
+	@Override
+	public synchronized IPasswordFilter removeFilter(IPasswordFilter filter) {
 		return filters.remove(filter.getID());
 	}
 
-	/**
-	 * Removes a filter from the registry by identifier search
-	 * 
-	 * @param id
-	 *            the identifier of the filter
-	 * @return the removed instance
+	/* (non-Javadoc)
+	 * @see de.rrze.jpwgen.impl.IPwGenerator#removeFilter(java.lang.String)
 	 */
 
-	public static synchronized IPasswordFilter removeFilter(String id) {
+	@Override
+	public synchronized IPasswordFilter removeFilter(String id) {
 		return filters.remove(id);
 	}
 
-	public synchronized List<String> isInstanceInvalid(int passwordFlags, String password) {
-			
-		List<String> problems = new ArrayList<String>();
-
-		Set<String> filterIDs = instanceFilters.keySet();
-
-		for (Iterator<String> iter = filterIDs.iterator(); iter.hasNext();) {
-			String element = (String) iter.next();
-			IPasswordFilter filter = instanceFilters.get(element);
-			
-			String checked = filter.filter(passwordFlags, password);
-
-			if (checked == null)
-				problems.add(element);
-			
-		}
-
-		return problems;
-	}
-
-	public synchronized static List<String> isInvalid(int passwordFlags, String password) {
+	/* (non-Javadoc)
+	 * @see de.rrze.jpwgen.impl.IPwGenerator#validate(int, java.lang.String)
+	 */
+	@Override
+	public synchronized List<String> validate(int passwordFlags,
+			String password) {
 		List<String> problems = new ArrayList<String>();
 
 		Set<String> filterIDs = filters.keySet();
@@ -605,7 +534,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 		for (Iterator<String> iter = filterIDs.iterator(); iter.hasNext();) {
 			String element = (String) iter.next();
 			IPasswordFilter filter = filters.get(element);
-			
+
 			String checked = filter.filter(passwordFlags, password);
 
 			if (checked == null)
@@ -615,73 +544,37 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 		return problems;
 	}
 
-	
-	public synchronized static List<String> failsDefaultRegExFilter(int flags, String password)
-	{
+	/* (non-Javadoc)
+	 * @see de.rrze.jpwgen.impl.IPwGenerator#valiadteWithProcessingFilter(int, java.lang.String)
+	 */
+	@Override
+	public synchronized List<String> valiadteWithProcessingFilter(int flags,
+			String password) {
 		List<String> failed = new ArrayList<String>();
-		List<String> appliedFilters =  PwGeneratorFlagBuilder.evalFlags(flags);
+		List<String> appliedFilters = PwGeneratorFlagBuilder.evalFlags(flags);
 		for (String key : appliedFilters) {
 			int clear = 0;
 			int masked = PwGeneratorFlagBuilder.FLAGS.get(key).mask(clear);
-			String filtered = DEFAULT_REGEX_FILTER.filter(masked, password);
-			if(filtered==null)
+			String filtered = DEFAULT_PROCESSING_FILTER
+					.filter(masked, password);
+			if (filtered == null)
 				failed.add(key);
 		}
-		
+
 		return failed;
 	}
-	
-	public synchronized static Boolean failsDefaultBlackList(int flags, String password)
-	{
-		String filtered = DEFAULT_BLACK_LIST_FILTER.filter(flags, password);
-		return (filtered==null);
-	}
-	
-	/**
-	 * This method logs some general info about the given settings and tries to
-	 * generate passwords with the given flags and given length. The method
-	 * return <em>null</em> if it does not manage to create a suitable password
-	 * within the <em>MAX_ATTEMPTS</em>.
-	 * 
-	 * @param passwordLength
-	 *            the length of the password to be generated
-	 * @param passwordFlags
-	 *            the settings for the particular password
-	 * @return a suitable password or <em>null</em> if such could not be
-	 *         generated
+
+	/* (non-Javadoc)
+	 * @see de.rrze.jpwgen.impl.IPwGenerator#valiadteWithBlacklistFilter(int, java.lang.String)
 	 */
-
-	public static synchronized String generatePassword(int passwordLength,
-			int passwordFlags, int maxAttempts, Random random) {
-
-		passwordFlags = preprocess(passwordLength, passwordFlags);
-
-		if (maxAttempts < 1)
-			maxAttempts = DEFAULT_MAX_ATTEMPTS;
-
-		random = checkRandom(random);
-
-		String password = null;
-		for (int i = 0; i < maxAttempts; i++) {
-			password = phonemes(passwordLength, passwordFlags, random);
-
-			if (isInvalid(passwordFlags, password).size() > 0) {
-				password = null;
-				continue;
-			}
-
-			if (password != null)
-				break;
-
-			LOGGER.fine(Messages.getString("PwGenerator.TRACE_ATTEMPT") + i + Messages.getString("PwGenerator.TRACE_ATTEMPT_GENERATE") //$NON-NLS-1$ //$NON-NLS-2$
-					+ passwordFlags);
-		}
-
-		return password;
+	@Override
+	public synchronized Boolean valiadteWithBlacklistFilter(int flags,
+			String password) {
+		String filtered = DEFAULT_BLACK_LIST_FILTER.filter(flags, password);
+		return (filtered == null);
 	}
 
-	private synchronized static int preprocess(int passwordLength,
-			int passwordFlags) {
+	private int preprocess(int passwordLength, int passwordFlags) {
 		if (passwordLength <= 2) {
 			passwordFlags &= ~PW_UPPERS;
 			LOGGER.fine(Messages.getString("PwGenerator.WARN_PL_UPERCASE_OFF")); //$NON-NLS-1$
@@ -702,115 +595,11 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 		return passwordFlags;
 	}
 
-	public synchronized List<String> gen(int length, int number,
-			int maxAttempts, int flags, Random random,
-			IProgressListener progressListener) {
-
-		Set<String> passwords = new HashSet<String>();
-		try {
-			int passwordFlags = flags;
-
-			// The length of the password to be generated
-			int passwordLength = DEFAULT_PASSWORD_LENGTH;
-			if (length > 0)
-				passwordLength = length;
-
-			int numberOfPasswords = DEFAULT_NUMBER_OF_PASSWORDS;
-			if (number > 0)
-				numberOfPasswords = number;
-
-			if (maxAttempts < 1)
-				maxAttempts = DEFAULT_MAX_ATTEMPTS;
-
-			// -------------------------------------------------------------------
-
-			preprocessWithLog(passwordFlags, passwordLength, numberOfPasswords);
-
-			int attempts = 0;
-			while (passwords.size() != numberOfPasswords
-					&& attempts < DEFAULT_MAX_ATTEMPTS) {
-				String password = genPassword(passwordLength, passwordFlags,
-						maxAttempts, random);
-
-				if (password != null) {
-					passwords.add(password);
-					if (progressListener != null) {
-						boolean stopped = progressListener.progress(
-								passwords.size(), numberOfPasswords);
-						if (stopped)
-							break;
-					}
-
-					// in case we are in a back up loop(refill so to say)
-					if (passwords.size() >= numberOfPasswords)
-						break;
-				}
-
-				attempts++;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			//LOGGER.warning(Messages.getString("PwGenerator.NUM_FORM_ERROR") + e.getLocalizedMessage()); //$NON-NLS-1$
-			LOGGER.warning(Messages.getString("PwGenerator.NUM_FORM_ERROR") + e.getMessage()); //$NON-NLS-1$
-		}
-
-		List<String> result = new ArrayList<String>();
-		result.addAll(passwords);
-
-		return result;
-	}
-
-	/**
-	 * This method logs some general info about the given settings and tries to
-	 * generate passwords with the given flags and given length. The method
-	 * return <em>null</em> if it does not manage to create a suitable password
-	 * within the <em>MAX_ATTEMPTS</em>.
-	 * 
-	 * @param passwordLength
-	 *            the length of the password to be generated
-	 * @param passwordFlags
-	 *            the settings for the particular password
-	 * @return a suitable password or <em>null</em> if such could not be
-	 *         generated
+	/* (non-Javadoc)
+	 * @see de.rrze.jpwgen.impl.IPwGenerator#generatePasswords(int, int, int, int, java.util.Random, de.rrze.jpwgen.IProgressListener)
 	 */
-
-	public synchronized String genPassword(int passwordLength,
-			int passwordFlags, int maxAttempts, Random random) {
-
-		passwordFlags = preprocess(passwordLength, passwordFlags);
-
-		if (maxAttempts < 1)
-			maxAttempts = DEFAULT_MAX_ATTEMPTS;
-
-		random = checkRandom(random);
-
-		String password = null;
-		for (int i = 0; i < maxAttempts; i++) {
-			password = phonemes(passwordLength, passwordFlags, random);
-
-			if (isInvalid(passwordFlags, password).size() > 0) {
-				password = null;
-				continue;
-			}
-
-			if (password != null) {
-				if (isInstanceInvalid(passwordFlags, password).size() > 0) {
-					password = null;
-					continue;
-				}
-			}
-
-			if (password != null)
-				break;
-
-			LOGGER.fine(Messages.getString("PwGenerator.TRACE_ATTEMPT") + i + Messages.getString("PwGenerator.TRACE_ATTEMPT_GENERATE") //$NON-NLS-1$ //$NON-NLS-2$
-					+ passwordFlags);
-		}
-
-		return password;
-	}
-
-	public static synchronized List<String> generate(int length, int number,
+	@Override
+	public synchronized List<String> generatePasswords(int length, int number,
 			int maxAttempts, int flags, Random random,
 			IProgressListener progressListener) {
 
@@ -837,8 +626,8 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 			int attempts = 0;
 			while (passwords.size() != numberOfPasswords
 					&& attempts < DEFAULT_MAX_ATTEMPTS) {
-				String password = generatePassword(passwordLength,
-						passwordFlags, maxAttempts, random);
+				String password = generate(passwordLength, passwordFlags,
+						maxAttempts, random);
 
 				if (password != null) {
 					passwords.add(password);
@@ -866,8 +655,42 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 		return result;
 	}
 
-	private static void preprocessWithLog(int passwordFlags,
-			int passwordLength, int numberOfPasswords) {
+	/* (non-Javadoc)
+	 * @see de.rrze.jpwgen.impl.IPwGenerator#generate(int, int, int, java.util.Random)
+	 */
+
+	@Override
+	public synchronized String generate(int passwordLength, int passwordFlags,
+			int maxAttempts, Random random) {
+
+		passwordFlags = preprocess(passwordLength, passwordFlags);
+
+		if (maxAttempts < 1)
+			maxAttempts = DEFAULT_MAX_ATTEMPTS;
+
+		random = checkRandom(random);
+
+		String password = null;
+		for (int i = 0; i < maxAttempts; i++) {
+			password = phonemes(passwordLength, passwordFlags, random);
+
+			if (validate(passwordFlags, password).size() > 0) {
+				password = null;
+				continue;
+			}
+
+			if (password != null)
+				break;
+
+			LOGGER.fine(Messages.getString("PwGenerator.TRACE_ATTEMPT") + i + Messages.getString("PwGenerator.TRACE_ATTEMPT_GENERATE") //$NON-NLS-1$ //$NON-NLS-2$
+					+ passwordFlags);
+		}
+
+		return password;
+	}
+
+	private void preprocessWithLog(int passwordFlags, int passwordLength,
+			int numberOfPasswords) {
 		LOGGER.fine(Messages.getString("PwGenerator.GENRIC_FLAGS") //$NON-NLS-1$
 		);
 
@@ -890,7 +713,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 		);
 	}
 
-	private static Random checkRandom(Random random) {
+	private Random checkRandom(Random random) {
 		if (random == null)
 			random = RandomFactory.getInstance().getRandom();
 
@@ -906,8 +729,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 	 *            the settings for the password
 	 * @return the newly created password
 	 */
-	private synchronized static String phonemes(int size, int pw_flags,
-			Random random) {
+	private synchronized String phonemes(int size, int pw_flags, Random random) {
 		int c, i, len, flags, feature_flags;
 		int prev, should_be;
 		boolean first;
@@ -1071,25 +893,21 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 		return buf.toString();
 	}
 
-	/**
-	 * Returns the instance of the default blacklist filter registered with the
-	 * PwGenerator
-	 * 
-	 * @return the default blacklist filter
+	/* (non-Javadoc)
+	 * @see de.rrze.jpwgen.impl.IPwGenerator#getDefaultBlacklistFilter()
 	 */
-	public static IPasswordFilter getDefaultBlacklistFilter() {
+	@Override
+	public IPasswordFilter getDefaultBlacklistFilter() {
 		return DEFAULT_BLACK_LIST_FILTER;
 	}
 
-	/**
-	 * Returns the instance of the default regular expression filter registered
-	 * with the PwGenerator
-	 * 
-	 * @return the default regular expression filter
+	/* (non-Javadoc)
+	 * @see de.rrze.jpwgen.impl.IPwGenerator#getDefaultProcessingFilter()
 	 */
 
-	public static IPasswordFilter getDefaultRegexFilter() {
-		return DEFAULT_REGEX_FILTER;
+	@Override
+	public IPasswordFilter getDefaultProcessingFilter() {
+		return DEFAULT_PROCESSING_FILTER;
 	}
 
 }

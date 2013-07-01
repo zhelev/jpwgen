@@ -49,27 +49,12 @@ public interface IPasswordFilter
 	public String getID();
 
 	/**
-	 * Sets the identifier of this filter. A filter should have a predefined
-	 * identifier. A good idea is to use the class.getName() method.
-	 * 
-	 * @param id
-	 */
-	public void setID(String id);
-
-	/**
 	 * This method returns a short description of what the filter is doing and
 	 * how.
 	 * 
 	 * @return description
 	 */
 	public String getDescription();
-
-	/**
-	 * This method sets the description of the filter.
-	 * 
-	 * @param description
-	 */
-	public void setDescription(String description);
 
 	/**
 	 * This method does the actual filtering. It implements the main logic of

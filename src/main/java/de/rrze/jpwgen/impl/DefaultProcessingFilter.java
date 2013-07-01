@@ -33,8 +33,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.rrze.jpwgen.IPasswordFilter;
-import de.rrze.jpwgen.IPwGenConstants;
-import de.rrze.jpwgen.IPwGenRegEx;
+import de.rrze.jpwgen.IPwDefConstants;
+import de.rrze.jpwgen.IPwProcessing;
 import de.rrze.jpwgen.utils.Messages;
 
 /**
@@ -44,11 +44,11 @@ import de.rrze.jpwgen.utils.Messages;
  * 
  * @author unrz205
  */
-public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
-		IPwGenRegEx {
+public class DefaultProcessingFilter implements IPasswordFilter, IPwDefConstants,
+		IPwProcessing {
 
 	private final static Logger LOGGER = Logger
-			.getLogger(DefaultRegExFilter.class.getName());
+			.getLogger(DefaultProcessingFilter.class.getName());
 
 	// A list that stores the forbidden words.
 	private List<String> blacklist = new ArrayList<String>();
@@ -56,18 +56,12 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	private static final Pattern REGEX_AT_LEAST_1_CAPITAL_P = Pattern
 			.compile(REGEX_AT_LEAST_1_CAPITAL);
 
-	private static final Pattern REGEX_AT_LEAST_1_SYMBOL_P = Pattern
-			.compile(REGEX_AT_LEAST_1_SYMBOLS);
-
 	private static final Pattern REGEX_AT_LEAST_1_DIGIT_P = Pattern
 			.compile(REGEX_AT_LEAST_1_DIGIT);
 
 	// Filters passwords starting with small letter
 	private static final Pattern REGEX_STARTS_NO_SMALL_LETTER_P = Pattern
 			.compile(REGEX_STARTS_NO_SMALL_LETTER);
-
-	private static final Pattern REGEX_AMBIGUOUS_SYMBOLS_P = Pattern
-			.compile(REGEX_AMBIGUOUS_SYMBOLS);
 
 	// Filters passwords ending with small letter
 	private static final Pattern REGEX_ENDS_NO_SMALL_LETTER_P = Pattern
@@ -124,9 +118,17 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	/**
 	 * Default construct.
 	 */
-	public DefaultRegExFilter() {
+	public DefaultProcessingFilter() {
 	}
 
+	/**
+	 * Default construct.
+	 */
+	public DefaultProcessingFilter(List<String> blacklist) {
+		this.blacklist = blacklist;
+	}
+
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -190,19 +192,29 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 			}
 		}
 
-		if ((passwordFlags & PW_UPPERS) != 0) {
-			Matcher matcher = REGEX_AT_LEAST_1_CAPITAL_P.matcher(password);
-			if (!matcher.find()) {
+		if ((passwordFlags & PW_AMBIGUOUS) != 0) {
+			
+			Boolean found = false;
+
+			for (int i = 0; i < PW_AMBIGUOUS_SYMBOLS.length(); i++) {
+				if (password.indexOf(PW_AMBIGUOUS_SYMBOLS.charAt(i)) != -1) {
+					found = true;
+					break;
+				}
+			}
+
+			if (found) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultRegExFilter.NO_CAPITAL")); //$NON-NLS-1$
 				return null;
 			}
 		}
-
-		if ((passwordFlags & PW_AMBIGUOUS) != 0) {
-			Matcher matcher = REGEX_AMBIGUOUS_SYMBOLS_P.matcher(password);
-			if (matcher.find()) {
+		
+		
+		if ((passwordFlags & PW_UPPERS) != 0) {
+			Matcher matcher = REGEX_AT_LEAST_1_CAPITAL_P.matcher(password);
+			if (!matcher.find()) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultRegExFilter.NO_CAPITAL")); //$NON-NLS-1$
@@ -386,26 +398,6 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	 */
 	public String getID() {
 		return this.getClass().getSimpleName();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.rrze.idmone.utils.pwgen.IPassowrdFilter#setDescription(java.lang.String
-	 * )
-	 */
-	public void setDescription(String description) {
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#setID(java.lang.String)
-	 */
-	public void setID(String id) {
-		System.err.println(Messages.getString("DefaultRegExFilter.ID_CHANGE")); //$NON-NLS-1$
 	}
 
 	/*

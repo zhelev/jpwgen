@@ -1,4 +1,4 @@
-package de.rrze.jpwgen.flags;
+package de.rrze.jpwgen;
 
 import java.io.Serializable;
 

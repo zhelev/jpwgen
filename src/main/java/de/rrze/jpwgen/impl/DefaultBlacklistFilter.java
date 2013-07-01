@@ -28,12 +28,10 @@
  */
 package de.rrze.jpwgen.impl;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import de.rrze.jpwgen.IPasswordFilter;
 import de.rrze.jpwgen.utils.Messages;
 
 /**
@@ -44,10 +42,7 @@ import de.rrze.jpwgen.utils.Messages;
  * 
  * @author unrz205
  */
-public class DefaultBlacklistFilter implements IPasswordFilter
-{
-	// A list that stores the forbidden words
-	private List<String> blacklist = new ArrayList<String>();
+public class DefaultBlacklistFilter extends AbstractPasswordFilter {
 
 	private final static Logger LOGGER = Logger
 			.getLogger(DefaultBlacklistFilter.class.getName());
@@ -55,8 +50,14 @@ public class DefaultBlacklistFilter implements IPasswordFilter
 	/**
 	 * Default constructor.
 	 */
-	public DefaultBlacklistFilter()
-	{
+	public DefaultBlacklistFilter() {
+	}
+
+	/**
+	 * Default constructor.
+	 */
+	public DefaultBlacklistFilter(List<String> blacklist) {
+		super(blacklist);
 	}
 
 	/*
@@ -65,11 +66,9 @@ public class DefaultBlacklistFilter implements IPasswordFilter
 	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#filter(int,
 	 * java.lang.String)
 	 */
-	public synchronized String filter(int passwordFlags, String password)
-	{
+	public synchronized String filter(int passwordFlags, String password) {
 		// Iterate over the list and check whether it contains the word
-		for (Iterator<String> iter = blacklist.iterator(); iter.hasNext();)
-		{
+		for (Iterator<String> iter = blacklist.iterator(); iter.hasNext();) {
 			String blackword = (String) iter.next();
 			LOGGER.fine(Messages
 					.getString("DefaultBlacklistFilter.CHECK_PASSWD") + password //$NON-NLS-1$
@@ -80,113 +79,6 @@ public class DefaultBlacklistFilter implements IPasswordFilter
 		}
 
 		return password;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#filter(int,
-	 * java.util.List)
-	 */
-	public synchronized List<String> filter(int passwordFlags,
-			List<String> password)
-	{
-		List<String> suitable = new ArrayList<String>();
-		for (Iterator<String> iter = password.iterator(); iter.hasNext();)
-		{
-			String element = (String) iter.next();
-			if (filter(passwordFlags, password) != null)
-				suitable.add(element);
-		}
-		return suitable;
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#getDescription()
-	 */
-	public String getDescription()
-	{
-		return Messages.getString("DefaultBlacklistFilter.DESCR"); //$NON-NLS-1$
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#getID()
-	 */
-	public String getID()
-	{
-		return this.getClass().getSimpleName();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.rrze.idmone.utils.pwgen.IPassowrdFilter#setDescription(java.lang.String
-	 * )
-	 */
-	public void setDescription(String description)
-	{
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#setID(java.lang.String)
-	 */
-	public void setID(String id)
-	{
-		LOGGER.fine(Messages.getString("DefaultBlacklistFilter.ID_CHANGE")); //$NON-NLS-1$
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#getBlacklist()
-	 */
-	public List<String> getBlacklist()
-	{
-		return blacklist;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.rrze.idmone.utils.pwgen.IPassowrdFilter#setBlacklist(java.util.List)
-	 */
-	public void setBlacklist(List<String> blacklist)
-	{
-		this.blacklist = blacklist;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.rrze.idmone.utils.pwgen.IPassowrdFilter#addToBlacklist(java.lang.String
-	 * )
-	 */
-	public synchronized boolean addToBlacklist(String blackWord)
-	{
-		return blacklist.add(blackWord);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.rrze.idmone.utils.pwgen.IPassowrdFilter#removeFromBlacklist(java.lang
-	 * .String)
-	 */
-	public synchronized boolean removeFromBlacklist(String blackWord)
-	{
-		return blacklist.remove(blackWord);
 	}
 
 }

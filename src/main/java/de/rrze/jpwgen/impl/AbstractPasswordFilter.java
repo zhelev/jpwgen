@@ -5,37 +5,35 @@ import java.util.Iterator;
 import java.util.List;
 
 import de.rrze.jpwgen.IPasswordFilter;
-import de.rrze.jpwgen.IPwGenConstants;
-import de.rrze.jpwgen.IPwGenRegEx;
+import de.rrze.jpwgen.IPwDefConstants;
+import de.rrze.jpwgen.IPwProcessing;
 
 public abstract class AbstractPasswordFilter implements IPasswordFilter,
-		IPwGenConstants, IPwGenRegEx {
+		IPwDefConstants, IPwProcessing {
 
 	// A list that stores the forbidden words
-	private List<String> blacklist = new ArrayList<String>();
+	protected List<String> blacklist = new ArrayList<String>();
 
-	private String id = AbstractPasswordFilter.class.getName();
-	private String description = AbstractPasswordFilter.class.getName();
+	protected String id = AbstractPasswordFilter.class.getSimpleName();
+	protected String description = AbstractPasswordFilter.class.getSimpleName();
 
 	AbstractPasswordFilter() {
-		id = this.getClass().getName();
-		description = this.getClass().getName();
+		id = this.getClass().getSimpleName();
+		description = this.getClass().getSimpleName();
 	}
 
+	AbstractPasswordFilter(List<String> blacklist) {
+		this.blacklist = blacklist;
+		id = this.getClass().getSimpleName();
+		description = this.getClass().getSimpleName();
+	}
+	
 	public String getID() {
 		return id;
 	}
 
-	public void setID(String id) {
-		this.id = id;
-	}
-
 	public String getDescription() {
 		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public abstract String filter(int passwordFlags, String password);
@@ -55,7 +53,7 @@ public abstract class AbstractPasswordFilter implements IPasswordFilter,
 	 * 
 	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#getBlacklist()
 	 */
-	public List<String> getBlacklist() {
+	public synchronized List<String> getBlacklist() {
 		return blacklist;
 	}
 
@@ -65,7 +63,7 @@ public abstract class AbstractPasswordFilter implements IPasswordFilter,
 	 * @see
 	 * de.rrze.idmone.utils.pwgen.IPassowrdFilter#setBlacklist(java.util.List)
 	 */
-	public void setBlacklist(List<String> blacklist) {
+	public synchronized void setBlacklist(List<String> blacklist) {
 		this.blacklist = blacklist;
 	}
 
@@ -76,7 +74,7 @@ public abstract class AbstractPasswordFilter implements IPasswordFilter,
 	 * de.rrze.idmone.utils.pwgen.IPassowrdFilter#addToBlacklist(java.lang.String
 	 * )
 	 */
-	public boolean addToBlacklist(String blackWord) {
+	public synchronized boolean addToBlacklist(String blackWord) {
 		return blacklist.add(blackWord);
 	}
 
@@ -87,7 +85,7 @@ public abstract class AbstractPasswordFilter implements IPasswordFilter,
 	 * de.rrze.idmone.utils.pwgen.IPassowrdFilter#removeFromBlacklist(java.lang
 	 * .String)
 	 */
-	public boolean removeFromBlacklist(String blackWord) {
+	public synchronized boolean removeFromBlacklist(String blackWord) {
 		return blacklist.remove(blackWord);
 	}
 

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import de.rrze.jpwgen.IPwFlag;
 import de.rrze.jpwgen.flags.impl.AtLeast2DigitsFlag;
 import de.rrze.jpwgen.flags.impl.AtLeast2SymbolsFlag;
 import de.rrze.jpwgen.flags.impl.EndsNoDigitFlag;

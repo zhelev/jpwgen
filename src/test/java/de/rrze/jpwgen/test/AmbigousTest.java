@@ -5,6 +5,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import de.rrze.jpwgen.impl.PwGenerator;
 import de.rrze.jpwgen.utils.BlankRemover;
 
 // Error reported for:
@@ -46,7 +47,7 @@ public class AmbigousTest extends PwGeneratorTest
 		flags = BlankRemover.itrim(flags);
 		String[] ar = flags.split(" ");
 
-		process(this.getClass().getSimpleName(), ar, numPasswords, passLength,
+		process(new PwGenerator(), this.getClass().getSimpleName(), ar, numPasswords, passLength,
 				null);
 
 		stopWatch.stop();

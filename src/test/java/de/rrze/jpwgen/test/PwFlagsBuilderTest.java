@@ -7,6 +7,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import de.rrze.jpwgen.IPwGenerator;
 import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
 import de.rrze.jpwgen.impl.PwGenerator;
 
@@ -44,7 +45,9 @@ public class PwFlagsBuilderTest extends PwGeneratorTest
 		flags.setIncludeNumerals().setIncludeReducedSymbols()
 				.setIncludeCapitals().setFilterAmbiguous();
 
-		List<String> passwords = PwGenerator.generate(passLength, numPasswords,
+		IPwGenerator pw = new PwGenerator();
+		
+		List<String> passwords = pw.generatePasswords(passLength, numPasswords,
 				100, flags.build(), null, null);
 
 		assertLengthCount(getClass().getSimpleName(), passLength, numPasswords,

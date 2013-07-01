@@ -8,29 +8,24 @@ import org.testng.annotations.Test;
 import de.rrze.jpwgen.impl.PwGenerator;
 import de.rrze.jpwgen.utils.BlankRemover;
 
-public class PwGeneratorDefaultTest extends PwGeneratorTest
-{
+public class PwGeneratorDefaultTest extends PwGeneratorTest {
 
 	@BeforeClass
-	public void setUp()
-	{
+	public void setUp() {
 		System.out.println("======================== "
 				+ this.getClass().getSimpleName()
 				+ " ================================");
 	}
 
 	@AfterClass
-	public void finish()
-	{
+	public void finish() {
 		System.out.println("======================== "
 				+ this.getClass().getSimpleName()
 				+ " ================================");
 	}
 
-	@Test(groups =
-	{ "default" }, invocationCount = 20)
-	public void defaultTest()
-	{
+	@Test(groups = { "default" }, invocationCount = 20)
+	public void defaultTest() {
 
 		int numPasswords = 15;
 		int passLength = 10;
@@ -45,7 +40,8 @@ public class PwGeneratorDefaultTest extends PwGeneratorTest
 		flags = BlankRemover.itrim(flags);
 		String[] ar = flags.split(" ");
 
-		process(this.getClass().getSimpleName(), ar, numPasswords, passLength, null);
+		process(new PwGenerator(), this.getClass().getSimpleName(), ar,
+				numPasswords, passLength, null);
 
 		stopWatch.stop();
 		System.out.println("\nDEFAULT TESTS FINISHED Runtime:"
