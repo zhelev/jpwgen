@@ -42,14 +42,14 @@ public class ValidateTest {
 
 		System.out.println("inValid: " + pg.validate(builtFlag, password));
 
-		List<String> drfResult = pg.valiadteWithProcessingFilter(builtFlag,
+		List<String> drfResult = pg.validateWithDefaultProcessingFilter(builtFlag,
 				password);
 
 		pg.getDefaultBlacklistFilter().addToBlacklist("nazi");
 
 		System.out.println("Test DefaultBlackFilter: " + drfResult);
 
-		Boolean dbResult = pg.valiadteWithBlacklistFilter(builtFlag, password);
+		Boolean dbResult = pg.validateWithDefaultBlacklistFilter(builtFlag, password);
 
 		System.out.println("Test DefaultBlackFilter: " + dbResult);
 

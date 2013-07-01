@@ -548,7 +548,7 @@ public class PwGenerator implements IPwDefConstants, IPwProcessing, IPwGenerator
 	 * @see de.rrze.jpwgen.impl.IPwGenerator#valiadteWithProcessingFilter(int, java.lang.String)
 	 */
 	@Override
-	public synchronized List<String> valiadteWithProcessingFilter(int flags,
+	public synchronized List<String> validateWithDefaultProcessingFilter(int flags,
 			String password) {
 		List<String> failed = new ArrayList<String>();
 		List<String> appliedFilters = PwGeneratorFlagBuilder.evalFlags(flags);
@@ -568,7 +568,7 @@ public class PwGenerator implements IPwDefConstants, IPwProcessing, IPwGenerator
 	 * @see de.rrze.jpwgen.impl.IPwGenerator#valiadteWithBlacklistFilter(int, java.lang.String)
 	 */
 	@Override
-	public synchronized Boolean valiadteWithBlacklistFilter(int flags,
+	public synchronized Boolean validateWithDefaultBlacklistFilter(int flags,
 			String password) {
 		String filtered = DEFAULT_BLACK_LIST_FILTER.filter(flags, password);
 		return (filtered == null);

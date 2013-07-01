@@ -38,10 +38,10 @@ public interface IPwGenerator {
 
 	public abstract List<String> validate(int passwordFlags, String password);
 
-	public abstract List<String> valiadteWithProcessingFilter(int flags,
+	public abstract List<String> validateWithDefaultProcessingFilter(int flags,
 			String password);
 
-	public abstract Boolean valiadteWithBlacklistFilter(int flags,
+	public abstract Boolean validateWithDefaultBlacklistFilter(int flags,
 			String password);
 
 	public abstract List<String> generatePasswords(int length, int number,
