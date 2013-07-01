@@ -1,2 +1,4 @@
 Use this command to produce enough entropy for the SecureRandom(on Linux machines, obviously):
 sudo rngd -r /dev/urandom
+
+java -jar jpwgen-x.x.xx.jar -N 60 -s 10 -C -Y -S SHA1PRNG SUN

@@ -15,6 +15,7 @@ public class AtLeast2DigitsFlag extends AbstractPwFlag {
 
 	public int mask(int flags) {
 		int tmp = new Only1DigitFlag().unmask(flags);
+		
 		return super.mask(new PwNumeralsFlag().mask(tmp));
 	}
 

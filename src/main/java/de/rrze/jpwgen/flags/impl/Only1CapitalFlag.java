@@ -13,7 +13,7 @@ public class Only1CapitalFlag extends AbstractPwFlag {
 	}
 
 	public int mask(int flags) {
-		return super.mask(flags) | PW_UPPERS;
+		return new PwCapitalizeFlag().mask(super.mask(flags));
 	}
 
 }
