@@ -45,8 +45,7 @@ import de.rrze.jpwgen.utils.Messages;
  * @author unrz205
  */
 public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
-		IPwGenRegEx
-{
+		IPwGenRegEx {
 
 	private final static Logger LOGGER = Logger
 			.getLogger(DefaultRegExFilter.class.getName());
@@ -54,9 +53,21 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	// A list that stores the forbidden words.
 	private List<String> blacklist = new ArrayList<String>();
 
+	private static final Pattern REGEX_AT_LEAST_1_CAPITAL_P = Pattern
+			.compile(REGEX_AT_LEAST_1_CAPITAL);
+
+	private static final Pattern REGEX_AT_LEAST_1_SYMBOL_P = Pattern
+			.compile(REGEX_AT_LEAST_1_SYMBOLS);
+
+	private static final Pattern REGEX_AT_LEAST_1_DIGIT_P = Pattern
+			.compile(REGEX_AT_LEAST_1_DIGIT);
+
 	// Filters passwords starting with small letter
 	private static final Pattern REGEX_STARTS_NO_SMALL_LETTER_P = Pattern
 			.compile(REGEX_STARTS_NO_SMALL_LETTER);
+
+	private static final Pattern REGEX_AMBIGUOUS_SYMBOLS_P = Pattern
+			.compile(REGEX_AMBIGUOUS_SYMBOLS);
 
 	// Filters passwords ending with small letter
 	private static final Pattern REGEX_ENDS_NO_SMALL_LETTER_P = Pattern
@@ -113,8 +124,7 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	/**
 	 * Default construct.
 	 */
-	public DefaultRegExFilter()
-	{
+	public DefaultRegExFilter() {
 	}
 
 	/*
@@ -123,17 +133,86 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#filter(int,
 	 * java.lang.String)
 	 */
-	public String filter(int passwordFlags, String password)
-	{
+	public String filter(int passwordFlags, String password) {
 
 		// ------------------ End character filters
 		// ----------------------------- //
 
-		if ((passwordFlags & REGEX_ENDS_NO_SMALL_LETTER_FLAG) != 0)
-		{
+		if ((passwordFlags & PW_DIGITS) != 0) {
+			Matcher matcher = REGEX_AT_LEAST_1_DIGIT_P.matcher(password);
+			if (!matcher.find()) {
+				LOGGER.fine(Messages
+						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
+						+ Messages.getString("DefaultRegExFilter.NO_DIGIT")); //$NON-NLS-1$
+				return null;
+			}
+		}
+
+		// not a regex but .... ;(
+		if ((passwordFlags & PW_SYMBOLS) != 0) {
+
+			Boolean found = false;
+
+			for (int i = 0; i < PW_SPECIAL_SYMBOLS.length(); i++) {
+				if (password.indexOf(PW_SPECIAL_SYMBOLS.charAt(i)) != -1) {
+					found = true;
+					break;
+				}
+			}
+			
+			if (!found) {
+
+				LOGGER.fine(Messages
+						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
+						+ Messages.getString("DefaultRegExFilter.NO_SYMBOL")); //$NON-NLS-1$
+				return null;
+			}
+		}
+
+		// not a regex but .... ;(
+		if ((passwordFlags & PW_SYMBOLS_REDUCED) != 0) {
+
+			Boolean found = false;
+
+			for (int i = 0; i < PW_SPECIAL_SYMBOLS_REDUCED.length(); i++) {
+				if (password.indexOf(PW_SPECIAL_SYMBOLS_REDUCED.charAt(i)) != -1) {
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+				LOGGER.fine(Messages
+						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
+						+ Messages
+								.getString("DefaultRegExFilter.NO_REDUCED_SYMBOL")); //$NON-NLS-1$
+				return null;
+			}
+		}
+
+		if ((passwordFlags & PW_UPPERS) != 0) {
+			Matcher matcher = REGEX_AT_LEAST_1_CAPITAL_P.matcher(password);
+			if (!matcher.find()) {
+				LOGGER.fine(Messages
+						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
+						+ Messages.getString("DefaultRegExFilter.NO_CAPITAL")); //$NON-NLS-1$
+				return null;
+			}
+		}
+
+		if ((passwordFlags & PW_AMBIGUOUS) != 0) {
+			Matcher matcher = REGEX_AMBIGUOUS_SYMBOLS_P.matcher(password);
+			if (matcher.find()) {
+				LOGGER.fine(Messages
+						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
+						+ Messages.getString("DefaultRegExFilter.NO_CAPITAL")); //$NON-NLS-1$
+				return null;
+			}
+		}
+
+		if ((passwordFlags & REGEX_ENDS_NO_SMALL_LETTER_FLAG) != 0) {
 			Matcher matcher = REGEX_ENDS_NO_SMALL_LETTER_P.matcher(password);
-			if (matcher.find())
-			{
+			if (matcher.find()) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultRegExFilter.ENDS_SMALL")); //$NON-NLS-1$
@@ -141,33 +220,27 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 			}
 		}
 
-		if ((passwordFlags & REGEX_ENDS_NO_UPPER_LETTER_FLAG) != 0)
-		{
+		if ((passwordFlags & REGEX_ENDS_NO_UPPER_LETTER_FLAG) != 0) {
 			Matcher matcher = REGEX_ENDS_NO_UPPER_LETTER_P.matcher(password);
-			if (matcher.find())
-			{
+			if (matcher.find()) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultRegExFilter.ENDS_UPPER")); //$NON-NLS-1$
 				return null;
 			}
 		}
-		if ((passwordFlags & REGEX_ENDS_NO_DIGIT_FLAG) != 0)
-		{
+		if ((passwordFlags & REGEX_ENDS_NO_DIGIT_FLAG) != 0) {
 			Matcher matcher = REGEX_ENDS_NO_DIGIT_P.matcher(password);
-			if (matcher.find())
-			{
+			if (matcher.find()) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultRegExFilter.ENDS_DIGIT")); //$NON-NLS-1$
 				return null;
 			}
 		}
-		if ((passwordFlags & REGEX_ENDS_NO_SYMBOL_FLAG) != 0)
-		{
+		if ((passwordFlags & REGEX_ENDS_NO_SYMBOL_FLAG) != 0) {
 			Matcher matcher = REGEX_ENDS_NO_SYMBOL_P.matcher(password);
-			if (matcher.find())
-			{
+			if (matcher.find()) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages
@@ -178,11 +251,9 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 
 		// -------------------- Starts character filters
 		// ------------------------------- //
-		if ((passwordFlags & REGEX_STARTS_NO_SYMBOL_FLAG) != 0)
-		{
+		if ((passwordFlags & REGEX_STARTS_NO_SYMBOL_FLAG) != 0) {
 			Matcher matcher = REGEX_STARTS_NO_SYMBOL_P.matcher(password);
-			if (matcher.find())
-			{
+			if (matcher.find()) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages
@@ -190,11 +261,9 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 				return null;
 			}
 		}
-		if ((passwordFlags & REGEX_STARTS_NO_DIGIT_FLAG) != 0)
-		{
+		if ((passwordFlags & REGEX_STARTS_NO_DIGIT_FLAG) != 0) {
 			Matcher matcher = REGEX_STARTS_NO_DIGIT_P.matcher(password);
-			if (matcher.find())
-			{
+			if (matcher.find()) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages
@@ -203,11 +272,9 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 			}
 		}
 
-		if ((passwordFlags & REGEX_STARTS_NO_UPPER_LETTER_FLAG) != 0)
-		{
+		if ((passwordFlags & REGEX_STARTS_NO_UPPER_LETTER_FLAG) != 0) {
 			Matcher matcher = REGEX_STARTS_NO_UPPER_LETTER_P.matcher(password);
-			if (matcher.find())
-			{
+			if (matcher.find()) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages
@@ -215,11 +282,9 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 				return null;
 			}
 		}
-		if ((passwordFlags & REGEX_STARTS_NO_SMALL_LETTER_FLAG) != 0)
-		{
+		if ((passwordFlags & REGEX_STARTS_NO_SMALL_LETTER_FLAG) != 0) {
 			Matcher matcher = REGEX_STARTS_NO_SMALL_LETTER_P.matcher(password);
-			if (matcher.find())
-			{
+			if (matcher.find()) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages
@@ -230,11 +295,9 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 
 		// ------------------- Count character filters
 		// ----------------------------- //
-		if ((passwordFlags & REGEX_ONLY_1_SYMBOL_FLAG) != 0)
-		{
+		if ((passwordFlags & REGEX_ONLY_1_SYMBOL_FLAG) != 0) {
 			Matcher matcher = REGEX_ONLY_1_SYMBOL_P.matcher(password);
-			if (!matcher.find())
-			{
+			if (!matcher.find()) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages
@@ -243,11 +306,9 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 			}
 		}
 
-		if ((passwordFlags & REGEX_AT_LEAST_2_SYMBOLS_FLAG) != 0)
-		{
+		if ((passwordFlags & REGEX_AT_LEAST_2_SYMBOLS_FLAG) != 0) {
 			Matcher matcher = REGEX_AT_LEAST_2_SYMBOLS_P.matcher(password);
-			if (!matcher.find())
-			{
+			if (!matcher.find()) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages
@@ -256,11 +317,9 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 			}
 		}
 
-		if ((passwordFlags & REGEX_ONLY_1_DIGIT_FLAG) != 0)
-		{
+		if ((passwordFlags & REGEX_ONLY_1_DIGIT_FLAG) != 0) {
 			Matcher matcher = REGEX_ONLY_1_DIGIT_P.matcher(password);
-			if (!matcher.find())
-			{
+			if (!matcher.find()) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages
@@ -269,11 +328,9 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 			}
 		}
 
-		if ((passwordFlags & REGEX_AT_LEAST_2_DIGITS_FLAG) != 0)
-		{
+		if ((passwordFlags & REGEX_AT_LEAST_2_DIGITS_FLAG) != 0) {
 			Matcher matcher = REGEX_AT_LEAST_2_DIGITS_P.matcher(password);
-			if (!matcher.find())
-			{
+			if (!matcher.find()) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages
@@ -282,11 +339,9 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 			}
 		}
 
-		if ((passwordFlags & REGEX_ONLY_1_CAPITAL_FLAG) != 0)
-		{
+		if ((passwordFlags & REGEX_ONLY_1_CAPITAL_FLAG) != 0) {
 			Matcher matcher = REGEX_ONLY_1_CAPITAL_P.matcher(password);
-			if (!matcher.find())
-			{
+			if (!matcher.find()) {
 				LOGGER.fine(Messages
 						.getString("DefaultRegExFilter.TRACE_PASSWD") //$NON-NLS-1$
 						+ password
@@ -304,8 +359,7 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	 * 
 	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#getDescription()
 	 */
-	public String getDescription()
-	{
+	public String getDescription() {
 		return Messages.getString("DefaultRegExFilter.DESC"); //$NON-NLS-1$
 	}
 
@@ -315,11 +369,9 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#filter(int,
 	 * java.util.List)
 	 */
-	public List<String> filter(int passwordFlags, List<String> password)
-	{
+	public List<String> filter(int passwordFlags, List<String> password) {
 		List<String> suiatble = new ArrayList<String>();
-		for (Iterator<String> iter = password.iterator(); iter.hasNext();)
-		{
+		for (Iterator<String> iter = password.iterator(); iter.hasNext();) {
 			String element = (String) iter.next();
 			if (filter(passwordFlags, password) != null)
 				suiatble.add(element);
@@ -332,8 +384,7 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	 * 
 	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#getID()
 	 */
-	public String getID()
-	{
+	public String getID() {
 		return this.getClass().getName();
 	}
 
@@ -344,8 +395,7 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	 * de.rrze.idmone.utils.pwgen.IPassowrdFilter#setDescription(java.lang.String
 	 * )
 	 */
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 
 	}
 
@@ -354,8 +404,7 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	 * 
 	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#setID(java.lang.String)
 	 */
-	public void setID(String id)
-	{
+	public void setID(String id) {
 		System.err.println(Messages.getString("DefaultRegExFilter.ID_CHANGE")); //$NON-NLS-1$
 	}
 
@@ -364,8 +413,7 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	 * 
 	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#getBlacklist()
 	 */
-	public List<String> getBlacklist()
-	{
+	public List<String> getBlacklist() {
 		return blacklist;
 	}
 
@@ -375,8 +423,7 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	 * @see
 	 * de.rrze.idmone.utils.pwgen.IPassowrdFilter#setBlacklist(java.util.List)
 	 */
-	public void setBlacklist(List<String> blacklist)
-	{
+	public void setBlacklist(List<String> blacklist) {
 		this.blacklist = blacklist;
 	}
 
@@ -387,8 +434,7 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	 * de.rrze.idmone.utils.pwgen.IPassowrdFilter#addToBlacklist(java.lang.String
 	 * )
 	 */
-	public boolean addToBlacklist(String blackWord)
-	{
+	public boolean addToBlacklist(String blackWord) {
 		return blacklist.add(blackWord);
 	}
 
@@ -399,8 +445,7 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	 * de.rrze.idmone.utils.pwgen.IPassowrdFilter#removeFromBlacklist(java.lang
 	 * .String)
 	 */
-	public boolean removeFromBlacklist(String blackWord)
-	{
+	public boolean removeFromBlacklist(String blackWord) {
 		return blacklist.remove(blackWord);
 	}
 

@@ -82,11 +82,21 @@ public interface IPwGenConstants
 	public static final int PW_DIGITS = 0x01;
 
 	/**
+	 * Regular expression that matches passwords containing at least one digit
+	 */
+	public static final String REGEX_AT_LEAST_1_DIGIT = "[\\d]+";
+	
+	/**
 	 * Flag that enables the inclusion of upper case characters in the generated
 	 * passwords.
 	 */
 	public static final int PW_UPPERS = 0x02;
 
+	/**
+	 * Regular expression that matches passwords containing at least one capital
+	 */
+	public static final String REGEX_AT_LEAST_1_CAPITAL = "[A-Z]+";
+	
 	/**
 	 * Flag that enables the inclusion of symbols characters in the generated
 	 * passwords.
@@ -94,21 +104,26 @@ public interface IPwGenConstants
 	public static final int PW_SYMBOLS = 0x04;
 
 	/**
+	 * Regular expression that matches at least one symbol
+	 */
+	public static final String REGEX_AT_LEAST_1_SYMBOLS = "[\\W_]+";
+	
+	/**
 	 * Flag that enables the inclusion of ambiguous characters in the generated
 	 * passwords.
 	 */
 	public static final int PW_AMBIGUOUS = 0x08;
 
 	/**
+	 * Special characters that can be included in a password.
+	 */
+	public static final String PW_SPECIAL_SYMBOLS = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+	
+	/**
 	 * Flag that enables the inclusion of the reduced set of symbols characters
 	 * in the generated passwords.
 	 */
 	public static final int PW_SYMBOLS_REDUCED = 0x10;
-
-	/**
-	 * Special characters that can be included in a password.
-	 */
-	public static final String PW_SPECIAL_SYMBOLS = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
 	/**
 	 * A reduced set of special characters that can be included in a password.
@@ -120,6 +135,12 @@ public interface IPwGenConstants
 	 * users.
 	 */
 	public static final String PW_AMBIGUOUS_SYMBOLS = "B8G6I1l0OQDS5Z2";
+	
+	
+	/**
+	 * Regular expression that matches at least one symbol
+	 */
+	public static final String REGEX_AMBIGUOUS_SYMBOLS = "[B8G6I1l0OQDS5Z2]+";
 	
 	/**
 	 * Represent no options set

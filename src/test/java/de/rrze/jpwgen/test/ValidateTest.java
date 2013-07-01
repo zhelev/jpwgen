@@ -32,32 +32,29 @@ public class ValidateTest
 
 
 		PwGeneratorFlagBuilder flags = new PwGeneratorFlagBuilder();
-		flags.setIncludeNumerals().setOnly1Capital()
+		flags.setIncludeNumerals().setIncludeCapitals()
 				.setIncludeReducedSymbols().setFilterAmbiguous().setDoNotEndWithSymbol().setDoNotEndWithDigit();
 
 		int builtFlag = flags.build();
 
-	
 
 		PwGenerator pg = new PwGenerator();
 		pg.addInstanceFilter(new SimpleRegexFilter("lala","(?=.{8,})(?=.*?[^\\w\\s])(?=.*?[0-9])(?=.*?[A-Z]).*?[a-z].*",false));
 		pg.addInstanceFilter(new SimpleRegexFilter("lala1","^a.*4.*",false));
 
 		
-		String password = "bEx>ae4a";
+		String password = "b33xA(sr";
 		
 		System.out.println("inValid: " + PwGenerator.isInvalid(builtFlag, password));
 		
-		List<String> appliedFilters =  PwGeneratorFlagBuilder.evalFlags(builtFlag);
-		for (String key : appliedFilters) {
-			int clear = 0;
-			int masked = PwGeneratorFlagBuilder.FLAGS.get(key).mask(clear);
-			DefaultRegExFilter df = new DefaultRegExFilter();
-			String filtered = df.filter(masked, password);
-			if(filtered==null)
-				System.out.println("Key: " + key + " fails: " + password);
-		}
+		List<String> drfResult = PwGenerator.failsDefaultRegExFilter(builtFlag, password);
 		
+		System.out.println("Test DefaultBlackFilter: " + drfResult);
+		
+		Boolean dbResult = PwGenerator.failsDefaultBlackList(builtFlag, password);
+		
+		System.out.println("Test DefaultBlackFilter: " + dbResult);
+	
 		System.out.println("instanceInvalid: " + pg.isInstanceInvalid(builtFlag, password));
 		
 		Assert.assertEquals(false,false);
@@ -66,6 +63,8 @@ public class ValidateTest
 		System.out.println("\nFLAG BUILDER TEST FINISHED Runtime:"
 				+ stopWatch.toString() + "\n");
 
+		//assertLengthCount(getClass().getSimpleName(), passLength, numPasswords, passwords);
+		
 	}
 	
 	protected void assertLengthCount(String test, int passLength,

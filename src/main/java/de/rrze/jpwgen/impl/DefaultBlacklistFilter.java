@@ -75,7 +75,7 @@ public class DefaultBlacklistFilter implements IPasswordFilter
 					.getString("DefaultBlacklistFilter.CHECK_PASSWD") + password //$NON-NLS-1$
 					+ Messages
 							.getString("DefaultBlacklistFilter.BLACKLIST_ENTRY") + blackword + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-			if (password.equals(blackword))
+			if (password.contains(blackword))
 				return null;
 		}
 

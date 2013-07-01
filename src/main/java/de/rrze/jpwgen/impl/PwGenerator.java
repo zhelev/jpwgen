@@ -44,6 +44,7 @@ import de.rrze.jpwgen.IPasswordFilter;
 import de.rrze.jpwgen.IProgressListener;
 import de.rrze.jpwgen.IPwGenConstants;
 import de.rrze.jpwgen.IPwGenRegEx;
+import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
 import de.rrze.jpwgen.utils.Messages;
 import de.rrze.jpwgen.utils.RandomFactory;
 
@@ -478,9 +479,9 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 			new PwElement("w", CONSONANT), new PwElement("x", CONSONANT), //$NON-NLS-1$ //$NON-NLS-2$
 			new PwElement("y", CONSONANT), new PwElement("z", CONSONANT) }; //$NON-NLS-1$ //$NON-NLS-2$
 
-	private static IPasswordFilter defaultRegexFilter = new DefaultRegExFilter();
+	private static final IPasswordFilter DEFAULT_REGEX_FILTER = new DefaultRegExFilter();
 
-	private static IPasswordFilter defaultBlacklistFilter = new DefaultBlacklistFilter();
+	private static final IPasswordFilter DEFAULT_BLACK_LIST_FILTER = new DefaultBlacklistFilter();
 
 	private static Map<String, IPasswordFilter> filters = new HashMap<String, IPasswordFilter>();
 
@@ -537,8 +538,8 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 	// Add the default filters, the regex filter is at least necessary so we
 	// have to preserve 'state' here
 	static {
-		filters.put(defaultRegexFilter.getID(), defaultRegexFilter);
-		filters.put(defaultBlacklistFilter.getID(), defaultBlacklistFilter);
+		filters.put(DEFAULT_REGEX_FILTER.getID(), DEFAULT_REGEX_FILTER);
+		filters.put(DEFAULT_BLACK_LIST_FILTER.getID(), DEFAULT_BLACK_LIST_FILTER);
 	}
 
 	/**
@@ -616,6 +617,28 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 		return problems;
 	}
 
+	
+	public synchronized static List<String> failsDefaultRegExFilter(int flags, String password)
+	{
+		List<String> failed = new ArrayList<String>();
+		List<String> appliedFilters =  PwGeneratorFlagBuilder.evalFlags(flags);
+		for (String key : appliedFilters) {
+			int clear = 0;
+			int masked = PwGeneratorFlagBuilder.FLAGS.get(key).mask(clear);
+			String filtered = DEFAULT_REGEX_FILTER.filter(masked, password);
+			if(filtered==null)
+				failed.add(key);
+		}
+		
+		return failed;
+	}
+	
+	public synchronized static Boolean failsDefaultBlackList(int flags, String password)
+	{
+		String filtered = DEFAULT_BLACK_LIST_FILTER.filter(flags, password);
+		return (filtered==null);
+	}
+	
 	/**
 	 * This method logs some general info about the given settings and tries to
 	 * generate passwords with the given flags and given length. The method
@@ -1057,7 +1080,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 	 * @return the default blacklist filter
 	 */
 	public static IPasswordFilter getDefaultBlacklistFilter() {
-		return defaultBlacklistFilter;
+		return DEFAULT_BLACK_LIST_FILTER;
 	}
 
 	/**
@@ -1068,7 +1091,7 @@ public class PwGenerator implements IPwGenConstants, IPwGenRegEx {
 	 */
 
 	public static IPasswordFilter getDefaultRegexFilter() {
-		return defaultRegexFilter;
+		return DEFAULT_REGEX_FILTER;
 	}
 
 }
