@@ -76,6 +76,8 @@ public interface IPwGenConstants
 	 */
 	public static final int NOT_FIRST = 0x08;
 
+	/** =========================================================================== */
+	
 	/**
 	 * Flag that enables the inclusion of digits in the generated passwords.
 	 */

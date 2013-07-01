@@ -385,7 +385,7 @@ public class DefaultRegExFilter implements IPasswordFilter, IPwGenConstants,
 	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#getID()
 	 */
 	public String getID() {
-		return this.getClass().getName();
+		return this.getClass().getSimpleName();
 	}
 
 	/*

@@ -119,7 +119,7 @@ public class DefaultBlacklistFilter implements IPasswordFilter
 	 */
 	public String getID()
 	{
-		return this.getClass().getName();
+		return this.getClass().getSimpleName();
 	}
 
 	/*

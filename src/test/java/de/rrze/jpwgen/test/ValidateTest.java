@@ -41,13 +41,14 @@ public class ValidateTest
 		PwGenerator pg = new PwGenerator();
 		pg.addInstanceFilter(new SimpleRegexFilter("lala","(?=.{8,})(?=.*?[^\\w\\s])(?=.*?[0-9])(?=.*?[A-Z]).*?[a-z].*",false));
 		pg.addInstanceFilter(new SimpleRegexFilter("lala1","^a.*4.*",false));
-
 		
-		String password = "b33xA(sr";
+		String password = "nazi3!Ar";
 		
 		System.out.println("inValid: " + PwGenerator.isInvalid(builtFlag, password));
 		
 		List<String> drfResult = PwGenerator.failsDefaultRegExFilter(builtFlag, password);
+		
+		PwGenerator.getDefaultBlacklistFilter().addToBlacklist("nazi");
 		
 		System.out.println("Test DefaultBlackFilter: " + drfResult);
 		

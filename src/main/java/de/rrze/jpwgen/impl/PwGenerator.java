@@ -28,8 +28,6 @@
  */
 package de.rrze.jpwgen.impl;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
