@@ -355,7 +355,7 @@
 						<td></td>
 						<td></td>
 						<td>-o</td>
-						<td>--one-symbol</td>
+						<td>--single-symbol</td>
 						<td>
 							Generates password containing exactly one
 							symbol
@@ -379,7 +379,7 @@
 						<td></td>
 						<td></td>
 						<td>-q</td>
-						<td>--one-digit</td>
+						<td>--single-digit</td>
 						<td>
 							Generates password containing exactly one
 							digit

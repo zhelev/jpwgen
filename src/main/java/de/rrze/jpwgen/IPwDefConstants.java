@@ -35,13 +35,19 @@ package de.rrze.jpwgen;
  * @author unrz205
  * 
  */
-public interface IPwDefConstants
-{		
+public interface IPwDefConstants {
 	/**
-	 * Default number of attempts to generate a password with specified flags, before giving up
+	 * Default number of attempts to generate a password with specified flags,
+	 * before giving up
 	 */
 	public static final int DEFAULT_MAX_ATTEMPTS = 50;
-	
+
+	/**
+	 * Default number of iterations attempting to generate a password, used with
+	 * multiple passwords
+	 */
+	public static final int DEFAULT_MAX_ITERATIONS = 50;
+
 	/**
 	 * Default number of passwords to be generated
 	 */

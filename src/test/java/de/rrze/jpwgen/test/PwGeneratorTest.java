@@ -1,42 +1,35 @@
 package de.rrze.jpwgen.test;
 
 import java.lang.management.ManagementFactory;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import org.testng.Assert;
 
-import de.rrze.jpwgen.IPasswordFilter;
+import de.rrze.jpwgen.IPasswordPolicy;
 import de.rrze.jpwgen.IPwGenerator;
-import de.rrze.jpwgen.utils.PwHelper;
+import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
+import de.rrze.jpwgen.impl.PwGenerator;
 
 public class PwGeneratorTest {
-	protected List<String> process(IPwGenerator pg, String test, String[] ar,
-			int numPasswords, int passLength, List<String> blacklist) {
-		return process(pg, test, ar, numPasswords, passLength, blacklist, null);
-	}
-
-	protected List<String> process(IPwGenerator pg, String test, String[] ar,
-			int numPasswords, int passLength, List<String> blacklist,
-			List<IPasswordFilter> filters) {
+	protected List<String> process(String testName,
+			IPasswordPolicy passwordPolicy, int numPasswords) {
 
 		System.out.println(ManagementFactory.getRuntimeMXBean().getName()
-				+ " --> " + Thread.currentThread().getName() + " FLAGS: "
-				+ test + " --> " + Arrays.deepToString(ar) + " -> "
-				+ passLength);
+				+ " --> " + Thread.currentThread().getName() + passwordPolicy);
 
-		if (filters != null) {
-			for (IPasswordFilter iPasswordFilter : filters) {
-				pg.addFilter(iPasswordFilter);
-			}
+		List<String> flags = PwGeneratorFlagBuilder.evalFlags(passwordPolicy.getFlags());
+		for (String flag : flags) {
+			System.out.println("Applied flag: " + flag);
 		}
-
-		List<String> passwords = PwHelper.process(ar, blacklist);
+		
+		IPwGenerator pw = new PwGenerator(passwordPolicy);
+		List<String> passwords = pw.generate(numPasswords, 0, null);
 
 		Assert.assertEquals(passwords.size(), numPasswords);
 
-		assertLengthCount(test, passLength, numPasswords, passwords);
+		assertLengthCount(testName, passwordPolicy.getPwLength(), numPasswords,
+				passwords);
 
 		System.out.println(ManagementFactory.getRuntimeMXBean().getName()
 				+ " --> " + Thread.currentThread().getName()

@@ -18,15 +18,20 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import de.rrze.jpwgen.ICliFlag;
+import de.rrze.jpwgen.IDefaultFilter;
+import de.rrze.jpwgen.IPasswordFilter;
+import de.rrze.jpwgen.IPasswordPolicy;
 import de.rrze.jpwgen.IPwDefConstants;
 import de.rrze.jpwgen.IPwGenCommandLineOptions;
 import de.rrze.jpwgen.IPwGenerator;
-import de.rrze.jpwgen.IPwProcessing;
 import de.rrze.jpwgen.IRandomFactory;
+import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
+import de.rrze.jpwgen.impl.PasswordPolicy;
 import de.rrze.jpwgen.impl.PwGenerator;
 
 public class PwHelper implements IPwGenCommandLineOptions, IPwDefConstants,
-		IPwProcessing {
+		IDefaultFilter {
 	private final static Logger LOGGER = Logger.getLogger(PwHelper.class
 			.getName());
 
@@ -44,7 +49,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwDefConstants,
 	 *            the program arguments
 	 */
 	public static void main(String[] args) {
-		List<String> passwords = process(args, null);
+		List<String> passwords = process(args);
 		if (doColumns) {
 			printColumns(passwords, termWidth);
 		} else {
@@ -58,6 +63,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwDefConstants,
 	 * @return the CLI options
 	 */
 	private synchronized static Options createOptions() {
+
 		options = new Options();
 
 		Option option = createOption(CL_NUMBER_PASSWORD,
@@ -66,42 +72,6 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwDefConstants,
 
 		option = createOption(CL_PASSWORD_LENGTH, CL_PASSWORD_LENGTH_LONG,
 				CL_PASSWORD_LENGTH_DESC, true, false);
-		options.addOption(option);
-
-		option = createOption(CL_CAPITALIZE, CL_CAPITALIZE_LONG,
-				CL_CAPITALIZE_DESC, false, false);
-		options.addOption(option);
-
-		option = createOption(CL_NO_CAPITALIZE, CL_NO_CAPITALIZE_LONG,
-				CL_NO_CAPITALIZE_DESC, false, false);
-		options.addOption(option);
-
-		option = createOption(CL_NUMERALS, CL_NUMERALS_LONG, CL_NUMERALS_DESC,
-				false, false);
-		options.addOption(option);
-
-		option = createOption(CL_NO_NUMERALS, CL_NO_NUMERALS_LONG,
-				CL_NO_NUMERALS_DESC, false, false);
-		options.addOption(option);
-
-		option = createOption(CL_SYMBOLS, CL_SYMBOLS_LONG, CL_SYMBOLS_DESC,
-				false, false);
-		options.addOption(option);
-
-		option = createOption(CL_SYMBOLS_REDUCED, CL_SYMBOLS_REDUCED_LONG,
-				CL_SYMBOLS_REDUCED_DESC, false, false);
-		options.addOption(option);
-
-		option = createOption(CL_NO_SYMBOLS, CL_NO_SYMBOLS_LONG,
-				CL_NO_SYMBOLS_DESC, false, false);
-		options.addOption(option);
-
-		option = createOption(CL_AMBIGOUS, CL_AMBIGOUS_LONG, CL_AMBIGOUS_DESC,
-				false, false);
-		options.addOption(option);
-
-		option = createOption(CL_NO_AMBIGOUS, CL_NO_AMBIGOUS_LONG,
-				CL_NO_AMBIGOUS_DESC, false, false);
 		options.addOption(option);
 
 		option = createOption(CL_HELP, CL_HELP_LONG, CL_HELP_DESC, false, false);
@@ -137,71 +107,27 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwDefConstants,
 				CL_MAX_ATTEMPTS_DESC, true, false);
 		options.addOption(option);
 
-		// regex
-		option = createOption(CL_REGEX_STARTS_NO_SMALL_LETTER,
-				CL_REGEX_STARTS_NO_SMALL_LETTER_LONG,
-				CL_REGEX_STARTS_NO_SMALL_LETTER_DESC, false, false);
-		options.addOption(option);
+		return createCliOptionsFromFlags(options);
+	}
 
-		option = createOption(CL_REGEX_ENDS_NO_SMALL_LETTER,
-				CL_REGEX_ENDS_NO_SMALL_LETTER_LONG,
-				CL_REGEX_ENDS_NO_SMALL_LETTER_DESC, false, false);
-		options.addOption(option);
+	private static Options createCliOptionsFromFlags(Options options) {
 
-		option = createOption(CL_REGEX_STARTS_NO_UPPER_LETTER,
-				CL_REGEX_STARTS_NO_UPPER_LETTER_LONG,
-				CL_REGEX_STARTS_NO_UPPER_LETTER_DESC, false, false);
-		options.addOption(option);
+		List<ICliFlag> clis = PwGeneratorFlagBuilder.getCliFlags();
+		for (ICliFlag cli : clis) {
+			// System.out.println(cli);
 
-		option = createOption(CL_REGEX_ENDS_NO_UPPER_LETTER,
-				CL_REGEX_ENDS_NO_UPPER_LETTER_LONG,
-				CL_REGEX_ENDS_NO_UPPER_LETTER_DESC, false, false);
-		options.addOption(option);
+			Option option = createOption(cli.cliShort(), cli.cliLong(),
+					cli.cliDescription(), false, false);
 
-		option = createOption(CL_REGEX_ENDS_NO_DIGIT,
-				CL_REGEX_ENDS_NO_DIGIT_LONG, CL_REGEX_ENDS_NO_DIGIT_DESC,
-				false, false);
-		options.addOption(option);
-
-		option = createOption(CL_REGEX_STARTS_NO_DIGIT,
-				CL_REGEX_STARTS_NO_DIGIT_LONG, CL_REGEX_STARTS_NO_DIGIT_DESC,
-				false, false);
-		options.addOption(option);
-
-		option = createOption(CL_REGEX_STARTS_NO_SYMBOL,
-				CL_REGEX_STARTS_NO_SYMBOL_LONG, CL_REGEX_STARTS_NO_SYMBOL_DESC,
-				false, false);
-		options.addOption(option);
-
-		option = createOption(CL_REGEX_ENDS_NO_SYMBOL,
-				CL_REGEX_ENDS_NO_SYMBOL_LONG, CL_REGEX_ENDS_NO_SYMBOL_DESC,
-				false, false);
-		options.addOption(option);
-
-		option = createOption(CL_REGEX_ONLY_1_CAPITAL,
-				CL_REGEX_ONLY_1_CAPITAL_LONG, CL_REGEX_ONLY_1_CAPITAL_DESC,
-				false, false);
-		options.addOption(option);
-
-		option = createOption(CL_REGEX_ONLY_1_SYMBOL,
-				CL_REGEX_ONLY_1_SYMBOL_LONG, CL_REGEX_ONLY_1_SYMBOL_DESC,
-				false, false);
-		options.addOption(option);
-
-		option = createOption(CL_REGEX_AT_LEAST_2_SYMBOLS,
-				CL_REGEX_AT_LEAST_2_SYMBOLS_LONG,
-				CL_REGEX_AT_LEAST_2_SYMBOLS_DESC, false, false);
-		options.addOption(option);
-
-		option = createOption(CL_REGEX_ONLY_1_DIGIT,
-				CL_REGEX_ONLY_1_DIGIT_LONG, CL_REGEX_ONLY_1_DIGIT_DESC, false,
-				false);
-		options.addOption(option);
-
-		option = createOption(CL_REGEX_AT_LEAST_2_DIGITS,
-				CL_REGEX_AT_LEAST_2_DIGITS_LONG,
-				CL_REGEX_AT_LEAST_2_DIGITS_DESC, false, false);
-		options.addOption(option);
+			// System.out.println("============== " + option);
+			options.addOption(option);
+			if (cli.cliShortDisable() != null) {
+				option = createOption(cli.cliShortDisable(),
+						cli.cliLongDisable(), cli.cliDescriptionDisable(),
+						false, false);
+				options.addOption(option);
+			}
+		}
 
 		return options;
 	}
@@ -223,11 +149,13 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwDefConstants,
 	 */
 	private synchronized static Option createOption(String shortOption,
 			String longOption, String description, boolean arg, boolean required) {
+
 		OptionBuilder.withLongOpt(longOption);
 		OptionBuilder.withDescription(description);
 		OptionBuilder.isRequired(required);
 		if (arg)
 			OptionBuilder.hasArg();
+
 		Option option = OptionBuilder.create(shortOption);
 
 		return option;
@@ -236,12 +164,119 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwDefConstants,
 	/**
 	 * Prints the usage info
 	 */
-	private static synchronized void printUsage() {
+	private static synchronized void printUsage(Options options) {
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp(Messages.getString("PwGenerator.USAGE"), //$NON-NLS-1$
 				options);
 		LOGGER.fine(Messages.getString("PwGenerator.EXAMPLE") //$NON-NLS-1$
 		);
+	}
+
+	public static synchronized List<String> process(String[] args,
+			List<String> blackList) {
+		return process(args, blackList, null);
+	}
+
+	public static synchronized List<String> process(String[] args) {
+		return process(args, null, null);
+	}
+
+	public static synchronized IPasswordPolicy buildPasswordPolicy(
+			String[] args, List<String> blackList, List<IPasswordFilter> filters) {
+
+		IPasswordPolicy passwordPolicy = null;
+
+		// The length of the password to be generated
+		int passwordLength = DEFAULT_PASSWORD_LENGTH;
+
+		int maxAttempts = DEFAULT_MAX_ATTEMPTS;
+
+		BasicParser parser = new BasicParser();
+		try {
+			CommandLine commandLine = parser.parse(options, args);
+
+			Random random = null;
+			/* random */
+			if (commandLine.hasOption(CL_RANDOM)) {
+				random = RandomFactory.getInstance().getRandom();
+				LOGGER.fine(Messages.getString("PwGenerator.NORMAL_RANDOM")); //$NON-NLS-1$
+			} else {
+				try {
+					random = RandomFactory.getInstance().getSecureRandom();
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+					random = RandomFactory.getInstance().getRandom();
+				} catch (NoSuchProviderException e) {
+					e.printStackTrace();
+					random = RandomFactory.getInstance().getRandom();
+				}
+			}
+
+			parser.parse(options, args);
+			if (commandLine.hasOption(CL_SR_ALGORITHM)) {
+				String[] data = commandLine.getOptionValues(CL_SR_ALGORITHM);
+				if (data.length == 2) {
+					try {
+						random = RandomFactory.getInstance().getSecureRandom(
+								data[0], data[1]);
+
+						LOGGER.fine(Messages.getString("PwGenerator.SEC_ALG") + data[0] //$NON-NLS-1$
+								+ Messages.getString("PwGenerator.PROV") + data[1] + Messages.getString("PwGenerator.DOR")); //$NON-NLS-1$ //$NON-NLS-2$
+					} catch (NoSuchAlgorithmException e) {
+						LOGGER.fine(Messages.getString("PwGenerator.ERROR") + e.getMessage() + Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$ //$NON-NLS-2$
+						LOGGER.fine(Messages
+								.getString("PwGenerator.DEFAUL_RANDOM")); //$NON-NLS-1$
+					} catch (NoSuchProviderException e) {
+						LOGGER.fine(Messages.getString("PwGenerator.ERROR") + e.getMessage() + Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$ //$NON-NLS-2$
+						LOGGER.fine(Messages
+								.getString("PwGenerator.DEFAUL_RANDOM")); //$NON-NLS-1$
+					}
+				}
+			}
+			/* ~random~ */
+
+			// max attempts
+			if (commandLine.hasOption(CL_MAX_ATTEMPTS)) {
+				String sMaxAttempts = commandLine
+						.getOptionValue(CL_MAX_ATTEMPTS);
+				if (sMaxAttempts != null)
+					maxAttempts = Integer.parseInt(sMaxAttempts);
+				LOGGER.fine(Messages.getString("PwGenerator.MAX_ATTEMPTS") + maxAttempts); //$NON-NLS-1$
+			}
+
+			commandLine = parser.parse(options, args);
+			if (commandLine.hasOption(CL_PASSWORD_LENGTH)) {
+				String sPasswordLength = commandLine
+						.getOptionValue(CL_PASSWORD_LENGTH);
+				if (sPasswordLength != null)
+					passwordLength = Integer.parseInt(sPasswordLength);
+				LOGGER.fine(Messages.getString("PwGenerator.PASSWORD_LENGTH") + passwordLength); //$NON-NLS-1$
+			}
+
+			Long passwordFlags = DEFAULT_FLAGS;
+
+			passwordFlags = parseCLIFlags(passwordFlags, commandLine);
+
+			passwordPolicy = new PasswordPolicy(passwordLength, maxAttempts,
+					passwordFlags, random);
+
+			if (blackList != null)
+				passwordPolicy.getBlackList().addAll(blackList);
+
+			if (filters != null)
+				passwordPolicy.getFilters().addAll(filters);
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+			LOGGER.fine(Messages.getString("PwGenerator.PARAM_ERROR") + e.getLocalizedMessage()); //$NON-NLS-1$
+			printUsage(options);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			LOGGER.fine(Messages.getString("PwGenerator.NUM_FORM_ERROR") + e.getLocalizedMessage()); //$NON-NLS-1$
+			printUsage(options);
+		}
+
+		return passwordPolicy;
 	}
 
 	/**
@@ -256,27 +291,21 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwDefConstants,
 	 *         could be generated.
 	 */
 	public static synchronized List<String> process(String[] args,
-			List<String> blackList) {
-		int passwordFlags = DEFAULT_FLAGS;
-
-		// The length of the password to be generated
-		int passwordLength = DEFAULT_PASSWORD_LENGTH;
+			List<String> blackList, List<IPasswordFilter> filters) {
 
 		int numberOfPasswords = DEFAULT_NUMBER_OF_PASSWORDS;
-
-		int maxAttempts = DEFAULT_MAX_ATTEMPTS;
 
 		LOGGER.fine(Messages.getString("PwGenerator.PASSWORD_GENERATOR") //$NON-NLS-1$
 		);
 
-		ArrayList<String> passwords = new ArrayList<String>();
+		List<String> passwords = new ArrayList<String>();
 		BasicParser parser = new BasicParser();
 		try {
 			CommandLine commandLine = parser.parse(options, args);
 
 			parser.parse(options, args);
 			if (commandLine.hasOption(CL_HELP)) {
-				printUsage();
+				printUsage(options);
 				LOGGER.fine(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
 				);
 				return passwords;
@@ -334,15 +363,6 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwDefConstants,
 				LOGGER.fine(Messages.getString("PwGenerator.NUM_PASSWORDS") + numberOfPasswords); //$NON-NLS-1$
 			}
 
-			commandLine = parser.parse(options, args);
-			if (commandLine.hasOption(CL_PASSWORD_LENGTH)) {
-				String sPasswordLength = commandLine
-						.getOptionValue(CL_PASSWORD_LENGTH);
-				if (sPasswordLength != null)
-					passwordLength = Integer.parseInt(sPasswordLength);
-				LOGGER.fine(Messages.getString("PwGenerator.PASSWORD_LENGTH") + passwordLength); //$NON-NLS-1$
-			}
-
 			parser.parse(options, args);
 			if (commandLine.hasOption(CL_COLUMN)) {
 				doColumns = true;
@@ -357,182 +377,55 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwDefConstants,
 				LOGGER.fine(Messages.getString("PwGenerator.TERMINAL_LENGTH") + termWidth); //$NON-NLS-1$
 			}
 
-			Random random = null;
-			parser.parse(options, args);
-			if (commandLine.hasOption(CL_RANDOM)) {
-				random = RandomFactory.getInstance().getRandom();
-				LOGGER.fine(Messages.getString("PwGenerator.NORMAL_RANDOM")); //$NON-NLS-1$
-			} else {
-				try {
-					random = RandomFactory.getInstance().getSecureRandom();
-				} catch (NoSuchAlgorithmException e) {
-					e.printStackTrace();
-					random = RandomFactory.getInstance().getRandom();
-				} catch (NoSuchProviderException e) {
-					e.printStackTrace();
-					random = RandomFactory.getInstance().getRandom();
-				}
+			IPasswordPolicy passwordPolicy = buildPasswordPolicy(args,
+					blackList, filters);
+
+			List<String> flags = PwGeneratorFlagBuilder
+					.evalFlags(passwordPolicy.getFlags());
+			for (String flag : flags) {
+				LOGGER.fine(flag);
 			}
 
-			parser.parse(options, args);
-			if (commandLine.hasOption(CL_SR_ALGORITHM)) {
-				String[] data = commandLine.getOptionValues(CL_SR_ALGORITHM);
-				if (data.length == 2) {
-					try {
-						random = RandomFactory.getInstance().getSecureRandom(
-								data[0], data[1]);
-
-						LOGGER.fine(Messages.getString("PwGenerator.SEC_ALG") + data[0] //$NON-NLS-1$
-								+ Messages.getString("PwGenerator.PROV") + data[1] + Messages.getString("PwGenerator.DOR")); //$NON-NLS-1$ //$NON-NLS-2$
-					} catch (NoSuchAlgorithmException e) {
-						LOGGER.fine(Messages.getString("PwGenerator.ERROR") + e.getMessage() + Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$ //$NON-NLS-2$
-						LOGGER.fine(Messages
-								.getString("PwGenerator.DEFAUL_RANDOM")); //$NON-NLS-1$
-					} catch (NoSuchProviderException e) {
-						LOGGER.fine(Messages.getString("PwGenerator.ERROR") + e.getMessage() + Messages.getString("PwGenerator.NEW_LINE")); //$NON-NLS-1$ //$NON-NLS-2$
-						LOGGER.fine(Messages
-								.getString("PwGenerator.DEFAUL_RANDOM")); //$NON-NLS-1$
-					}
-				}
-			}
-
-			if (commandLine.hasOption(CL_NUMERALS)) {
-				passwordFlags |= PW_DIGITS;
-				LOGGER.fine(Messages.getString("PwGenerator.DIGITS_ON")); //$NON-NLS-1$
-			}
-
-			if (commandLine.hasOption(CL_NO_NUMERALS)) {
-				passwordFlags &= ~PW_DIGITS;
-				LOGGER.fine(Messages.getString("PwGenerator.DIGITS_OFF")); //$NON-NLS-1$
-			}
-
-			if (commandLine.hasOption(CL_CAPITALIZE)) {
-				passwordFlags |= PW_UPPERS;
-				LOGGER.fine(Messages.getString("PwGenerator.UPPERCASE_ON")); //$NON-NLS-1$
-			}
-
-			if (commandLine.hasOption(CL_NO_CAPITALIZE)) {
-				passwordFlags &= ~PW_UPPERS;
-				LOGGER.fine(Messages.getString("PwGenerator.UPPERCASE_OFF")); //$NON-NLS-1$
-			}
-
-			if (commandLine.hasOption(CL_AMBIGOUS)) {
-				passwordFlags |= PW_AMBIGUOUS;
-				LOGGER.fine(Messages.getString("PwGenerator.AMBIGOUS_ON")); //$NON-NLS-1$
-			}
-
-			if (commandLine.hasOption(CL_NO_AMBIGOUS)) {
-				passwordFlags &= ~PW_AMBIGUOUS;
-				LOGGER.fine(Messages.getString("PwGenerator.AMBIGOUS_OFF")); //$NON-NLS-1$
-			}
-
-			if (commandLine.hasOption(CL_SYMBOLS)) {
-				passwordFlags |= PW_SYMBOLS;
-				LOGGER.fine(Messages.getString("PwGenerator.SYMBOLS_ON")); //$NON-NLS-1$
-			}
-
-			if (commandLine.hasOption(CL_SYMBOLS_REDUCED)) {
-				passwordFlags |= PW_SYMBOLS_REDUCED;
-				LOGGER.fine(Messages
-						.getString("PwGenerator.SYMBOLS_REDUCED_ON")); //$NON-NLS-1$
-			}
-
-			if (commandLine.hasOption(CL_NO_SYMBOLS)) {
-				passwordFlags &= ~PW_SYMBOLS;
-				passwordFlags &= ~PW_SYMBOLS_REDUCED;
-				LOGGER.fine(Messages.getString("PwGenerator.SYMBOLS_OFF")); //$NON-NLS-1$
-			}
-
-			if (commandLine.hasOption(CL_MAX_ATTEMPTS)) {
-				String sMaxAttempts = commandLine
-						.getOptionValue(CL_MAX_ATTEMPTS);
-				if (sMaxAttempts != null)
-					maxAttempts = Integer.parseInt(sMaxAttempts);
-				LOGGER.fine(Messages.getString("PwGenerator.MAX_ATTEMPTS") + maxAttempts); //$NON-NLS-1$
-			}
-
-			if (commandLine.hasOption(CL_REGEX_STARTS_NO_SMALL_LETTER))
-				passwordFlags |= REGEX_STARTS_NO_SMALL_LETTER_FLAG;
-
-			if (commandLine.hasOption(CL_REGEX_ENDS_NO_SMALL_LETTER))
-				passwordFlags |= REGEX_STARTS_NO_SMALL_LETTER_FLAG;
-
-			if (commandLine.hasOption(CL_REGEX_STARTS_NO_UPPER_LETTER))
-				passwordFlags |= REGEX_STARTS_NO_UPPER_LETTER_FLAG;
-
-			if (commandLine.hasOption(CL_REGEX_ENDS_NO_UPPER_LETTER))
-				passwordFlags |= REGEX_ENDS_NO_UPPER_LETTER_FLAG;
-
-			if (commandLine.hasOption(CL_REGEX_ENDS_NO_DIGIT))
-				passwordFlags |= REGEX_ENDS_NO_DIGIT_FLAG;
-
-			if (commandLine.hasOption(CL_REGEX_STARTS_NO_DIGIT))
-				passwordFlags |= REGEX_STARTS_NO_DIGIT_FLAG;
-
-			if (commandLine.hasOption(CL_REGEX_STARTS_NO_SYMBOL))
-				passwordFlags |= REGEX_STARTS_NO_SYMBOL_FLAG;
-
-			if (commandLine.hasOption(CL_REGEX_ENDS_NO_SYMBOL))
-				passwordFlags |= REGEX_ENDS_NO_SYMBOL_FLAG;
-
-			if (commandLine.hasOption(CL_REGEX_ONLY_1_CAPITAL))
-				passwordFlags |= REGEX_ONLY_1_CAPITAL_FLAG;
-
-			if (commandLine.hasOption(CL_REGEX_ONLY_1_SYMBOL))
-				passwordFlags |= REGEX_ONLY_1_SYMBOL_FLAG;
-
-			if (commandLine.hasOption(CL_REGEX_AT_LEAST_2_SYMBOLS))
-				passwordFlags |= REGEX_AT_LEAST_2_SYMBOLS_FLAG;
-
-			if (commandLine.hasOption(CL_REGEX_ONLY_1_DIGIT))
-				passwordFlags |= REGEX_ONLY_1_DIGIT_FLAG;
-
-			if (commandLine.hasOption(CL_REGEX_AT_LEAST_2_DIGITS))
-				passwordFlags |= REGEX_AT_LEAST_2_DIGITS_FLAG;
-			// -------------------------------------------------------------------
-
-			LOGGER.fine(Messages.getString("PwGenerator.GENRIC_FLAGS") //$NON-NLS-1$
-			);
-
-			int res = passwordFlags & PW_DIGITS;
-			LOGGER.fine(Messages.getString("PwGenerator.DIGITS") + (res != 0)); //$NON-NLS-1$
-			res = passwordFlags & PW_AMBIGUOUS;
-			LOGGER.fine(Messages.getString("PwGenerator.AMBIGOUS") + (res != 0)); //$NON-NLS-1$
-			res = passwordFlags & PW_SYMBOLS;
-			LOGGER.fine(Messages.getString("PwGenerator.SYMBOLS") + (res != 0)); //$NON-NLS-1$
-			res = passwordFlags & PW_SYMBOLS_REDUCED;
-			LOGGER.fine(Messages.getString("PwGenerator.SYMBOLS_REDUCED") + (res != 0)); //$NON-NLS-1$
-			res = passwordFlags & PW_UPPERS;
-			LOGGER.fine(Messages.getString("PwGenerator.UPPERS") + (res != 0)); //$NON-NLS-1$
-			LOGGER.fine(Messages.getString("PwGenerator.SEPARATOR") //$NON-NLS-1$
-			);
-
-			LOGGER.fine(Messages.getString("PwGenerator.GENERATING") + numberOfPasswords + Messages.getString("PwGenerator.PW_LENGTH") //$NON-NLS-1$ //$NON-NLS-2$
-					+ passwordLength);
-			LOGGER.fine(Messages.getString("PwGenerator.PW") //$NON-NLS-1$
-			);
-
-			IPwGenerator pg = new PwGenerator();
-			
 			if (blackList != null)
-				pg.getDefaultBlacklistFilter().getBlacklist().addAll(blackList);
+				passwordPolicy.getBlackList().addAll(blackList);
 
-			int i;
-			for (i = 0; i < numberOfPasswords; i++) {
-				String password = pg.generate(passwordLength,
-						passwordFlags, maxAttempts, random);
-				if (password != null)
-					passwords.add(password);
-			}
+			if (filters != null)
+				passwordPolicy.getFilters().addAll(filters);
+
+			IPwGenerator pg = new PwGenerator(passwordPolicy);
+
+			passwords = pg.generate(numberOfPasswords, 0, null);
+
 		} catch (ParseException e) {
 			LOGGER.fine(Messages.getString("PwGenerator.PARAM_ERROR") + e.getLocalizedMessage()); //$NON-NLS-1$
-			printUsage();
+			printUsage(options);
 		} catch (NumberFormatException e) {
 			LOGGER.fine(Messages.getString("PwGenerator.NUM_FORM_ERROR") + e.getLocalizedMessage()); //$NON-NLS-1$
-			printUsage();
+			printUsage(options);
 		}
 
 		return passwords;
+	}
+
+	private static Long parseCLIFlags(Long passwordFlags,
+			CommandLine commandLine) {
+
+		List<ICliFlag> clis = PwGeneratorFlagBuilder.getCliFlags();
+		for (ICliFlag cli : clis) {
+
+			if (commandLine.hasOption(cli.cliShort())) {
+				passwordFlags = cli.mask(passwordFlags);
+				LOGGER.fine("Enabling flag: " + cli);
+			}
+
+			if (cli.cliShortDisable() != null
+					&& commandLine.hasOption(cli.cliShortDisable())) {
+				passwordFlags = cli.unmask(passwordFlags);
+				LOGGER.fine("Disabling flag: " + cli);
+			}
+		}
+
+		return passwordFlags;
 	}
 
 	/**

@@ -9,8 +9,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import de.rrze.jpwgen.IPasswordFilter;
-import de.rrze.jpwgen.impl.PwGenerator;
+import de.rrze.jpwgen.IPasswordPolicy;
+import de.rrze.jpwgen.impl.SimpleRegexFilter;
 import de.rrze.jpwgen.utils.BlankRemover;
+import de.rrze.jpwgen.utils.PwHelper;
 
 public class PwGeneratorFilterTest extends PwGeneratorDefaultTest {
 	@BeforeClass
@@ -45,11 +47,12 @@ public class PwGeneratorFilterTest extends PwGeneratorDefaultTest {
 		String[] ar = flags.split(" ");
 
 		List<IPasswordFilter> filters = new ArrayList<IPasswordFilter>();
-		// filters.add(new
-		// SimpleRegexFilter("ididid",SimpleRegexFilter.REGEX_STARTS_NO_SMALL_LETTER,true));
+		filters.add(new SimpleRegexFilter("anyLetter", "[\\w]+", true, false));
 
-		process(new PwGenerator(), this.getClass().getSimpleName(), ar,
-				numPasswords, passLength, null, filters);
+		IPasswordPolicy passwordPolicy = PwHelper.buildPasswordPolicy(ar, null,
+				filters);
+
+		process(this.getClass().getSimpleName(), passwordPolicy, numPasswords);
 
 		stopWatch.stop();
 		System.out.println("\nUSER REGEX FILTER TEST FINISHED Runtime:"

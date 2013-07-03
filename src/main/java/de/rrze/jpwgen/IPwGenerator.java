@@ -1,8 +1,7 @@
 package de.rrze.jpwgen;
 
 import java.util.List;
-import java.util.Random;
-
+import java.util.Map;
 
 public interface IPwGenerator {
 
@@ -36,17 +35,10 @@ public interface IPwGenerator {
 
 	public abstract IPasswordFilter removeFilter(String id);
 
-	public abstract List<String> validate(int passwordFlags, String password);
+	public abstract Map<String, List<String>> validate(String password);
 
-	public abstract List<String> validateWithDefaultProcessingFilter(int flags,
-			String password);
-
-	public abstract Boolean validateWithDefaultBlacklistFilter(int flags,
-			String password);
-
-	public abstract List<String> generatePasswords(int length, int number,
-			int maxAttempts, int flags, Random random,
-			IProgressListener progressListener);
+	public abstract List<String> generate(int passwordCount,
+			int iterationsCount, IProgressListener progressListener);
 
 	/**
 	 * This method logs some general info about the given settings and tries to
@@ -54,32 +46,10 @@ public interface IPwGenerator {
 	 * return <em>null</em> if it does not manage to create a suitable password
 	 * within the <em>MAX_ATTEMPTS</em>.
 	 * 
-	 * @param passwordLength
-	 *            the length of the password to be generated
-	 * @param passwordFlags
-	 *            the settings for the particular password
 	 * @return a suitable password or <em>null</em> if such could not be
 	 *         generated
 	 */
 
-	public abstract String generate(int passwordLength, int passwordFlags,
-			int maxAttempts, Random random);
-
-	/**
-	 * Returns the instance of the default blacklist filter registered with the
-	 * PwGenerator
-	 * 
-	 * @return the default blacklist filter
-	 */
-	public abstract IPasswordFilter getDefaultBlacklistFilter();
-
-	/**
-	 * Returns the instance of the default regular expression filter registered
-	 * with the PwGenerator
-	 * 
-	 * @return the default regular expression filter
-	 */
-
-	public abstract IPasswordFilter getDefaultProcessingFilter();
+	public abstract String generate();
 
 }

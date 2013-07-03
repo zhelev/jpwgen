@@ -7,33 +7,30 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import de.rrze.jpwgen.IPasswordPolicy;
 import de.rrze.jpwgen.IPwGenerator;
 import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
+import de.rrze.jpwgen.impl.PasswordPolicy;
 import de.rrze.jpwgen.impl.PwGenerator;
 
-public class PwFlagsBuilderTest extends PwGeneratorTest
-{
+public class PwFlagsBuilderTest extends PwGeneratorTest {
 
 	@BeforeClass
-	public void setUp()
-	{
+	public void setUp() {
 		System.out.println("======================== "
 				+ this.getClass().getSimpleName()
 				+ " ================================");
 	}
 
 	@AfterClass
-	public void finish()
-	{
+	public void finish() {
 		System.out.println("======================== "
 				+ this.getClass().getSimpleName()
 				+ " ================================");
 	}
 
-	@Test(groups =
-	{ "default" }, invocationCount = 20)
-	public void flagsBuilderTest()
-	{
+	@Test(groups = { "default" }, invocationCount = 20)
+	public void flagsBuilderTest() {
 		int numPasswords = 10;
 		int passLength = 8;
 
@@ -42,13 +39,15 @@ public class PwFlagsBuilderTest extends PwGeneratorTest
 		stopWatch.start();
 
 		PwGeneratorFlagBuilder flags = new PwGeneratorFlagBuilder();
-		flags.setIncludeNumerals().setIncludeReducedSymbols()
+		flags.setIncludeDigits().setIncludeReducedSymbols()
 				.setIncludeCapitals().setFilterAmbiguous();
 
-		IPwGenerator pw = new PwGenerator();
-		
-		List<String> passwords = pw.generatePasswords(passLength, numPasswords,
-				100, flags.build(), null, null);
+		IPasswordPolicy passwordPolicy = new PasswordPolicy(passLength, 0,
+				flags.build(), null);
+
+		IPwGenerator pw = new PwGenerator(passwordPolicy);
+
+		List<String> passwords = pw.generate(numPasswords, 0, null);
 
 		assertLengthCount(getClass().getSimpleName(), passLength, numPasswords,
 				passwords);

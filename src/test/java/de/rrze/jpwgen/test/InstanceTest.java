@@ -9,11 +9,12 @@ import junit.framework.Assert;
 import org.apache.commons.lang.time.StopWatch;
 import org.testng.annotations.Test;
 
+import de.rrze.jpwgen.IPasswordPolicy;
 import de.rrze.jpwgen.IPwGenerator;
 import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
+import de.rrze.jpwgen.impl.PasswordPolicy;
 import de.rrze.jpwgen.impl.PwGenerator;
 import de.rrze.jpwgen.impl.SimpleRegexFilter;
-import de.rrze.jpwgen.utils.RandomFactory;
 
 public class InstanceTest {
 
@@ -27,25 +28,29 @@ public class InstanceTest {
 		stopWatch.start();
 
 		PwGeneratorFlagBuilder flags = new PwGeneratorFlagBuilder();
-		flags.setIncludeNumerals().setOnly1Capital().setIncludeReducedSymbols()
-				.setFilterAmbiguous().setDoNotEndWithSymbol()
-				.setDoNotEndWithDigit();
+		flags.setIncludeDigits().setIncludeCapitals()
+				.setIncludeReducedSymbols().setFilterAmbiguous()
+				.setDoNotEndWithSymbol().setDoNotEndWithDigit();
 
-		int builtFlag = flags.build();
+		Long builtFlag = flags.build();
 
 		System.out.println("Applied falgs: "
 				+ PwGeneratorFlagBuilder.evalFlags(builtFlag));
 
-		IPwGenerator pg = new PwGenerator();
-		pg.addFilter(new SimpleRegexFilter("lala",
+		IPasswordPolicy passwordPolicy = new PasswordPolicy(passLength, 0,
+				flags.build(), null);
+		passwordPolicy.addFilter(new SimpleRegexFilter("lala",
 				"(?=.{8,})(?=.*?[^\\w\\s])(?=.*?[0-9])(?=.*?[A-Z]).*?[a-z].*",
 				false, false));
-		pg.addFilter(new SimpleRegexFilter("lala1", "^a.*4.*", false, false));
+		passwordPolicy.addFilter(new SimpleRegexFilter("lala1", "^a.*4.*",
+				false, false));
 
-		List<String> passwords = pg.generatePasswords(passLength, numPasswords, 0,
-				builtFlag, RandomFactory.getInstance().getRandom(), null);
+		IPwGenerator pw = new PwGenerator(passwordPolicy);
 
-		assertLengthCount("InstanceTest", passLength, numPasswords, passwords);
+		List<String> passwords = pw.generate(numPasswords, 0, null);
+
+		assertLengthCount(this.getClass().getSimpleName(), passLength,
+				numPasswords, passwords);
 
 		Assert.assertEquals(numPasswords, passwords.size());
 

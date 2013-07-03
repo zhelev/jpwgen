@@ -7,8 +7,9 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import de.rrze.jpwgen.impl.PwGenerator;
+import de.rrze.jpwgen.IPasswordPolicy;
 import de.rrze.jpwgen.utils.BlankRemover;
+import de.rrze.jpwgen.utils.PwHelper;
 
 public class PwGeneratorUpperTest extends PwGeneratorTest {
 
@@ -42,8 +43,11 @@ public class PwGeneratorUpperTest extends PwGeneratorTest {
 		flags = BlankRemover.itrim(flags);
 		String[] ar = flags.split(" ");
 
-		List<String> passwords = process(new PwGenerator(), this.getClass()
-				.getSimpleName(), ar, numPasswords, passLength, null);
+		IPasswordPolicy passwordPolicy = PwHelper.buildPasswordPolicy(ar, null,
+				null);
+
+		List<String> passwords = process(this.getClass().getSimpleName(),
+				passwordPolicy, numPasswords);
 
 		for (String password : passwords) {
 			char[] cs = password.toCharArray();

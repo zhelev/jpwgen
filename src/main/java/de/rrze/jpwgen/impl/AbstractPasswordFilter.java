@@ -6,10 +6,9 @@ import java.util.List;
 
 import de.rrze.jpwgen.IPasswordFilter;
 import de.rrze.jpwgen.IPwDefConstants;
-import de.rrze.jpwgen.IPwProcessing;
 
 public abstract class AbstractPasswordFilter implements IPasswordFilter,
-		IPwDefConstants, IPwProcessing {
+		IPwDefConstants {
 
 	// A list that stores the forbidden words
 	protected List<String> blacklist = new ArrayList<String>();
@@ -27,8 +26,8 @@ public abstract class AbstractPasswordFilter implements IPasswordFilter,
 		id = this.getClass().getSimpleName();
 		description = this.getClass().getSimpleName();
 	}
-	
-	public String getID() {
+
+	public String getId() {
 		return id;
 	}
 
@@ -36,16 +35,16 @@ public abstract class AbstractPasswordFilter implements IPasswordFilter,
 		return description;
 	}
 
-	public abstract String filter(int passwordFlags, String password);
+	public abstract List<String> filter(Long passwordFlags, String password);
 
 	public List<String> filter(int passwordFlags, List<String> passwords) {
-		List<String> suiatble = new ArrayList<String>();
+		List<String> suitable = new ArrayList<String>();
 		for (Iterator<String> iter = passwords.iterator(); iter.hasNext();) {
 			String element = (String) iter.next();
 			if (filter(passwordFlags, passwords) != null)
-				suiatble.add(element);
+				suitable.add(element);
 		}
-		return suiatble;
+		return suitable;
 	}
 
 	/*

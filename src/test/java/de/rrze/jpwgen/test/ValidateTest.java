@@ -3,14 +3,17 @@ package de.rrze.jpwgen.test;
 import java.lang.management.ManagementFactory;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.testng.annotations.Test;
 
+import de.rrze.jpwgen.IPasswordPolicy;
 import de.rrze.jpwgen.IPwGenerator;
 import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
+import de.rrze.jpwgen.impl.PasswordPolicy;
 import de.rrze.jpwgen.impl.PwGenerator;
 import de.rrze.jpwgen.impl.SimpleRegexFilter;
 
@@ -18,52 +21,51 @@ public class ValidateTest {
 
 	@Test(groups = { "instance" }, invocationCount = 30)
 	public void conformTest() throws Exception {
-//		int numPasswords = 10;
-//		int passLength = 8;
+		int numPasswords = 10;
+		int passLength = 8;
 
 		System.out.println("INSTANCE TEST STARTED: Generating passwords:");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 
 		PwGeneratorFlagBuilder flags = new PwGeneratorFlagBuilder();
-		flags.setIncludeNumerals().setIncludeCapitals()
+		flags.setIncludeDigits().setIncludeCapitals()
 				.setIncludeReducedSymbols().setFilterAmbiguous()
-				.setDoNotEndWithSymbol().setDoNotEndWithDigit();
+				.setDoNotEndWithSymbol().setDoNotEndWithDigit()
+				.setDisableConsecSymbols();
 
-		int builtFlag = flags.build();
-
-		IPwGenerator pg = new PwGenerator();
-		pg.addFilter(new SimpleRegexFilter("lala",
+		IPasswordPolicy passwordPolicy = new PasswordPolicy(passLength, 0,
+				flags.build(), null);
+		passwordPolicy.addFilter(new SimpleRegexFilter("lala",
 				"(?=.{8,})(?=.*?[^\\w\\s])(?=.*?[0-9])(?=.*?[A-Z]).*?[a-z].*",
 				false, false));
-		pg.addFilter(new SimpleRegexFilter("lala1", "^a.*4.*", false, false));
+		passwordPolicy.addFilter(new SimpleRegexFilter("lala1", "^a.*4.*",
+				false, false));
+		passwordPolicy.getBlackList().add("nazi");
 
-		String password = "nazi3!Ar";
+		String password = "nazi4_#a";
 
-		System.out.println("inValid: " + pg.validate(builtFlag, password));
+		IPwGenerator pw = new PwGenerator(passwordPolicy);
 
-		List<String> drfResult = pg.validateWithDefaultProcessingFilter(builtFlag,
-				password);
+		List<String> passwords = pw.generate(numPasswords, 0, null);
 
-		pg.getDefaultBlacklistFilter().addToBlacklist("nazi");
+		assertLengthCount(this.getClass().getSimpleName(), passLength,
+				numPasswords, passwords);
 
-		System.out.println("Test DefaultBlackFilter: " + drfResult);
+		/** part two */
 
-		Boolean dbResult = pg.validateWithDefaultBlacklistFilter(builtFlag, password);
+		Map<String, List<String>> validationResult = pw.validate(password);
 
-		System.out.println("Test DefaultBlackFilter: " + dbResult);
+		for (String filterId : validationResult.keySet()) {
+			System.out.println(filterId);
+			System.out.println(validationResult.get(filterId));
+		}
 
-		System.out.println("instanceInvalid: "
-				+ pg.validate(builtFlag, password));
-
-		Assert.assertEquals(false, false);
+		Assert.assertTrue(validationResult.size() > 0);
 
 		stopWatch.stop();
 		System.out.println("\nFLAG BUILDER TEST FINISHED Runtime:"
 				+ stopWatch.toString() + "\n");
-
-		// assertLengthCount(getClass().getSimpleName(), passLength,
-		// numPasswords, passwords);
 
 	}
 

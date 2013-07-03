@@ -37,8 +37,7 @@ import java.util.List;
  * 
  * @author unrz205
  */
-public interface IPasswordFilter
-{
+public interface IPasswordFilter {
 
 	/**
 	 * This method must return the unique identifier of the filter. A unique
@@ -46,7 +45,7 @@ public interface IPasswordFilter
 	 * 
 	 * @return the filter identifier
 	 */
-	public String getID();
+	public String getId();
 
 	/**
 	 * This method returns a short description of what the filter is doing and
@@ -64,10 +63,10 @@ public interface IPasswordFilter
 	 *            the bitwise mask containing the password flags
 	 * @param password
 	 *            the password to be checked
-	 * @return <em>null</em> if the password should be filtered and the
-	 *         password if it satisfies the rules.
+	 * @return an empty list if the password satisfies the rules otherwise a
+	 *         list of validation fail reasons.
 	 */
-	public String filter(int passwordFlags, String password);
+	public List<String> filter(Long passwordFlags, String password);
 
 	/**
 	 * This method checks a whole list of passwords. It should return a list of
@@ -84,11 +83,10 @@ public interface IPasswordFilter
 
 	/**
 	 * Returns a reference of the blacklist used by this filter and
-	 * <em>null</em> if the filters is purely procedural and checks
-	 * passwords against rule.
+	 * <em>null</em> if the filters is purely procedural and checks passwords
+	 * against rule.
 	 * 
-	 * @return the blacklist of the filter or <em>null</em> if one is not
-	 *         used.
+	 * @return the blacklist of the filter or <em>null</em> if one is not used.
 	 */
 	public List<String> getBlacklist();
 
@@ -114,8 +112,7 @@ public interface IPasswordFilter
 	 * 
 	 * @param blackWord
 	 *            the word to be removed from the blacklist
-	 * @return <em>true</em> on successful removal, <em>false</em>
-	 *         otherwise
+	 * @return <em>true</em> on successful removal, <em>false</em> otherwise
 	 */
 	public boolean removeFromBlacklist(String blackWord);
 }

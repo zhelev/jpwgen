@@ -35,58 +35,58 @@ package de.rrze.jpwgen;
  * @author unrz205
  * 
  */
-public interface IPwProcessing
-{
-	/** =========================================================================== */
-	
+public interface IDefaultFilter {
+
+	public static final Long ORIGIN = 0x01l;
+
 	/**
 	 * Flag that enables the inclusion of digits in the generated passwords.
 	 */
-	public static final int PW_DIGITS = 0x01;
+	public static final Long PW_DIGITS = ORIGIN;
 
 	/**
 	 * Regular expression that matches passwords containing at least one digit
 	 */
-	public static final String REGEX_AT_LEAST_1_DIGIT = "[\\d]+";
-	
+	public static final String REGEX_DIGITS = "[\\d]+";
+
 	/**
 	 * Flag that enables the inclusion of upper case characters in the generated
 	 * passwords.
 	 */
-	public static final int PW_UPPERS = 0x02;
+	public static final Long PW_CAPITALS = ORIGIN << 1;
 
 	/**
 	 * Regular expression that matches passwords containing at least one capital
 	 */
-	public static final String REGEX_AT_LEAST_1_CAPITAL = "[A-Z]+";
-	
+	public static final String REGEX_CAPITALS = "[A-Z]+";
+
 	/**
 	 * Flag that enables the inclusion of symbols characters in the generated
 	 * passwords.
 	 */
-	public static final int PW_SYMBOLS = 0x04;
+	public static final Long PW_SYMBOLS = ORIGIN << 2;
 
 	/**
 	 * Regular expression that matches at least one symbol
 	 */
-	public static final String REGEX_AT_LEAST_1_SYMBOLS = "[\\W_]+";
-	
+	public static final String REGEX_SYMBOLS = "[\\W_]+";
+
 	/**
 	 * Flag that enables the inclusion of ambiguous characters in the generated
 	 * passwords.
 	 */
-	public static final int PW_AMBIGUOUS = 0x08;
+	public static final Long PW_AMBIGUOUS = ORIGIN << 3;
 
 	/**
 	 * Special characters that can be included in a password.
 	 */
 	public static final String PW_SPECIAL_SYMBOLS = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
-	
+
 	/**
 	 * Flag that enables the inclusion of the reduced set of symbols characters
 	 * in the generated passwords.
 	 */
-	public static final int PW_SYMBOLS_REDUCED = 0x10;
+	public static final Long PW_SYMBOLS_REDUCED = ORIGIN << 4;
 
 	/**
 	 * A reduced set of special characters that can be included in a password.
@@ -98,55 +98,55 @@ public interface IPwProcessing
 	 * users.
 	 */
 	public static final String PW_AMBIGUOUS_SYMBOLS = "B8G6I1l0OQDS5Z2";
-	
+
 	/**
 	 * Flag that disables passwords starting with a lower letter character
 	 */
-	public static final int REGEX_STARTS_NO_SMALL_LETTER_FLAG = 0x20;
+	public static final Long REGEX_STARTS_NO_LOWERCASE_FLAG = ORIGIN << 5;
 
 	/**
 	 * Regular expression that matches passwords starting with a lower letter
 	 * character
 	 */
-	public static final String REGEX_STARTS_NO_SMALL_LETTER = "^[a-z]";
+	public static final String REGEX_STARTS_NO_LOWERCASE = "^[a-z]";
 
 	/**
 	 * Flag that disables passwords ending with a lower letter character
 	 */
-	public static final int REGEX_ENDS_NO_SMALL_LETTER_FLAG = 0x40;
+	public static final Long REGEX_ENDS_NO_LOWERCASE_FLAG = ORIGIN << 6;
 
 	/**
 	 * Regular expression that matches passwords ending with a lower letter
 	 * character
 	 */
-	public static final String REGEX_ENDS_NO_SMALL_LETTER = "[a-z]$";
+	public static final String REGEX_ENDS_NO_LOWERCASE = "[a-z]$";
 
 	/**
 	 * Flag that disables passwords starting with a upper letter character
 	 */
-	public static final int REGEX_STARTS_NO_UPPER_LETTER_FLAG = 0x80;
+	public static final Long REGEX_STARTS_NO_UPPERCASE_FLAG = ORIGIN << 7;
 
 	/**
 	 * Regular expression that matches passwords starting with a upper letter
 	 * character
 	 */
-	public static final String REGEX_STARTS_NO_UPPER_LETTER = "^[A-Z]";
+	public static final String REGEX_STARTS_NO_UPPERCASE = "^[A-Z]";
 
 	/**
 	 * Flag that disables passwords ending with a upper letter character
 	 */
-	public static final int REGEX_ENDS_NO_UPPER_LETTER_FLAG = 0x100;
+	public static final Long REGEX_ENDS_NO_UPPERCASE_FLAG = ORIGIN << 8;
 
 	/**
 	 * Regular expression that matches passwords ending with a upper letter
 	 * character
 	 */
-	public static final String REGEX_ENDS_NO_UPPER_LETTER = "[A-Z]$";
+	public static final String REGEX_ENDS_NO_UPPERCASE = "[A-Z]$";
 
 	/**
 	 * Flag that disables passwords ending with a digit
 	 */
-	public static final int REGEX_ENDS_NO_DIGIT_FLAG = 0x200;
+	public static final Long REGEX_ENDS_NO_DIGIT_FLAG = ORIGIN << 9;
 
 	/**
 	 * Regular expression that matches passwords ending with a digit
@@ -156,7 +156,7 @@ public interface IPwProcessing
 	/**
 	 * Flag that disables passwords starting with a digit
 	 */
-	public static final int REGEX_STARTS_NO_DIGIT_FLAG = 0x400;
+	public static final Long REGEX_STARTS_NO_DIGIT_FLAG = ORIGIN << 10;
 
 	/**
 	 * Regular expression that matches passwords starting with a digit
@@ -166,7 +166,7 @@ public interface IPwProcessing
 	/**
 	 * Flag that disables passwords starting with a symbol
 	 */
-	public static final int REGEX_STARTS_NO_SYMBOL_FLAG = 0x800;
+	public static final Long REGEX_STARTS_NO_SYMBOL_FLAG = ORIGIN << 11;
 
 	/**
 	 * Regular expression that matches passwords starting with a symbol
@@ -176,7 +176,7 @@ public interface IPwProcessing
 	/**
 	 * Flag that disables passwords ending with a symbol
 	 */
-	public static final int REGEX_ENDS_NO_SYMBOL_FLAG = 0x1000;
+	public static final Long REGEX_ENDS_NO_SYMBOL_FLAG = ORIGIN << 12;
 
 	/**
 	 * Regular expression that matches passwords ending with a symbol
@@ -186,28 +186,28 @@ public interface IPwProcessing
 	/**
 	 * Flag that disables passwords containing more than one upper case letter
 	 */
-	public static final int REGEX_ONLY_1_CAPITAL_FLAG = 0x2000;
+	public static final Long REGEX_SINGLE_CAPITAL_FLAG = ORIGIN << 13;
 
 	/**
 	 * Regular expression that matches passwords containing exactly one upper
 	 * case letter
 	 */
-	public static final String REGEX_ONLY_1_CAPITAL = "^[^A-Z]*[A-Z][^A-Z]*$";
+	public static final String REGEX_SINGLE_CAPITAL = "^[^A-Z]*[A-Z][^A-Z]*$";
 
 	/**
 	 * Flag that disables passwords containing more than one upper case letter
 	 */
-	public static final int REGEX_ONLY_1_SYMBOL_FLAG = 0x4000;
+	public static final Long REGEX_SINGLE_SYMBOL_FLAG = ORIGIN << 14;
 
 	/**
 	 * Regular expression that matches passwords containing exactly one symbol
 	 */
-	public static final String REGEX_ONLY_1_SYMBOL = "^\\w*\\W\\w*$";
+	public static final String REGEX_SINGLE_SYMBOL = "^\\w*\\W\\w*$";
 
 	/**
 	 * Flag that disables passwords containing less than two upper case letter
 	 */
-	public static final int REGEX_AT_LEAST_2_SYMBOLS_FLAG = 0x8000;
+	public static final Long REGEX_AT_LEAST_2_SYMBOLS_FLAG = ORIGIN << 15;
 
 	/**
 	 * Regular expression that matches passwords containing at least 2 symbols
@@ -217,41 +217,62 @@ public interface IPwProcessing
 	/**
 	 * Flag that disables passwords containing more than one digit
 	 */
-	public static final int REGEX_ONLY_1_DIGIT_FLAG = 0x10000;
+	public static final Long REGEX_SINGLE_DIGIT_FLAG = ORIGIN << 16;
 
 	/**
 	 * Regular expression that matches passwords containing exactly one digit
 	 */
-	public static final String REGEX_ONLY_1_DIGIT = "^[\\D]*\\d[\\D]*$";;
+	public static final String REGEX_SINGLE_DIGIT = "^[\\D]*\\d[\\D]*$";;
 
 	/**
 	 * Flag that disables passwords containing less than two upper case letter
 	 */
-	public static final int REGEX_AT_LEAST_2_DIGITS_FLAG = 0x20000;
+	public static final Long REGEX_AT_LEAST_2_DIGITS_FLAG = ORIGIN << 17;
 
 	/**
 	 * Regular expression that matches passwords containing at least two digits
 	 */
 	public static final String REGEX_AT_LEAST_2_DIGITS = "\\w*[\\W]*[\\d]\\w*[\\W]*[\\d]\\w*[\\W]*";
 
+	public static final Long REGEX_CONSEQ_SYMBOLS_FLAG = ORIGIN << 18;
+
+	/**
+	 * Regular expression that matches passwords containing two consecutive
+	 * symbols
+	 */
+	public static final String REGEX_CONSEC_SYMBOLS = ".*[\\W_][\\W_].*";
+
+	public static final Long REGEX_CONSEQ_DIGITS_FLAG = ORIGIN << 19;
+	/**
+	 * Regular expression that matches passwords containing two consecutive
+	 * digits
+	 */
+	public static final String REGEX_CONSEC_DIGITS = ".*\\d\\d.*";
+
+	public static final Long REGEX_CONSEQ_CAPITALS_FLAG = ORIGIN << 20;
+	/**
+	 * Regular expression that matches passwords containing two consecutive
+	 * capitals
+	 */
+	public static final String REGEX_CONSEC_CAPITALS = ".*[A-Z][A-Z].*";
+
 	// max 4294967295 -> 0xffffffff
 	// next 262144 -> 0x40000
-	
+
 	// Not needed any more
 
-	// public static final int REGEX_AT_LEAST_2_CAPITALS_FLAG = 0x2000;
+	// public static final Long REGEX_AT_LEAST_2_CAPITALS_FLAG = 0x2000;
 
 	// public static final String REGEX_AT_LEAST_2_CAPITALS =
 	// "\\w*[^\\w]*[A-Z]\\w*[^\\w]*[A-Z]\\w*[^\\w]*";
-	
+
 	/**
 	 * Represent no options set
 	 * */
-	public static final int NULL_FLAGS = 0;
-	
+	public static final Long NULL_FLAGS = 0l;
+
 	/**
 	 * Default password flags(options) to be used in case none are provided
 	 * */
-	public static final int DEFAULT_FLAGS = NULL_FLAGS | PW_UPPERS | PW_DIGITS;
-
+	public static final Long DEFAULT_FLAGS = NULL_FLAGS;
 }

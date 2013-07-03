@@ -1,5 +1,7 @@
 package de.rrze.jpwgen.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -7,6 +9,8 @@ import java.util.regex.PatternSyntaxException;
 public class SimpleRegexFilter extends AbstractPasswordFilter {
 
 	private Pattern regexPattern;
+
+	private String regex;
 
 	private boolean useFind = false;
 
@@ -18,6 +22,7 @@ public class SimpleRegexFilter extends AbstractPasswordFilter {
 			boolean negate) throws PatternSyntaxException {
 		super();
 		this.id = id;
+		this.regex = regex;
 		regexPattern = Pattern.compile(regex);
 		this.useFind = useFind;
 		this.negate = negate;
@@ -25,13 +30,14 @@ public class SimpleRegexFilter extends AbstractPasswordFilter {
 	}
 
 	@Override
-	public String getID() {
+	public String getId() {
 		return this.id;
 	}
 
 	@Override
-	public String filter(int passwordFlags, String password) {
-		String pass = null;
+	public List<String> filter(Long passwordFlags, String password) {
+
+		List<String> failReasons = new ArrayList<String>();
 
 		Matcher matcher = regexPattern.matcher(password);
 
@@ -39,23 +45,27 @@ public class SimpleRegexFilter extends AbstractPasswordFilter {
 
 		if (useFind) {
 			if (matcher.find()) {
-
 				matches = true;
 			}
 		} else {
 			if (matcher.matches()) {
 				matches = true;
 			}
-
 		}
 
-		if(negate)
+		if (negate)
 			matches = !matches;
-		
-		if(matches)
-			pass = password;
 
-		return pass;
+		if (!matches)
+			failReasons.add(toString());
+
+		return failReasons;
+	}
+
+	@Override
+	public String toString() {
+		return "SimpleRegexFilter [id=" + id + ", regex=" + regex
+				+ ", useFind=" + useFind + ", negate=" + negate + "]";
 	}
 
 }

@@ -3,34 +3,38 @@ package de.rrze.jpwgen.flags.impl;
 import de.rrze.jpwgen.flags.AbstractCliFlag;
 import de.rrze.jpwgen.utils.Messages;
 
-public class AtLeast2DigitsFlag extends AbstractCliFlag {
+public class SingleSymbolFlag extends AbstractCliFlag {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String CLI_SHORT = "u";
+	public static final String CLI_SHORT = "o";
 
-	public static final String CLI_LONG = "two-digits";
+	public static final String CLI_LONG = "single-symbol";
 
 	public static final String CLI_DESCRIPTION = Messages
-			.getString("IPwGenCommandLineOptions.CL_REGEX_AT_LEAST_2_DIGITS_DESC");
+			.getString("IPwGenCommandLineOptions.CL_REGEX_SINGLE_SYMBOL_DESC");
 
-	public AtLeast2DigitsFlag() {
-		mask = REGEX_AT_LEAST_2_DIGITS_FLAG;
-		
+	public SingleSymbolFlag() {
+		mask = REGEX_SINGLE_SYMBOL_FLAG;
+
 		this.cliShort = CLI_SHORT;
 		this.cliLong = CLI_LONG;
 		this.cliDescription = CLI_DESCRIPTION;
 	}
 
 	public Long mask(Long flags) {
-		Long tmp = new SingleDigitFlag().unmask(flags);
+		Long tmp = new AtLeast2SymbolsFlag().unmask(flags);
 
-		return super.mask(new PwDigitsFlag().mask(tmp));
+		if (new PwReducedSymbolsFlag().isMasked(tmp)
+				|| new PwSymbolsFlag().isMasked(tmp))
+			return super.mask(tmp);
+
+		return super.mask(new PwReducedSymbolsFlag().mask(tmp));
 	}
 
 	@Override
 	public String toString() {
-		return "AtLeast2DigitsFlag [cliShort=" + CLI_SHORT + ", cliLong="
+		return "SingleSymbolFlag [cliShort=" + cliShort + ", cliLong="
 				+ cliLong + ", cliDescription=" + cliDescription
 				+ ", cliShortDisable=" + cliShortDisable + ", cliLongDisable="
 				+ cliLongDisable + ", cliDescriptionDisable="
