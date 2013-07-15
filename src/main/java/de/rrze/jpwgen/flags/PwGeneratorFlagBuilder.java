@@ -92,7 +92,17 @@ public class PwGeneratorFlagBuilder implements Serializable {
 	}
 
 	public PwGeneratorFlagBuilder(Long flags) {
+		this.flagList = loadFlags(evalFlags(flags));
+		if(build()!=flags)
+			throw new IllegalArgumentException("Cannot rebuild flags as options.");
+		
 		this.flags = flags;
+	}
+
+	public PwGeneratorFlagBuilder(List<IPwFlag> flagList) {
+		this.flagList = flagList;
+
+		this.flags = build();
 	}
 
 	public PwGeneratorFlagBuilder setIncludeCapitals() {
@@ -189,7 +199,7 @@ public class PwGeneratorFlagBuilder implements Serializable {
 		flagList.add(IPwFlag.CONSEC_CAPITALS_FLAG);
 		return this;
 	}
-	
+
 	public PwGeneratorFlagBuilder setDisableConsecSymbols() {
 		flagList.add(IPwFlag.CONSEC_SYMBOLS_FLAG);
 		return this;
@@ -199,6 +209,7 @@ public class PwGeneratorFlagBuilder implements Serializable {
 		flagList.add(IPwFlag.CONSEC_DIGITS_FLAG);
 		return this;
 	}
+
 	public synchronized Long build() {
 		Long build = flags;
 
@@ -235,6 +246,20 @@ public class PwGeneratorFlagBuilder implements Serializable {
 		return applied;
 	}
 
+	public static synchronized List<IPwFlag> loadFlags(List<String> flagList) {
+		List<IPwFlag> flags = new ArrayList<IPwFlag>();
+
+		for (String flag : flagList) {
+			IPwFlag fl = SUPPORTED_FLAGS.get(flag);
+			if (fl != null)
+				flags.add(fl);
+			else
+				throw new RuntimeException("Unknown option: " + flag);
+		}
+
+		return flags;
+	}
+
 	public static List<ICliFlag> getCliFlags() {
 		List<ICliFlag> clis = new ArrayList<ICliFlag>();
 
@@ -250,7 +275,7 @@ public class PwGeneratorFlagBuilder implements Serializable {
 
 	public static List<String> getCliShorts() {
 		List<String> shorts = new ArrayList<String>();
-		
+
 		List<ICliFlag> clis = getCliFlags();
 		for (ICliFlag iCliFlag : clis) {
 			shorts.add(iCliFlag.cliShort());
@@ -262,10 +287,10 @@ public class PwGeneratorFlagBuilder implements Serializable {
 
 		return shorts;
 	}
-	
+
 	public static List<String> getCliLongs() {
 		List<String> longs = new ArrayList<String>();
-		
+
 		List<ICliFlag> clis = getCliFlags();
 		for (ICliFlag iCliFlag : clis) {
 			longs.add(iCliFlag.cliLong());
