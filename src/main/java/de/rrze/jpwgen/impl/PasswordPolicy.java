@@ -11,8 +11,10 @@ import de.rrze.jpwgen.IPwDefConstants;
 
 public class PasswordPolicy implements IPasswordPolicy {
 
-	private int pwLength = IPwDefConstants.DEFAULT_PASSWORD_LENGTH;
+	private int minPwLength = IPwDefConstants.DEFAULT_PASSWORD_LENGTH;
 
+	private int maxPwLength = IPwDefConstants.DEFAULT_PASSWORD_LENGTH;
+	
 	private int maxAttempts = IPwDefConstants.DEFAULT_MAX_ATTEMPTS;
 
 	private Long flags = IDefaultFilter.DEFAULT_FLAGS;
@@ -26,9 +28,17 @@ public class PasswordPolicy implements IPasswordPolicy {
 	public PasswordPolicy() {
 	}
 
-	public PasswordPolicy(int pwLength, int maxAttempts, Long flags,
+	public PasswordPolicy(int minPwLength, int maxPwLength, int maxAttempts, Long flags,
 			Random random) {
-		this.pwLength = pwLength;
+		
+		if(minPwLength<1)
+			minPwLength = IPwDefConstants.DEFAULT_PASSWORD_LENGTH;
+		this.minPwLength = minPwLength;
+		
+		if(maxPwLength<1 || maxPwLength < minPwLength)
+			maxPwLength = minPwLength;
+		this.maxPwLength = maxPwLength;
+		
 		this.maxAttempts = maxAttempts;
 		this.flags = flags;
 		this.random = random;
@@ -44,12 +54,8 @@ public class PasswordPolicy implements IPasswordPolicy {
 	 * @see de.rrze.jpwgen.impl.IPasswordPolicy#getLength()
 	 */
 	@Override
-	public int getPwLength() {
-		return pwLength;
-	}
-
-	public List<IPasswordFilter> getFilters() {
-		return filters;
+	public int getMinPwLength() {
+		return minPwLength;
 	}
 
 	/*
@@ -58,8 +64,34 @@ public class PasswordPolicy implements IPasswordPolicy {
 	 * @see de.rrze.jpwgen.impl.IPasswordPolicy#setLength(int)
 	 */
 	@Override
-	public void setPwLength(int length) {
-		this.pwLength = length;
+	public void setMaxPwLength(int length) {
+		this.minPwLength = length;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.rrze.jpwgen.impl.IPasswordPolicy#getLength()
+	 */
+	@Override
+	public int getMaxPwLength() {
+		return maxPwLength;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.rrze.jpwgen.impl.IPasswordPolicy#setLength(int)
+	 */
+	@Override
+	public void setMinPwLength(int length) {
+		this.maxPwLength = length;
+	}
+	
+	
+	
+	public List<IPasswordFilter> getFilters() {
+		return filters;
 	}
 
 	/*
@@ -154,9 +186,10 @@ public class PasswordPolicy implements IPasswordPolicy {
 
 	@Override
 	public String toString() {
-		return "PasswordPolicy [pwLength=" + pwLength + ", maxAttempts="
-				+ maxAttempts + ", flags=" + flags + ", randomType=" + random
-				+ ", filters=" + filters + "]";
+		return "PasswordPolicy [minPwLength=" + minPwLength + ", maxPwLength="
+				+ maxPwLength + ", maxAttempts=" + maxAttempts + ", flags="
+				+ flags + ", random=" + random + ", filters=" + filters
+				+ ", blackList=" + blackList + "]";
 	}
 
 }

@@ -15,16 +15,17 @@ import de.rrze.jpwgen.IPwGenerator;
 import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
 import de.rrze.jpwgen.impl.PasswordPolicy;
 import de.rrze.jpwgen.impl.PwGenerator;
-import de.rrze.jpwgen.impl.SimpleRegexFilter;
 
-public class ValidateTest {
+public class PasswordLengthTest {
 
-	@Test(groups = { "instance" }, invocationCount = 30)
+	@Test(groups = { "instance" })
 	public void conformTest() throws Exception {
 		int numPasswords = 10;
-		int passLength = 8;
+		int minPwdLength = 8;
+		int maxPwdLength = 12;
 
-		System.out.println("INSTANCE TEST STARTED: Generating passwords:");
+		System.out
+				.println("PasswordLengthTest TEST STARTED: Generating passwords:");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 
@@ -34,23 +35,18 @@ public class ValidateTest {
 				.setDoNotEndWithSymbol().setDoNotEndWithDigit()
 				.setDisableConsecSymbols();
 
-		IPasswordPolicy passwordPolicy = new PasswordPolicy(passLength, passLength, 0,
-				flags.build(), null);
-		passwordPolicy.addFilter(new SimpleRegexFilter("lala",
-				"(?=.{8,})(?=.*?[^\\w\\s])(?=.*?[0-9])(?=.*?[A-Z]).*?[a-z].*",
-				false, false));
-		passwordPolicy.addFilter(new SimpleRegexFilter("lala1", "^a.*4.*",
-				false, false));
-		passwordPolicy.getBlackList().add("nazi");
-
-		String password = "nazi4_#a";
+		IPasswordPolicy passwordPolicy = new PasswordPolicy(minPwdLength,
+				maxPwdLength, 0, flags.build(), null);
 
 		IPwGenerator pw = new PwGenerator(passwordPolicy);
 
 		List<String> passwords = pw.generate(numPasswords, 0, null);
 
-		assertLengthCount(this.getClass().getSimpleName(), passLength,
-				numPasswords, passwords);
+		assertLengthCount(this.getClass().getSimpleName(), minPwdLength,
+				maxPwdLength, numPasswords, passwords);
+
+		
+		String password = "na3,";
 
 		/** part two */
 
@@ -62,28 +58,38 @@ public class ValidateTest {
 		}
 
 		Assert.assertTrue(validationResult.size() > 0);
-
+		
+		
 		stopWatch.stop();
-		System.out.println("\nFLAG BUILDER TEST FINISHED Runtime:"
+		System.out.println("\nPasswordLengthTest TEST FINISHED Runtime:"
 				+ stopWatch.toString() + "\n");
 
 	}
 
-	protected void assertLengthCount(String test, int passLength,
-			int numPasswords, List<String> passwords) {
+	protected void assertLengthCount(String test, int minPwdLength,
+			int maxPwdLength, int numPasswords, List<String> passwords) {
 
 		int count = 0;
 		for (Iterator<String> iter = passwords.iterator(); iter.hasNext();) {
 			++count;
 			String password = (String) iter.next();
-			if (password.length() != passLength) {
+			if (password.length() < minPwdLength) {
 				System.out
-						.printf("#####========>%s %s %s %d Wrong number of characters: %d vs. %d for %s\n",
+						.printf("#####========>%s %s %s %d Wrong number of characters - too short: %d vs. %d for %s\n",
 								ManagementFactory.getRuntimeMXBean().getName(),
 								Thread.currentThread().getName(), test, count,
-								password.length(), passLength, password);
-				Assert.assertEquals(password.length(), passLength);
+								password.length(), minPwdLength, password);
+				Assert.assertEquals(password.length(), minPwdLength);
 			}
+			if (password.length() > maxPwdLength) {
+				System.out
+						.printf("#####========>%s %s %s %d Wrong number of characters too long: %d vs. %d for %s\n",
+								ManagementFactory.getRuntimeMXBean().getName(),
+								Thread.currentThread().getName(), test, count,
+								password.length(), minPwdLength, password);
+				Assert.assertEquals(password.length(), minPwdLength);
+			}
+
 			System.out.printf("%s %s %s, %3d  Password: %s -> %d\n",
 					ManagementFactory.getRuntimeMXBean().getName(), Thread
 							.currentThread().getName(), test, count, password,

@@ -37,7 +37,7 @@ public class InstanceTest {
 		System.out.println("Applied falgs: "
 				+ PwGeneratorFlagBuilder.evalFlags(builtFlag));
 
-		IPasswordPolicy passwordPolicy = new PasswordPolicy(passLength, 0,
+		IPasswordPolicy passwordPolicy = new PasswordPolicy(passLength, passLength, 0,
 				flags.build(), null);
 		passwordPolicy.addFilter(new SimpleRegexFilter("lala",
 				"(?=.{8,})(?=.*?[^\\w\\s])(?=.*?[0-9])(?=.*?[A-Z]).*?[a-z].*",

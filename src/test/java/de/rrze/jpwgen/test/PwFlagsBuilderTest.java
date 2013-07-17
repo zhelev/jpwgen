@@ -42,7 +42,7 @@ public class PwFlagsBuilderTest extends PwGeneratorTest {
 		flags.setIncludeDigits().setIncludeReducedSymbols()
 				.setIncludeCapitals().setFilterAmbiguous();
 
-		IPasswordPolicy passwordPolicy = new PasswordPolicy(passLength, 0,
+		IPasswordPolicy passwordPolicy = new PasswordPolicy(passLength, passLength, 0,
 				flags.build(), null);
 
 		IPwGenerator pw = new PwGenerator(passwordPolicy);

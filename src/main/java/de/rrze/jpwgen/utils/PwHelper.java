@@ -257,7 +257,7 @@ public class PwHelper implements IPwGenCommandLineOptions, IPwDefConstants,
 
 			passwordFlags = parseCLIFlags(passwordFlags, commandLine);
 
-			passwordPolicy = new PasswordPolicy(passwordLength, maxAttempts,
+			passwordPolicy = new PasswordPolicy(passwordLength, passwordLength,maxAttempts,
 					passwordFlags, random);
 
 			if (blackList != null)

@@ -38,6 +38,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.swing.text.html.MinimalHTMLWriter;
+
 import de.rrze.jpwgen.IDefaultFilter;
 import de.rrze.jpwgen.IPasswordFilter;
 import de.rrze.jpwgen.IPasswordPolicy;
@@ -548,6 +550,18 @@ public class PwGenerator implements IPwDefConstants, IDefaultFilter,
 
 		Set<String> filterIDs = filters.keySet();
 
+		if (password.length() > passwordPolicy.getMaxPwLength()) {
+			List<String> prob = new ArrayList<String>();
+			prob.add("maxPwLength");
+			problems.put("password_policy", prob);
+		}
+
+		if (password.length() < passwordPolicy.getMinPwLength()) {
+			List<String> prob = new ArrayList<String>();
+			prob.add("minPwLength");
+			problems.put("password_policy", prob);
+		}
+
 		for (Iterator<String> iter = filterIDs.iterator(); iter.hasNext();) {
 			String filterId = (String) iter.next();
 			IPasswordFilter filter = filters.get(filterId);
@@ -565,7 +579,7 @@ public class PwGenerator implements IPwDefConstants, IDefaultFilter,
 			if (checked.size() > 0)
 				problems.put(ppFilter.getId(), checked);
 		}
-		
+
 		return problems;
 	}
 
@@ -676,12 +690,13 @@ public class PwGenerator implements IPwDefConstants, IDefaultFilter,
 	@Override
 	public synchronized String generate() {
 
-		int passwordLength = passwordPolicy.getPwLength();
+		int minPwLength = passwordPolicy.getMinPwLength();
+		int maxPwLength = passwordPolicy.getMaxPwLength();
 		Long passwordFlags = passwordPolicy.getFlags();
 		int maxAttempts = passwordPolicy.getMaxAttempts();
 		Random random = passwordPolicy.getRandom();
 
-		passwordFlags = preprocess(passwordLength, passwordFlags);
+		passwordFlags = preprocess(minPwLength, passwordFlags);
 
 		if (maxAttempts < 1)
 			maxAttempts = DEFAULT_MAX_ATTEMPTS;
@@ -690,6 +705,13 @@ public class PwGenerator implements IPwDefConstants, IDefaultFilter,
 
 		String password = null;
 		for (int i = 0; i < maxAttempts; i++) {
+
+			int passwordLength = minPwLength;
+			if (minPwLength != maxPwLength)
+				passwordLength = random.nextInt(maxPwLength
+						- minPwLength)
+						+ minPwLength;
+
 			password = phonemes(passwordLength, passwordFlags, random);
 
 			if (validate(password).size() > 0) {

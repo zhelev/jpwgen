@@ -33,7 +33,7 @@ public class BuildersTest extends PwGeneratorTest {
 		flags.setIncludeDigits().setIncludeCapitals()
 				.setIncludeReducedSymbols().setFilterAmbiguous();
 
-		IPasswordPolicy passwordPolicy = new PasswordPolicy(passLength, 0,
+		IPasswordPolicy passwordPolicy = new PasswordPolicy(passLength, passLength,0,
 				flags.build(), null);
 
 		IPwGenerator pw = new PwGenerator(passwordPolicy);

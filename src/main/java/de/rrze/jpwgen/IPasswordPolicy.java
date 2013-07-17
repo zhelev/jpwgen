@@ -5,10 +5,14 @@ import java.util.Random;
 
 public interface IPasswordPolicy {
 
-	public abstract int getPwLength();
+	public abstract int getMinPwLength();
 
-	public abstract void setPwLength(int length);
+	public abstract int getMaxPwLength();
+	
+	public abstract void setMinPwLength(int length);
 
+	public abstract void setMaxPwLength(int length);
+	
 	public abstract int getMaxAttempts();
 
 	public abstract void setMaxAttempts(int maxAttempts);

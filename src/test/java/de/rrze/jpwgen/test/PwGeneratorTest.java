@@ -28,7 +28,7 @@ public class PwGeneratorTest {
 
 		Assert.assertEquals(passwords.size(), numPasswords);
 
-		assertLengthCount(testName, passwordPolicy.getPwLength(), numPasswords,
+		assertLengthCount(testName, passwordPolicy.getMinPwLength(), numPasswords,
 				passwords);
 
 		System.out.println(ManagementFactory.getRuntimeMXBean().getName()
