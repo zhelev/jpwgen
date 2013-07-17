@@ -15,6 +15,7 @@ import de.rrze.jpwgen.flags.PwGeneratorFlagBuilder;
 import de.rrze.jpwgen.impl.PasswordPolicy;
 import de.rrze.jpwgen.impl.PwGenerator;
 import de.rrze.jpwgen.impl.SimpleRegexFilter;
+import de.rrze.jpwgen.utils.RandomFactory;
 
 public class InstanceTest {
 
@@ -37,8 +38,8 @@ public class InstanceTest {
 		System.out.println("Applied falgs: "
 				+ PwGeneratorFlagBuilder.evalFlags(builtFlag));
 
-		IPasswordPolicy passwordPolicy = new PasswordPolicy(passLength, passLength, 0,
-				flags.build(), null);
+		IPasswordPolicy passwordPolicy = new PasswordPolicy(passLength,0, 0,
+				flags.build(), RandomFactory.getInstance().getSimpleSecureRandom());
 		passwordPolicy.addFilter(new SimpleRegexFilter("lala",
 				"(?=.{8,})(?=.*?[^\\w\\s])(?=.*?[0-9])(?=.*?[A-Z]).*?[a-z].*",
 				false, false));

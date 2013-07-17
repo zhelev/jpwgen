@@ -38,8 +38,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.swing.text.html.MinimalHTMLWriter;
-
 import de.rrze.jpwgen.IDefaultFilter;
 import de.rrze.jpwgen.IPasswordFilter;
 import de.rrze.jpwgen.IPasswordPolicy;
