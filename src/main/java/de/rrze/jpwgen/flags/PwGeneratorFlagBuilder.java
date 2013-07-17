@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import de.rrze.jpwgen.ICliFlag;
+import de.rrze.jpwgen.IGeneratorOption;
 import de.rrze.jpwgen.IPwFlag;
 
 public class PwGeneratorFlagBuilder implements Serializable {
@@ -17,7 +18,7 @@ public class PwGeneratorFlagBuilder implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public static final HashMap<String, IPwFlag> SUPPORTED_FLAGS = new HashMap<String, IPwFlag>();
-
+	
 	static {
 		SUPPORTED_FLAGS.put(IPwFlag.PW_CAPITALS_FLAG.getId(),
 				IPwFlag.PW_CAPITALS_FLAG);
@@ -260,6 +261,18 @@ public class PwGeneratorFlagBuilder implements Serializable {
 		return flags;
 	}
 
+	public static List<IPwFlag> getGeneratorOptions() {
+		List<IPwFlag> generatorOptions = new ArrayList<IPwFlag>();
+
+		for (IPwFlag flag : SUPPORTED_FLAGS.values()) {
+			if (flag instanceof IGeneratorOption) {
+				generatorOptions.add(flag);
+			}
+		}
+		
+		return generatorOptions;
+	}
+	
 	public static List<ICliFlag> getCliFlags() {
 		List<ICliFlag> clis = new ArrayList<ICliFlag>();
 
@@ -268,8 +281,8 @@ public class PwGeneratorFlagBuilder implements Serializable {
 				ICliFlag cli = (ICliFlag) flag;
 				clis.add(cli);
 			}
-
 		}
+		
 		return clis;
 	}
 

@@ -1,9 +1,10 @@
 package de.rrze.jpwgen.flags.impl;
 
+import de.rrze.jpwgen.IGeneratorOption;
 import de.rrze.jpwgen.flags.AbstractCliFlag;
 import de.rrze.jpwgen.utils.Messages;
 
-public class PwDigitsFlag extends AbstractCliFlag {
+public class PwDigitsFlag extends AbstractCliFlag implements IGeneratorOption {
 
 	private static final long serialVersionUID = 1L;
 
