@@ -35,8 +35,6 @@ public abstract class AbstractPasswordFilter implements IPasswordFilter,
 		return description;
 	}
 
-	public abstract List<String> filter(Long passwordFlags, String password);
-
 	public List<String> filter(int passwordFlags, List<String> passwords) {
 		List<String> suitable = new ArrayList<String>();
 		for (Iterator<String> iter = passwords.iterator(); iter.hasNext();) {

@@ -34,8 +34,8 @@ public class ValidateTest {
 				.setDoNotEndWithSymbol().setDoNotEndWithDigit()
 				.setDisableConsecSymbols();
 
-		IPasswordPolicy passwordPolicy = new PasswordPolicy(passLength, passLength, 0,
-				flags.build(), null);
+		IPasswordPolicy passwordPolicy = new PasswordPolicy(passLength,
+				passLength, 0, flags.build(), null);
 		passwordPolicy.addFilter(new SimpleRegexFilter("lala",
 				"(?=.{8,})(?=.*?[^\\w\\s])(?=.*?[0-9])(?=.*?[A-Z]).*?[a-z].*",
 				false, false));
@@ -54,7 +54,8 @@ public class ValidateTest {
 
 		/** part two */
 
-		Map<String, List<String>> validationResult = pw.validate(password);
+		Map<String, Map<String, String>> validationResult = pw
+				.validate(password);
 
 		for (String filterId : validationResult.keySet()) {
 			System.out.println(filterId);

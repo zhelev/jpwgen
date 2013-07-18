@@ -26,8 +26,10 @@
 package de.rrze.jpwgen.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -142,17 +144,17 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 	 * @see de.rrze.idmone.utils.pwgen.IPassowrdFilter#filter(int,
 	 * java.lang.String)
 	 */
-	public List<String> filter(Long passwordFlags, String password) {
+	public Map<String, String> filter(Long passwordFlags, String password) {
 
-		List<String> failedChecks = new ArrayList<String>();
+		Map<String, String> failedChecks = new HashMap<String, String>();
 
 		// Iterate over the list and check whether it contains the word
 		for (Iterator<String> iter = blacklist.iterator(); iter.hasNext();) {
 			String blackword = (String) iter.next();
 			LOGGER.fine(Messages.getString("DefaultFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 					+ Messages.getString("DefaultFilter.BLACKLIST_ENTRY") + blackword + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-			if (password.contains(blackword))
-				failedChecks.add("blacklist:" + blackword);
+			if (password.toLowerCase().contains(blackword.toLowerCase()))
+				failedChecks.put("blacklist", blackword);
 		}
 
 		// ----------- End character filters --------------------- //
@@ -163,7 +165,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 				LOGGER.fine(Messages.getString("DefaultFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultFilter.NO_DIGIT")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.PW_DIGITS_FLAG.getId());
+				failedChecks.put(IPwFlag.PW_DIGITS_FLAG.getId(),
+						REGEX_AT_LEAST_1_DIGIT_P.pattern());
 			}
 		}
 
@@ -183,7 +186,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 
 				LOGGER.fine(Messages.getString("DefaultFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultFilter.NO_SYMBOL")); //$NON-NLS-1$
-				failedChecks.add(IPwFlag.PW_SYMBOLS_FLAG.getId());
+				failedChecks.put(IPwFlag.PW_SYMBOLS_FLAG.getId(),
+						PW_SPECIAL_SYMBOLS);
 			}
 		}
 
@@ -202,26 +206,29 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 			if (!found) {
 				LOGGER.fine(Messages.getString("DefaultFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultFilter.NO_REDUCED_SYMBOL")); //$NON-NLS-1$
-
-				failedChecks.add(IPwFlag.PW_REDUCED_SYMBOLS_FLAG.getId());
+				failedChecks.put(IPwFlag.PW_REDUCED_SYMBOLS_FLAG.getId(),
+						PW_SPECIAL_SYMBOLS_REDUCED);
 			}
 		}
 
 		if (IPwFlag.PW_AMBIGOUS_FLAG.isMasked(passwordFlags)) {
 
-			Boolean found = false;
+			Character found = null;
 
 			for (int i = 0; i < PW_AMBIGUOUS_SYMBOLS.length(); i++) {
 				if (password.indexOf(PW_AMBIGUOUS_SYMBOLS.charAt(i)) != -1) {
-					found = true;
+					found = PW_AMBIGUOUS_SYMBOLS.charAt(i);
 					break;
 				}
 			}
 
-			if (found) {
+			if (found!=null) {
 				LOGGER.fine(Messages.getString("DefaultFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultFilter.NO_AMBIGUOUS")); //$NON-NLS-1$
-				failedChecks.add(IPwFlag.PW_AMBIGOUS_FLAG.getId());
+				failedChecks.put(IPwFlag.PW_AMBIGOUS_FLAG.getId(),
+						PW_AMBIGUOUS_SYMBOLS);
+				failedChecks.put(IPwFlag.PW_AMBIGOUS_FLAG.getId()+".explain",
+						found.toString());
 			}
 		}
 
@@ -230,7 +237,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 			if (!matcher.find()) {
 				LOGGER.fine(Messages.getString("DefaultFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultFilter.NO_CAPITAL")); //$NON-NLS-1$
-				failedChecks.add(IPwFlag.PW_CAPITALS_FLAG.getId());
+				failedChecks.put(IPwFlag.PW_CAPITALS_FLAG.getId(),
+						REGEX_AT_LEAST_1_CAPITAL_P.pattern());
 			}
 		}
 
@@ -240,7 +248,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 				LOGGER.fine(Messages.getString("DefaultFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultFilter.ENDS_SMALL")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.ENDS_NO_LOWERCASE_FLAG.getId());
+				failedChecks.put(IPwFlag.ENDS_NO_LOWERCASE_FLAG.getId(),
+						REGEX_ENDS_NO_SMALL_LETTER_P.pattern());
 			}
 		}
 
@@ -250,7 +259,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 				LOGGER.fine(Messages.getString("DefaultFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultFilter.ENDS_UPPER")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.ENDS_NO_UPPERCASE_FLAG.getId());
+				failedChecks.put(IPwFlag.ENDS_NO_UPPERCASE_FLAG.getId(),
+						REGEX_ENDS_NO_UPPER_LETTER_P.pattern());
 			}
 		}
 
@@ -260,7 +270,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 				LOGGER.fine(Messages.getString("DefaultFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultFilter.ENDS_DIGIT")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.ENDS_NO_DIGIT_FLAG.getId());
+				failedChecks.put(IPwFlag.ENDS_NO_DIGIT_FLAG.getId(),
+						REGEX_ENDS_NO_DIGIT_P.pattern());
 			}
 		}
 
@@ -270,7 +281,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 				LOGGER.fine(Messages.getString("DefaultFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultFilter.TRACE_ENDS_SYMBOL")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.ENDS_NO_SYMBOL_FLAG.getId());
+				failedChecks.put(IPwFlag.ENDS_NO_SYMBOL_FLAG.getId(),
+						REGEX_ENDS_NO_SYMBOL_P.pattern());
 			}
 		}
 
@@ -282,7 +294,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 						+ Messages
 								.getString("DefaultFilter.TRACE_STARTS_SYMBOL")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.STARTS_NO_SYMBOL_FLAG.getId());
+				failedChecks.put(IPwFlag.STARTS_NO_SYMBOL_FLAG.getId(),
+						REGEX_STARTS_NO_SYMBOL_P.pattern());
 			}
 		}
 
@@ -293,7 +306,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 						+ Messages
 								.getString("DefaultFilter.TRACE_STARTS_DIGIT")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.STARTS_NO_DIGIT_FLAG.getId());
+				failedChecks.put(IPwFlag.STARTS_NO_DIGIT_FLAG.getId(),
+						REGEX_STARTS_NO_DIGIT_P.pattern());
 			}
 		}
 
@@ -304,7 +318,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 						+ Messages
 								.getString("DefaultFilter.TRACE_STARTS_UPERCASE")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.STARTS_NO_UPPERCASE_FLAG.getId());
+				failedChecks.put(IPwFlag.STARTS_NO_UPPERCASE_FLAG.getId(),
+						REGEX_STARTS_NO_UPPER_LETTER_P.pattern());
 			}
 		}
 		if (IPwFlag.STARTS_NO_LOWERCASE_FLAG.isMasked(passwordFlags)) {
@@ -314,7 +329,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 						+ Messages
 								.getString("DefaultFilter.TRACE_STARTS_SMALL")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.STARTS_NO_LOWERCASE_FLAG.getId());
+				failedChecks.put(IPwFlag.STARTS_NO_LOWERCASE_FLAG.getId(),
+						REGEX_STARTS_NO_SMALL_LETTER_P.pattern());
 			}
 		}
 
@@ -326,7 +342,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 						+ Messages
 								.getString("DefaultFilter.TRACE_MORE_SYMBOLS")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.SINGLE_SYMBOL_FLAG.getId());
+				failedChecks.put(IPwFlag.SINGLE_SYMBOL_FLAG.getId(),
+						REGEX_ONLY_1_SYMBOL_P.pattern());
 			}
 		}
 
@@ -336,7 +353,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 				LOGGER.fine(Messages.getString("DefaultFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultFilter.TRACE_NO_SYMBOLS")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.AT_LEAST_TWO_SYMBOLS_FLAG.getId());
+				failedChecks.put(IPwFlag.AT_LEAST_TWO_SYMBOLS_FLAG.getId(),
+						REGEX_AT_LEAST_2_SYMBOLS_P.pattern());
 			}
 		}
 
@@ -346,7 +364,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 				LOGGER.fine(Messages.getString("DefaultFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultFilter.TRACE_MORE_DIGITS")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.SINGLE_DIGIT_FLAG.getId());
+				failedChecks.put(IPwFlag.SINGLE_DIGIT_FLAG.getId(),
+						REGEX_ONLY_1_DIGIT_P.pattern());
 			}
 		}
 
@@ -356,7 +375,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 				LOGGER.fine(Messages.getString("DefaultFilter.TRACE_PASSWD") + password //$NON-NLS-1$
 						+ Messages.getString("DefaultFilter.TRACE_NO_DIGITS")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.AT_LEAST_TWO_DIGITS_FLAG.getId());
+				failedChecks.put(IPwFlag.AT_LEAST_TWO_DIGITS_FLAG.getId(),
+						REGEX_AT_LEAST_2_DIGITS_P.pattern());
 			}
 		}
 
@@ -368,7 +388,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 						+ Messages
 								.getString("DefaultFilter.TRACE_MORE_UPPERCASE")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.SINGLE_CAPITAL_FLAG.getId());
+				failedChecks.put(IPwFlag.SINGLE_CAPITAL_FLAG.getId(),
+						REGEX_ONLY_1_CAPITAL_P.pattern());
 			}
 		}
 
@@ -379,7 +400,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 						+ Messages
 								.getString("DefaultFilter.TRACE_CONSEC_CAPITALS")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.CONSEC_CAPITALS_FLAG.getId());
+				failedChecks.put(IPwFlag.CONSEC_CAPITALS_FLAG.getId(),
+						REGEX_CONSEC_CAPITALS_P.pattern());
 			}
 		}
 
@@ -390,7 +412,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 						+ Messages
 								.getString("DefaultFilter.TRACE_CONSEC_SYMBOLS")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.CONSEC_SYMBOLS_FLAG.getId());
+				failedChecks.put(IPwFlag.CONSEC_SYMBOLS_FLAG.getId(),
+						REGEX_CONSEC_SYMBOLS_P.pattern());
 			}
 		}
 
@@ -401,7 +424,8 @@ public class DefaultFilter extends AbstractPasswordFilter implements
 						+ Messages
 								.getString("DefaultFilter.TRACE_CONSEC_DIGITS")); //$NON-NLS-1$
 
-				failedChecks.add(IPwFlag.CONSEC_DIGITS_FLAG.getId());
+				failedChecks.put(IPwFlag.CONSEC_DIGITS_FLAG.getId(),
+						REGEX_CONSEC_DIGITS_P.pattern());
 			}
 		}
 

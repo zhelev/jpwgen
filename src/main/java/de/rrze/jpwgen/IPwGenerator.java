@@ -35,7 +35,7 @@ public interface IPwGenerator {
 
 	public abstract IPasswordFilter removeFilter(String id);
 
-	public abstract Map<String, List<String>> validate(String password);
+	public abstract Map<String, Map<String, String>> validate(String password);
 
 	public abstract List<String> generate(int passwordCount,
 			int iterationsCount, IProgressListener progressListener);

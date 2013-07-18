@@ -1,7 +1,7 @@
 package de.rrze.jpwgen.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -35,9 +35,9 @@ public class SimpleRegexFilter extends AbstractPasswordFilter {
 	}
 
 	@Override
-	public List<String> filter(Long passwordFlags, String password) {
+	public Map<String, String> filter(Long passwordFlags, String password) {
 
-		List<String> failReasons = new ArrayList<String>();
+		Map<String, String> failReasons = new HashMap<String, String>();
 
 		Matcher matcher = regexPattern.matcher(password);
 
@@ -56,8 +56,12 @@ public class SimpleRegexFilter extends AbstractPasswordFilter {
 		if (negate)
 			matches = !matches;
 
-		if (!matches)
-			failReasons.add(toString());
+		if (!matches) {
+			failReasons.put("id", id);
+			failReasons.put("regex", regex);
+			failReasons.put("useFind", Boolean.toString(useFind));
+			failReasons.put("negate", Boolean.toString(negate));
+		}
 
 		return failReasons;
 	}

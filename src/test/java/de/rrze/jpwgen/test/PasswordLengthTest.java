@@ -20,7 +20,7 @@ public class PasswordLengthTest {
 
 	@Test(groups = { "instance" })
 	public void conformTest() throws Exception {
-		int numPasswords = 10;
+		int numPasswords = 20;
 		int minPwdLength = 8;
 		int maxPwdLength = 12;
 
@@ -45,12 +45,12 @@ public class PasswordLengthTest {
 		assertLengthCount(this.getClass().getSimpleName(), minPwdLength,
 				maxPwdLength, numPasswords, passwords);
 
-		
 		String password = "na3,";
 
 		/** part two */
 
-		Map<String, List<String>> validationResult = pw.validate(password);
+		Map<String, Map<String, String>> validationResult = pw
+				.validate(password);
 
 		for (String filterId : validationResult.keySet()) {
 			System.out.println(filterId);
@@ -58,8 +58,7 @@ public class PasswordLengthTest {
 		}
 
 		Assert.assertTrue(validationResult.size() > 0);
-		
-		
+
 		stopWatch.stop();
 		System.out.println("\nPasswordLengthTest TEST FINISHED Runtime:"
 				+ stopWatch.toString() + "\n");

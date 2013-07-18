@@ -29,6 +29,7 @@
 package de.rrze.jpwgen;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Interface that represents the basic functionality that should be supported by
@@ -66,20 +67,7 @@ public interface IPasswordFilter {
 	 * @return an empty list if the password satisfies the rules otherwise a
 	 *         list of validation fail reasons.
 	 */
-	public List<String> filter(Long passwordFlags, String password);
-
-	/**
-	 * This method checks a whole list of passwords. It should return a list of
-	 * suitable passwords or an empty list if none of the passwords fits the
-	 * rules.
-	 * 
-	 * @param passwordFlags
-	 *            the bitwise mask containing the password flags
-	 * @param passwords
-	 *            a list of passwords to be checked
-	 * @return the list with filtered passwords
-	 */
-	public List<String> filter(int passwordFlags, List<String> passwords);
+	public Map<String, String> filter(Long passwordFlags, String password);
 
 	/**
 	 * Returns a reference of the blacklist used by this filter and

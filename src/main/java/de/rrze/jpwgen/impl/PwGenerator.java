@@ -540,31 +540,37 @@ public class PwGenerator implements IPwDefConstants, IDefaultFilter,
 	 * @see de.rrze.jpwgen.impl.IPwGenerator#validate(java.lang.String)
 	 */
 	@Override
-	public synchronized Map<String, List<String>> validate(String password) {
+	public synchronized Map<String, Map<String, String>> validate(
+			String password) {
 
 		Long passwordFlags = passwordPolicy.getFlags();
 
-		Map<String, List<String>> problems = new HashMap<String, List<String>>();
+		Map<String, Map<String, String>> problems = new HashMap<String, Map<String, String>>();
 
 		Set<String> filterIDs = filters.keySet();
 
 		if (password.length() > passwordPolicy.getMaxPwLength()) {
-			List<String> prob = new ArrayList<String>();
-			prob.add("maxPwLength");
-			problems.put("password_policy", prob);
+			Map<String, String> prob = new HashMap<String, String>();
+			prob.put("maxPwLength",
+					Integer.toString(passwordPolicy.getMaxPwLength()));
+			prob.put("maxPwLength.explain", Integer.toString(password.length()));
+			problems.put("PasswordPolicy", prob);
 		}
 
 		if (password.length() < passwordPolicy.getMinPwLength()) {
-			List<String> prob = new ArrayList<String>();
-			prob.add("minPwLength");
-			problems.put("password_policy", prob);
+			Map<String, String> prob = new HashMap<String, String>();
+			prob.put("minPwLength",
+					Integer.toString(passwordPolicy.getMinPwLength()));
+			prob.put("minPwLength.explain", Integer.toString(password.length()));
+			problems.put("PasswordPolicy", prob);
 		}
 
 		for (Iterator<String> iter = filterIDs.iterator(); iter.hasNext();) {
 			String filterId = (String) iter.next();
 			IPasswordFilter filter = filters.get(filterId);
 
-			List<String> checked = filter.filter(passwordFlags, password);
+			Map<String, String> checked = filter
+					.filter(passwordFlags, password);
 
 			if (checked.size() > 0)
 				problems.put(filterId, checked);
@@ -572,7 +578,8 @@ public class PwGenerator implements IPwDefConstants, IDefaultFilter,
 
 		List<IPasswordFilter> ppFilters = passwordPolicy.getFilters();
 		for (IPasswordFilter ppFilter : ppFilters) {
-			List<String> checked = ppFilter.filter(passwordFlags, password);
+			Map<String, String> checked = ppFilter.filter(passwordFlags,
+					password);
 
 			if (checked.size() > 0)
 				problems.put(ppFilter.getId(), checked);
@@ -706,10 +713,12 @@ public class PwGenerator implements IPwDefConstants, IDefaultFilter,
 
 			int passwordLength = minPwLength;
 			if (minPwLength != maxPwLength)
-				passwordLength = random.nextInt(maxPwLength
-						- minPwLength)
+			{
+				// +1 because nextInt is exclusive
+				passwordLength = random.nextInt(maxPwLength - minPwLength + 1)
 						+ minPwLength;
-
+			}
+			
 			password = phonemes(passwordLength, passwordFlags, random);
 
 			if (validate(password).size() > 0) {
