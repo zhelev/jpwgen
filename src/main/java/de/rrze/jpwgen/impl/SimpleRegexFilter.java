@@ -57,7 +57,6 @@ public class SimpleRegexFilter extends AbstractPasswordFilter {
 			matches = !matches;
 
 		if (!matches) {
-			failReasons.put("id", id);
 			failReasons.put("regex", regex);
 			failReasons.put("useFind", Boolean.toString(useFind));
 			failReasons.put("negate", Boolean.toString(negate));
