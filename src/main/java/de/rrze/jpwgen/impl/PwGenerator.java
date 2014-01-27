@@ -650,7 +650,7 @@ public class PwGenerator implements IPwDefConstants, IDefaultFilter,
 
 			int iterations = DEFAULT_MAX_ITERATIONS;
 			if (iterationsCount > 0)
-				iterations = passwordCount;
+				iterations = iterationsCount;
 
 			// -------------------------------------------------------------------
 
